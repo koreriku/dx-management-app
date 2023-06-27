@@ -1,0 +1,47 @@
+create database dx;
+
+CREATE TABLE insidedxLists (
+  id SERIAL PRIMARY KEY,
+  registration_date VARCHAR(10),
+  update_date VARCHAR(10),
+  changer VARCHAR(100),
+  department integer,
+  work VARCHAR(100),
+  support_tool VARCHAR(100),
+  state integer,
+  staff VARCHAR(100),
+  expected_effect TEXT,
+  effect integer,
+  attached_file TEXT[],
+  comment TEXT[]
+);
+
+.envファイルを作成
+publicフォルダにuploads/insideDxフォルダを作成する
+
+CREATE TABLE departments (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100),
+  division NUMERIC,
+  "from" VARCHAR(10),
+  "to" VARCHAR(10)
+);
+
+CREATE TABLE outsidedxLists (
+  id SERIAL PRIMARY KEY,
+  department integer,
+  product VARCHAR(100),
+  industry integer,
+  technology integer[],
+  technical_details TEXT,
+  state integer,
+  customer VARCHAR(100),
+  cooperation_destination VARCHAR(100),
+  sales_strategy TEXT,
+  note TEXT,
+  registration_date VARCHAR(10),
+  update_date VARCHAR(10),
+  changer VARCHAR(100),
+  attached_file TEXT[],
+  comment TEXT[]
+);

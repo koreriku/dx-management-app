@@ -1,0 +1,14 @@
+[
+  { "id": 1, "technology": "AI" },
+  { "id": 2, "technology": "IoT" },
+  { "id": 3, "technology": "5G" },
+  { "id": 4, "technology": "ドローン" },
+  { "id": 5, "technology": "通信" },
+  { "id": 6, "technology": "Fintech" },
+  { "id": 7, "technology": "サイバーセキュリティ" },
+  { "id": 8, "technology": "クラウド" },
+  { "id": 9, "technology": "仮想現実(VR)/拡張現実(AR)" },
+  { "id": 10, "technology": "HMI(ヒューマン・マシン・インターフェース)" },
+  { "id": 11, "technology": "量子コンピューティング" },
+  { "id": 12, "technology": "情報処理基盤" }
+]
