@@ -6,16 +6,16 @@ import dayjs from "dayjs";
 
 const store = useDxStore();
 const now = dayjs();
-const maxDate = ref(dayjs(`${now.year()}-12-31`));
+const maxDate = ref(dayjs(`${now.add(1, "year").year()}-12-31`));
 const bol = ref(false);
 const message = ref("");
 
 const updateDepartment = async () => {
-  console.log(store.selectedDepartment);
   if (validateCheck()) {
     await store.updateDepartment();
     store.loadDepartmentsForGanttChart();
     store.showDepartmentDialog = false;
+    message.value = "";
   }
 };
 
@@ -24,23 +24,23 @@ const registerDepartment = async () => {
     await store.registerDepartment();
     store.loadDepartmentsForGanttChart();
     store.showDepartmentDialog = false;
+    message.value = "";
   }
 };
 
 // 項目チェック
 const validateCheck = () => {
   if (!targetNullCheck()) {
-    bol.value = true;
     message.value = "入力されてない項目があります";
     return false;
   } else if (!fromCheck()) {
-    bol.value = true;
     message.value = "開始日は表に存在する年のみです";
     return false;
   } else if (!toCheck()) {
-    bol.value = true;
     message.value = "期限は9999/12/31か表に存在する年のみです";
     return false;
+  } else if (!betweenCheck()) {
+    message.value = "期限は開始日より後日に設定して下さい";
   } else {
     return true;
   }
@@ -78,6 +78,14 @@ const toCheck = () => {
   if (store.selectedDepartment.to === "9999-12-31") return true;
   else if (toDate <= maxDate.value && toDate >= dayjs("2021-01-01"))
     return true;
+  return false;
+};
+
+// 期限が開始日より後かのチェック
+const betweenCheck = () => {
+  let start = dayjs(store.selectedDepartment.from);
+  let end = dayjs(store.selectedDepartment.to);
+  if (start < end) return true;
   return false;
 };
 </script>

@@ -12,10 +12,9 @@ const now = dayjs();
 const start = ref("2021");
 // 今年の12月まで
 const end = ref(dayjs(`${now.year()}-12-31`));
-const block_number = 0;
+const year_end = ref(dayjs(`${now.add(1, "year").year()}-12-31`));
 const block_size = ref(30);
 const calendars = ref([]);
-const today = ref(dayjs());
 const store = useDxStore();
 
 // 年ごとの月数を取得
@@ -38,8 +37,8 @@ const getCalender = () => {
   let block_number = 0;
   let months;
   let start_year = dayjs(start.value);
-  let end_year = dayjs(end.value);
-  // 差分を年単位に変更
+  let end_year = dayjs(year_end.value);
+  // 差分を年単位で行う
   let between_year = end_year.diff(start_year, "years");
 
   // start_monthの年と月格納用
@@ -49,38 +48,22 @@ const getCalender = () => {
   for (let i = 0; i <= between_year; i++) {
     year.value = start_year.year();
 
-    // month()が0～11表示なので+1をする。
-    // month.value = start_month.month() + 1;
-
     // 格納時はletなのでvalueはいらない
     months = getMonths(year.value, block_number);
     calendars.value.push({
       date: start_year.format("YYYY年"),
-      year: year,
-      // month: month,
       start_block_number: block_number,
-
-      // getDaysのdaysがrefのためvalueに情報が格納されているため
-      calendar: 12,
       days: months,
     });
     // 一年ずつ増やしていく
     start_year = start_year.add(1, "years");
-    // block_number = days.value[days.value.length - 1].block_number;
     block_number = months.value[months.value.length - 1].block_number;
     block_number++;
   }
   return block_number;
 };
 
-// 今日に視線を充てる
-const scrollDistance = () => {
-  let start_date = dayjs(start.value);
-  let between_days = today.value.diff(start_date, "days");
-  return (between_days + 1) * block_size.value - 1200 / 2;
-};
-
-// department版
+// bar表示幅設定
 const departmentBars = () => {
   let start_date = dayjs(start.value);
   let top = 10;
@@ -98,7 +81,11 @@ const departmentBars = () => {
     let date_from = dayjs(list.from);
     let date_to;
     if (list.to === "9999-12-31") {
-      date_to = dayjs(end.value);
+      if (dayjs(list.from) > dayjs(end.value)) {
+        date_to = dayjs(year_end.value);
+      } else {
+        date_to = dayjs(end.value);
+      }
     } else {
       date_to = dayjs(list.to);
     }
@@ -168,16 +155,14 @@ const resetSelectedDepartment = () => {
 onBeforeMount(() => {
   store.loadDepartmentsForGanttChart();
   getCalender();
-  scrollDistance();
 });
 const tableHeight = Math.floor(Number(window.innerHeight) * 0.88);
-const tableWidth = Math.floor(Number(window.innerWidth) * 1);
 </script>
 
 <template>
   <v-card>
     <v-card-item class="mb-n3">
-      <v-table :height="tableHeight" :width="tableWidth">
+      <v-table :height="tableHeight">
         <div id="app">
           <div class="gantt-header">
             <h1 class="text-h5 mr-6">部署一覧</h1>
@@ -196,6 +181,7 @@ const tableWidth = Math.floor(Number(window.innerWidth) * 1);
               >
             </Button>
           </div>
+
           <div
             class="gantt-content"
             :style="`width:${calendars.length * (block_size * 12)}px`"
@@ -216,7 +202,7 @@ const tableWidth = Math.floor(Number(window.innerWidth) * 1);
                   v-show="list.isShowed"
                 >
                   <div class="department-data">
-                    <span v-if="!list.isLatestDepartment">　</span>
+                    <span v-if="!list.isLatestDepartment"></span>
                     <span
                       @click="
                         store.showDepartmentDialog = true;
