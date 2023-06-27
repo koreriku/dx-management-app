@@ -103,7 +103,10 @@ const betweenCheck = () => {
           <Button
             color="gray"
             class="mr-3"
-            @click="store.showDepartmentDialog = false"
+            @click="
+              store.showDepartmentDialog = false;
+              message = '';
+            "
             icon
             ><v-icon>mdi-arrow-u-left-bottom</v-icon>
             <v-tooltip activator="parent" location="bottom"
