@@ -6,12 +6,11 @@ import dayjs from "dayjs";
 
 const store = useDxStore();
 const now = dayjs();
-const maxDate = ref(dayjs(`${now.year()}-12-31`));
+const maxDate = ref(dayjs(`${now.add(1, "year").year()}-12-31`));
 const bol = ref(false);
 const message = ref("");
 
 const updateDepartment = async () => {
-  console.log(store.selectedDepartment);
   if (validateCheck()) {
     await store.updateDepartment();
     store.loadDepartmentsForGanttChart();
@@ -32,17 +31,16 @@ const registerDepartment = async () => {
 // 項目チェック
 const validateCheck = () => {
   if (!targetNullCheck()) {
-    bol.value = true;
-    message.value = "入力されてない項目があります";
+    message.value = "未入力項目または無効な日付があります";
     return false;
   } else if (!fromCheck()) {
-    bol.value = true;
     message.value = "開始日は表に存在する年のみです";
     return false;
   } else if (!toCheck()) {
-    bol.value = true;
     message.value = "期限は9999/12/31か表に存在する年のみです";
     return false;
+  } else if (!betweenCheck()) {
+    message.value = "期限は開始日より後日に設定して下さい";
   } else {
     return true;
   }
@@ -82,6 +80,14 @@ const toCheck = () => {
     return true;
   return false;
 };
+
+// 期限が開始日より後かのチェック
+const betweenCheck = () => {
+  let start = dayjs(store.selectedDepartment.from);
+  let end = dayjs(store.selectedDepartment.to);
+  if (start < end) return true;
+  return false;
+};
 </script>
 
 <template>
@@ -97,7 +103,10 @@ const toCheck = () => {
           <Button
             color="gray"
             class="mr-3"
-            @click="store.showDepartmentDialog = false"
+            @click="
+              store.showDepartmentDialog = false;
+              message = '';
+            "
             icon
             ><v-icon>mdi-arrow-u-left-bottom</v-icon>
             <v-tooltip activator="parent" location="bottom"
