@@ -81,7 +81,7 @@ const detailedSearchDialog = ref(false);
         </div>
       </div>
 
-      <div style="width: 500px" class="d-flex">
+      <div style="width: 500px">
         <v-text-field
           label="キーワード検索"
           variant="outlined"
@@ -90,7 +90,6 @@ const detailedSearchDialog = ref(false);
           v-model="store.searchWord"
           append-inner-icon="mdi-magnify"
           @keyup.enter="store.search"
-          @blur="store.search"
         ></v-text-field>
       </div>
     </div>

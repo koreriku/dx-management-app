@@ -112,10 +112,13 @@ const departmentBars = () => {
 const showHiddenDepartments = (division) => {
   for (const department of store.departmentsForGanttChart) {
     if (department.division === division) {
-      department.isShowed = true;
-      store.isShowedDepartmentLength += 1;
       if (department.isLatestDepartment) {
         department.isOpened = true;
+      } else {
+        if (!department.isShowed) {
+          department.isShowed = true;
+          store.isShowedDepartmentLength += 1;
+        }
       }
     }
   }
@@ -156,156 +159,218 @@ onBeforeMount(() => {
   store.loadDepartmentsForGanttChart();
   getCalender();
 });
-const tableHeight = Math.floor(Number(window.innerHeight) * 0.88);
+const tableHeight = Math.floor(Number(window.innerHeight) * 0.82);
+
+const searchDepartmentName = ref(null);
+const searchDepartment = () => {
+  if (searchDepartmentName.value) {
+    store.isShowedDepartmentLength = 0;
+    store.departmentsForGanttChart.map((department) => {
+      if (
+        String(department.name)
+          .toLowerCase()
+          .includes(String(searchDepartmentName.value).toLowerCase())
+      ) {
+        department.isShowed = true;
+        store.isShowedDepartmentLength += 1;
+      } else {
+        department.isShowed = false;
+      }
+    });
+  } else {
+    store.loadDepartmentsForGanttChart();
+  }
+};
+const isShowedAllDepartment = ref(false);
+const showAllDepartment = () => {
+  store.isShowedDepartmentLength = 0;
+  store.departmentsForGanttChart.map((department) => {
+    department.isShowed = true;
+    department.isOpened = true;
+    store.isShowedDepartmentLength += 1;
+  });
+};
 </script>
 
 <template>
+  <div class="gantt-header">
+    <h1 class="text-h5 mr-6">部門一覧</h1>
+    <Button
+      color="yellow"
+      @click="
+        store.showDepartmentDialog = true;
+        resetSelectedDepartment();
+        store.isEditedDepartment = false;
+      "
+      class="mr-4"
+      icon
+      ><v-icon>mdi-plus</v-icon>
+      <v-tooltip activator="parent" location="right">新規登録</v-tooltip>
+    </Button>
+    <div style="width: 500px">
+      <v-text-field
+        label="部門検索"
+        variant="outlined"
+        density="compact"
+        class="pt-5"
+        v-model="searchDepartmentName"
+        append-inner-icon="mdi-magnify"
+        @keyup.enter="searchDepartment"
+      ></v-text-field>
+    </div>
+  </div>
   <v-card>
     <v-card-item class="mb-n3">
       <v-table :height="tableHeight">
-        <div id="app">
-          <div class="gantt-header">
-            <h1 class="text-h5 mr-6">部署一覧</h1>
-            <Button
-              color="yellow"
-              @click="
-                store.showDepartmentDialog = true;
-                resetSelectedDepartment();
-                store.isEditedDepartment = false;
-              "
-              class="mr-3"
-              icon
-              ><v-icon>mdi-plus</v-icon>
-              <v-tooltip activator="parent" location="right"
-                >新規登録</v-tooltip
+        <div
+          class="gantt-content"
+          :style="`width:${calendars.length * (block_size * 12)}px`"
+        >
+          <div class="gantt-task">
+            <div class="gantt-task-title">
+              <div class="department-title">
+                部署名
+                <v-badge
+                  inline
+                  v-if="!isShowedAllDepartment"
+                  color="grey-lighten-2"
+                  content="全表示"
+                  style="cursor: pointer"
+                  @click="
+                    showAllDepartment();
+                    isShowedAllDepartment = true;
+                  "
+                >
+                </v-badge>
+                <v-badge
+                  inline
+                  v-else
+                  color="red"
+                  style="cursor: pointer"
+                  content="非表示"
+                  @click="
+                    store.loadDepartmentsForGanttChart();
+                    isShowedAllDepartment = false;
+                  "
+                >
+                </v-badge>
+              </div>
+            </div>
+            <div id="gantt-task-list">
+              <div
+                v-for="(list, index) in store.departmentsForGanttChart"
+                :key="index"
+                class="gantt-task-list"
+                :class="{
+                  'bg-black': theme.global.name.value === 'dark',
+                  'bg-white': theme.global.name.value === 'light',
+                }"
+                v-show="list.isShowed"
               >
-            </Button>
+                <div class="department-data">
+                  <span v-if="!list.isLatestDepartment">　</span>
+                  <span
+                    @click="
+                      store.showDepartmentDialog = true;
+                      store.selectedDepartment = list;
+                      store.previousDepartmentDivision = list.division;
+                      store.isEditedDepartment = true;
+                    "
+                    class="tr-data"
+                    >{{ list.name }}</span
+                  >
+                  <span
+                    class="icon"
+                    v-if="list.count > 1 && !list.isOpened"
+                    @click="showHiddenDepartments(list.division)"
+                    ><v-icon size="small" class="ml-2"
+                      >mdi-triangle-down</v-icon
+                    ></span
+                  >
+                  <span
+                    v-else-if="list.count > 1 && list.isOpened"
+                    @click="hideHiddenDepartments(list.division)"
+                    ><v-icon size="small" class="ml-2"
+                      >mdi-triangle</v-icon
+                    ></span
+                  >
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div
-            class="gantt-content"
-            :style="`width:${calendars.length * (block_size * 12)}px`"
-          >
-            <div class="gantt-task">
-              <div class="gantt-task-title">
-                <div class="department-title">部署名</div>
+          <div id="gantt-calendar " ref="calendar">
+            <div class="gantt-date">
+              <div class="gantt-year">
+                <div v-for="(calendar, index) in calendars" :key="index">
+                  <div
+                    class="year"
+                    :style="`width:${12 * block_size}px;left:${
+                      calendar.start_block_number * block_size
+                    }px`"
+                  >
+                    {{ calendar.date }}
+                  </div>
+                </div>
               </div>
-              <div id="gantt-task-list">
-                <div
-                  v-for="(list, index) in store.departmentsForGanttChart"
-                  :key="index"
-                  class="gantt-task-list"
-                  :class="{
-                    'bg-black': theme.global.name.value === 'dark',
-                    'bg-white': theme.global.name.value === 'light',
-                  }"
-                  v-show="list.isShowed"
-                >
-                  <div class="department-data">
-                    <span v-if="!list.isLatestDepartment"></span>
-                    <span
-                      @click="
-                        store.showDepartmentDialog = true;
-                        store.selectedDepartment = list;
-                        store.previousDepartmentDivision = list.division;
-                        store.isEditedDepartment = true;
-                      "
-                      class="tr-data"
-                      >{{ list.name }}</span
+              <div class="gantt-month">
+                <div v-for="(calendar, index) in calendars" :key="index">
+                  <div v-for="(day, index) in calendar.days" :key="index">
+                    <div
+                      class="month"
+                      :class="{
+                        'bg-black': theme.global.name.value === 'dark',
+                        'bg-white': theme.global.name.value === 'light',
+                      }"
+                      :style="`width:${block_size}px;left:${
+                        day.block_number * block_size
+                      }px`"
                     >
-                    <span
-                      class="icon"
-                      v-if="list.count > 1 && !list.isOpened"
-                      @click="showHiddenDepartments(list.division)"
-                      ><v-icon size="small" class="ml-2"
-                        >mdi-triangle-down</v-icon
-                      ></span
-                    >
-                    <span
-                      v-else-if="list.count > 1 && list.isOpened"
-                      @click="hideHiddenDepartments(list.division)"
-                      ><v-icon size="small" class="ml-2"
-                        >mdi-triangle</v-icon
-                      ></span
-                    >
+                      <span>{{ day.month }}</span>
+                      <span>月</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="gantt-height">
+                <div v-for="(calendar, index) in calendars" :key="index">
+                  <div v-for="(day, index) in calendar.days" :key="index">
+                    <div
+                      class="height"
+                      :style="`width:${block_size}px;left:${
+                        day.block_number * block_size
+                      }px;height:${store.isShowedDepartmentLength * 40}px`"
+                    ></div>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div id="gantt-calendar " ref="calendar">
-              <div class="gantt-date">
-                <div class="gantt-year">
-                  <div v-for="(calendar, index) in calendars" :key="index">
-                    <div
-                      class="year"
-                      :style="`width:${12 * block_size}px;left:${
-                        calendar.start_block_number * block_size
-                      }px`"
-                    >
-                      {{ calendar.date }}
-                    </div>
-                  </div>
-                </div>
-                <div class="gantt-month">
-                  <div v-for="(calendar, index) in calendars" :key="index">
-                    <div v-for="(day, index) in calendar.days" :key="index">
-                      <div
-                        class="month"
-                        :class="{
-                          'bg-black': theme.global.name.value === 'dark',
-                          'bg-white': theme.global.name.value === 'light',
-                        }"
-                        :style="`width:${block_size}px;left:${
-                          day.block_number * block_size
-                        }px`"
-                      >
-                        <span>{{ day.month }}</span>
-                        <span>月</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="gantt-height">
-                  <div v-for="(calendar, index) in calendars" :key="index">
-                    <div v-for="(day, index) in calendar.days" :key="index">
-                      <div
-                        class="height"
-                        :style="`width:${block_size}px;left:${
-                          day.block_number * block_size
-                        }px;height:${store.isShowedDepartmentLength * 30}px`"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div
+              class="gantt-bar-area"
+              :style="`width:${calendarViewWidth}px;`"
+            >
               <div
-                class="gantt-bar-area"
-                :style="`width:${calendarViewWidth}px;`"
+                v-for="(bar, index) in departmentBars()"
+                :key="index"
+                v-show="bar.list.isShowed"
               >
                 <div
-                  v-for="(bar, index) in departmentBars()"
-                  :key="index"
-                  v-show="bar.list.isShowed"
+                  :style="bar.style"
+                  class="bar"
+                  v-if="
+                    bar.list.cat === 'department' &&
+                    new Date(bar.list.to) >= new Date(store.referenceDate)
+                  "
                 >
-                  <div
-                    :style="bar.style"
-                    class="bar"
-                    v-if="
-                      bar.list.cat === 'department' &&
-                      new Date(bar.list.to) >= new Date(store.referenceDate)
-                    "
-                  >
-                    <div class="bar-width"></div>
-                  </div>
+                  <div class="bar-width"></div>
+                </div>
 
-                  <div
-                    :style="bar.style"
-                    class="old-bar"
-                    v-else-if="bar.list.cat === 'department'"
-                  >
-                    <div class="bar-width"></div>
-                  </div>
+                <div
+                  :style="bar.style"
+                  class="old-bar"
+                  v-else-if="bar.list.cat === 'department'"
+                >
+                  <div class="bar-width"></div>
                 </div>
               </div>
             </div>
@@ -321,7 +386,7 @@ const tableHeight = Math.floor(Number(window.innerHeight) * 0.88);
 <style scoped>
 .gantt-header {
   display: flex;
-  padding: 1rem;
+  padding: 1rem 1rem 0rem;
   align-items: center;
 }
 .gantt-content {
