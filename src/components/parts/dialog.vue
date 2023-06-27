@@ -31,7 +31,7 @@ const registerDepartment = async () => {
 // 項目チェック
 const validateCheck = () => {
   if (!targetNullCheck()) {
-    message.value = "入力されてない項目があります";
+    message.value = "未入力または無効な項目があります";
     return false;
   } else if (!fromCheck()) {
     message.value = "開始日は表に存在する年のみです";
