@@ -247,7 +247,7 @@ const showAllDepartment = () => {
                   v-else
                   color="red"
                   style="cursor: pointer"
-                  content="非表示"
+                  content="全表示"
                   @click="
                     store.loadDepartmentsForGanttChart();
                     isShowedAllDepartment = false;
