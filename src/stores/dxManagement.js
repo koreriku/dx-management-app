@@ -169,7 +169,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     departmentsForGanttChart.value = [];
     departmentsForInput.value = [];
     isShowedDepartmentLength.value = 0;
-    for (let data of departments.value) {
+    for (let data of departments.value.concat()) {
       let isLatestDepartment = true;
       let isShowedDepartment = false;
       let parentDepartment = null;

@@ -94,7 +94,6 @@ const betweenCheck = () => {
 
 // 名前重複チェック
 const nameCheck = () => {
-  console.log(store.selectedDepartment.name);
   for (let department of store.departments) {
     if (store.selectedDepartment.name === department.name) {
       return false;

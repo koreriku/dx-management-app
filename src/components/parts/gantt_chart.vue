@@ -11,7 +11,7 @@ const theme = useTheme();
 const now = dayjs();
 const start = ref("2021");
 // 今年の12月まで
-const end = ref(dayjs(`${now.year()}-12-31`));
+const end = ref(dayjs(`${now.year() + 1}-12-31`));
 const year_end = ref(dayjs(`${now.add(1, "year").year()}-12-31`));
 const block_size = ref(30);
 const calendars = ref([]);
