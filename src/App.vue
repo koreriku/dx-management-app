@@ -32,6 +32,9 @@ const changeTheme = () => {
 const reloadDxLists = async () => {
   store.getLastDayOfMonth();
   await store.getSortInsideDxLists();
+  if (route.path === "/department") {
+    store.loadDepartmentsForGanttChart();
+  }
   reloadGraph();
 };
 const setFontSize = () => {
@@ -112,12 +115,12 @@ const setFontSize = () => {
           icon="mdi-close"
         ></v-app-bar-nav-icon>
         <v-text-field
-          type="date"
-          label="基準日"
+          type="month"
+          label="基準月"
           variant="outlined"
           density="compact"
           class="mx-2 mt-3 name"
-          v-model="store.referenceDate"
+          v-model="store.referenceMonth"
           @change="reloadDxLists"
         ></v-text-field>
       </v-toolbar-items>

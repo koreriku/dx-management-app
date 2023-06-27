@@ -25,7 +25,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   const referenceMonth = ref(`${year}-${month}`);
   // 基準日を格納
   const referenceDate = ref(null);
-
+  // 基準月の最終日を取得
   const getLastDayOfMonth = () => {
     let yearAndMonth = referenceMonth.value.split("-");
     referenceDate.value = new Date(
@@ -40,6 +40,38 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
   getLastDayOfMonth();
 
+  // trueの時に社内DX表示、falseの時に社外DX表示
+  const switchDx = ref(true);
+
+  // appBarで選択されたフォントサイズを格納
+  const fontSizeNum = ref(40);
+  if (localStorage.getItem("fontSizeNum")) {
+    fontSizeNum.value = localStorage.getItem("fontSizeNum");
+  }
+  // 0~100の値が入るfontSizeNumをremに変換
+  const calculateFontSize = () => {
+    return 0.8 + fontSizeNum.value / 300;
+  };
+
+  // ダイアログ表示有無の設定 -----------------------------------------
+  // Dx詳細画面
+  const showDetailDialog = ref(false);
+  // Dx編集画面
+  const showEditDialog = ref(false);
+  // Dx登録画面
+  const showRegisterDialog = ref(false);
+  // Dx削除画面
+  const showDeleteDialog = ref(false);
+  // 部署の登録・編集画面
+  const showDepartmentDialog = ref(false);
+
+  // バックエンドのURL -----------------------------------------
+  // 社内DX
+  const insideDxBASE_URL = "http://172.16.16.134:8000/insideDx";
+  // 部署
+  const departmentsBASE_URL = "http://172.16.16.134:8000/departments";
+
+  // Dx系の変数 -----------------------------------------
   // 単一の社内DXを格納
   const insideDxItem = ref({
     id: null,
@@ -56,57 +88,42 @@ export const useDxStore = defineStore("dxManagement", () => {
     attached_file: [],
     comment: [],
   });
+  // レコード更新時に部署名と状況と効果は値が数字に切り替わるため、数字の切り替えを画面に描写
+  // しないようにレコード更新前に別の変数に格納する
   const editInsideDxItem = ref({});
-
-  // trueの時に社内DX表示、falseの時に社外DX表示
-  const switchDx = ref(true);
-
-  // appBarで選択されたフォントサイズを格納
-  const fontSizeNum = ref(40);
-  if (localStorage.getItem("fontSizeNum")) {
-    fontSizeNum.value = localStorage.getItem("fontSizeNum");
-  }
-  const calculateFontSize = () => {
-    return 0.8 + fontSizeNum.value / 300;
-  };
-
-  // ダイアログの表示設定
-  const showDetailDialog = ref(false);
-  const showEditDialog = ref(false);
-  const showRegisterDialog = ref(false);
-  const showDeleteDialog = ref(false);
-  const showDepartmentDialog = ref(false);
-
-  // バックエンドのURL
-  const insideDxBASE_URL = "http://172.16.16.134:8000/insideDx";
-  const departmentsBASE_URL = "http://172.16.16.134:8000/departments";
-
+  // 画面に表示させるDxを格納
   const showInsideDxLists = ref([]);
+  // 全てのDxを格納
   const insideDxLists = ref([]);
-
-  // 部門一覧
-  const departments = ref([]);
-  const departmentsForGanttChart = ref([]);
-  // 表示させる部署の数をカウント。行の幅を計算するため
-  const isShowedDepartmentLength = ref(0);
-
-  // 入力可能な部門一覧
-  const departmentsForInput = ref([]);
-  // 効果一覧
+  // 全ての効果を格納
   const insideDxEffect = ref([]);
-  // 状況一覧
+  // 全ての状況を格納
   const insideDxState = ref([]);
 
-  const selectedDepartment = ref([]);
+  // 部門系の変数 ---------------------------------------
+  // 全ての部門を格納
+  const departments = ref([]);
+  // ガントチャートの表示設定を加えた部門を格納
+  const departmentsForGanttChart = ref([]);
+  // 表示させる部門の数をカウント。行の幅を計算するため
+  const isShowedDepartmentLength = ref(0);
+
+  // 編集・登録時に入力可能な部門一覧格納
+  const departmentsForInput = ref([]);
+  // 選択された部門を1つ格納
+  const selectedDepartment = ref({});
+  // 部門の登録と編集のダイアログが共通のため、登録か編集かを判断する変数
+  // trueの時、編集、falseの時、登録
   const isEditedDepartment = ref(null);
 
-  // 部門一覧取得
+  // 部門系の関数 ----------------------------------------------------
+  // 部門一覧を全て取得
   const getDepartments = async () => {
     await axios.get(departmentsBASE_URL).then((res) => {
       departments.value = res.data;
     });
   };
-  // 入力可能な部門一覧取得
+  // 登録と編集時に入力可能な部門一覧取得
   const getDepartmentsForInput = () => {
     for (let department of departments.value) {
       if (new Date(department.to) >= new Date(referenceDate.value)) {
@@ -114,7 +131,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       }
     }
   };
-
+  // 部門名から区分コードを取得し、変数に格納
   const getDepartmentDivisionFromDepartmentName = () => {
     for (let department of departments.value) {
       if (selectedDepartment.value.parentDepartment === department.name) {
@@ -125,6 +142,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
 
   // 部署一覧のデータ準備
+  // DBから取得した部門にガントチャートの表示設定を追加し、配列にpush
   const pushDepartments = (
     data,
     isShowed,
@@ -145,6 +163,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       cat: "department",
     });
   };
+  // DBから取得した部門にガントチャートの表示設定を追加
   const loadDepartmentsForGanttChart = async () => {
     await getDepartments();
     departmentsForGanttChart.value = [];
@@ -158,6 +177,7 @@ export const useDxStore = defineStore("dxManagement", () => {
         isShowedDepartment = true;
         departmentsForInput.value.push(data.name);
       } else {
+        // departmentsForGanttChartは新しい部門のindexが小さい
         for (let department of departmentsForGanttChart.value) {
           if (data.division === department.division) {
             isLatestDepartment = false;
@@ -176,6 +196,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     }
   };
 
+  // 選択された部門の変更前の区分コードを格納。選択された部門の子も変更後の区分コードにする際に使用
   const previousDepartmentDivision = ref(null);
   // 部署更新
   const updateDepartment = async () => {
@@ -402,13 +423,6 @@ export const useDxStore = defineStore("dxManagement", () => {
       }
     }
   };
-
-  // // idで社内DXの単一データを取得
-  // const selectInsideDxList = async (id) => {
-  //   await axios.get(insideDxBASE_URL + `/${id}`).then((res) => {
-  //     insideDxItem.value = res.data[0];
-  //   });
-  // };
 
   // 新しい社内DXをデータベースに格納
   const addInsideDxList = async () => {
@@ -732,53 +746,6 @@ export const useDxStore = defineStore("dxManagement", () => {
     console.log(verticallyWord);
     return verticallyWord;
   };
-  // グラフに使用するデータセットを作成（指定した項目別にレコード数を取得）
-  // const getGraphDataForDepartment = (keyName) => {
-  //   let lists = [];
-  //   let beList = false;
-  //   for (const insideDxList of showInsideDxLists.value) {
-  //     beList = false;
-  //     for (const list of lists) {
-  //       if (list[insideDxList[keyName]]) {
-  //         list[insideDxList[keyName]] += 1;
-  //         beList = true;
-  //         continue;
-  //       }
-  //     }
-  //     if (!beList) {
-  //       lists.push({ [insideDxList[keyName]]: 1 });
-  //     }
-  //   }
-  //   let sumList = [];
-  //   for (const list of lists) {
-  //     let listKey = Object.keys(list)[0];
-  //     for (const department of departments.value) {
-  //       if (listKey === department.name) {
-  //         let currentDepartment = { to: "1990-01-01" };
-  //         for (let item of departments.value) {
-  //           if (
-  //             department.division === item.division &&
-  //             new Date(item.to) > new Date(currentDepartment.to)
-  //           ) {
-  //             currentDepartment = item;
-  //           }
-  //         }
-  //         let isAdd = false;
-  //         for (let item of sumList) {
-  //           if (Object.keys(item)[0] === currentDepartment.name) {
-  //             item[currentDepartment.name] += list[listKey];
-  //             isAdd = true;
-  //             break;
-  //           }
-  //         }
-  //         if (!isAdd) {
-  //           sumList.push({ [currentDepartment.name]: list[listKey] });
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return sumList;
-  // };
 
   const getGraphData = (keyName) => {
     let lists = [];

@@ -16,6 +16,7 @@ const updateDepartment = async () => {
     await store.updateDepartment();
     store.loadDepartmentsForGanttChart();
     store.showDepartmentDialog = false;
+    message.value = "";
   }
 };
 
@@ -24,6 +25,7 @@ const registerDepartment = async () => {
     await store.registerDepartment();
     store.loadDepartmentsForGanttChart();
     store.showDepartmentDialog = false;
+    message.value = "";
   }
 };
 

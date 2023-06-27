@@ -27,11 +27,11 @@ for (let prop in props) {
   }
 }
 onBeforeMount(() => {
-  if (store.departmentsForInput.length === 0) {
-    store.getDepartmentsForInput();
-  }
-  // store.departmentsForInput = [];
-  // store.getDepartmentsForInput();
+  // if (store.departmentsForInput.length === 0) {
+  //   store.getDepartmentsForInput();
+  // }
+  store.departmentsForInput = [];
+  store.getDepartmentsForInput();
 });
 </script>
 
