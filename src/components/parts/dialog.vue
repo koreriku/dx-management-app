@@ -96,6 +96,9 @@ const betweenCheck = () => {
 const nameCheck = () => {
   for (let department of store.departments) {
     if (store.selectedDepartment.name === department.name) {
+      if (store.selectedDepartment.id === department.id) {
+        continue;
+      }
       return false;
     }
   }
