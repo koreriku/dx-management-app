@@ -33,6 +33,9 @@ const validateCheck = () => {
   if (!targetNullCheck()) {
     message.value = "未入力項目または存在しない日付があります";
     return false;
+  } else if (!nameCheck()) {
+    message.value = "この名前すでに存在しています";
+    return false;
   } else if (!fromCheck()) {
     message.value = "開始日は表に存在する年のみです";
     return false;
@@ -87,6 +90,18 @@ const betweenCheck = () => {
   let end = dayjs(store.selectedDepartment.to);
   if (start < end) return true;
   return false;
+};
+
+// 名前重複チェック
+const nameCheck = () => {
+  console.log(store.selectedDepartment.name);
+  for (let department of store.departments) {
+    if (store.selectedDepartment.name === department.name) {
+      return false;
+    }
+  }
+
+  return true;
 };
 </script>
 
