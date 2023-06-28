@@ -205,6 +205,7 @@ export const useDxStore = defineStore("dxManagement", () => {
         isShowedDepartmentLength.value += 1;
       } else {
         pushDepartments(data, isShowedDepartment, false, parentDepartment);
+        isShowedDepartmentLength.value -= 1;
       }
     }
     departmentsForInput.value.unshift("New");
