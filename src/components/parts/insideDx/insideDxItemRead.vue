@@ -122,7 +122,7 @@ let fileIndex = ref();
                           toObject(file).name
                         "
                         target="_blank"
-                        >{{ toObject(file).name }}</a
+                        >{{ toObject(file).name.replace(/^(\d+)_/, "") }}</a
                       >
                       <Button
                         variant="flat"

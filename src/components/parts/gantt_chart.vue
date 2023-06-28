@@ -181,7 +181,6 @@ const searchDepartment = () => {
     store.loadDepartmentsForGanttChart();
   }
 };
-const isShowedAllDepartment = ref(false);
 const showAllDepartment = () => {
   store.isShowedDepartmentLength = 0;
   store.departmentsForGanttChart.map((department) => {
@@ -232,13 +231,13 @@ const showAllDepartment = () => {
                 部署名
                 <v-badge
                   inline
-                  v-if="!isShowedAllDepartment"
+                  v-if="!store.isShowedAllDepartment"
                   color="grey-lighten-2"
                   content="全表示"
                   style="cursor: pointer"
                   @click="
                     showAllDepartment();
-                    isShowedAllDepartment = true;
+                    store.isShowedAllDepartment = true;
                   "
                 >
                 </v-badge>
@@ -250,7 +249,7 @@ const showAllDepartment = () => {
                   content="全表示"
                   @click="
                     store.loadDepartmentsForGanttChart();
-                    isShowedAllDepartment = false;
+                    store.isShowedAllDepartment = false;
                   "
                 >
                 </v-badge>
@@ -268,7 +267,7 @@ const showAllDepartment = () => {
                 v-show="list.isShowed"
               >
                 <div class="department-data">
-                  <span v-if="!list.isLatestDepartment">　</span>
+                  <span v-if="list.name !== list.parentDepartment">　</span>
                   <span
                     @click="
                       store.showDepartmentDialog = true;

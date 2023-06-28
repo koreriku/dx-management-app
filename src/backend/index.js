@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://172.16.16.134:5173",
+    origin: "http://172.16.16.134",
     optionsSuccessStatus: 200,
   })
 );

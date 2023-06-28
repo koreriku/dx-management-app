@@ -115,6 +115,8 @@ export const useDxStore = defineStore("dxManagement", () => {
   // 部門の登録と編集のダイアログが共通のため、登録か編集かを判断する変数
   // trueの時、編集、falseの時、登録
   const isEditedDepartment = ref(null);
+  // 部門を全表示するか有無
+  const isShowedAllDepartment = ref(false);
 
   // 部門系の関数 ----------------------------------------------------
   // 部門一覧を全て取得
@@ -169,16 +171,27 @@ export const useDxStore = defineStore("dxManagement", () => {
     departmentsForGanttChart.value = [];
     departmentsForInput.value = [];
     isShowedDepartmentLength.value = 0;
+    isShowedAllDepartment.value = false;
     for (let data of departments.value.concat()) {
       let isLatestDepartment = true;
       let isShowedDepartment = false;
       let parentDepartment = null;
+      parentDepartment = data.name;
       if (new Date(data.to) >= new Date(referenceDate.value)) {
         isShowedDepartment = true;
-        departmentsForInput.value.push(data.name);
+        for (let department of departmentsForGanttChart.value.concat()) {
+          if (data.division === department.division) {
+            department.count += 1;
+            parentDepartment = department.name;
+            break;
+          }
+        }
+        if (parentDepartment === data.name) {
+          departmentsForInput.value.push(data.name);
+        }
       } else {
         // departmentsForGanttChartは新しい部門のindexが小さい
-        for (let department of departmentsForGanttChart.value) {
+        for (let department of departmentsForGanttChart.value.concat()) {
           if (data.division === department.division) {
             isLatestDepartment = false;
             department.count += 1;
@@ -188,52 +201,60 @@ export const useDxStore = defineStore("dxManagement", () => {
         }
       }
       if (isLatestDepartment) {
-        pushDepartments(data, isShowedDepartment, true, data.name);
+        pushDepartments(data, isShowedDepartment, true, parentDepartment);
         isShowedDepartmentLength.value += 1;
       } else {
         pushDepartments(data, isShowedDepartment, false, parentDepartment);
       }
     }
+    departmentsForInput.value.unshift("New");
   };
 
   // 選択された部門の変更前の区分コードを格納。選択された部門の子も変更後の区分コードにする際に使用
   const previousDepartmentDivision = ref(null);
   // 部署更新
   const updateDepartment = async () => {
+    previousDepartmentDivision.value = selectedDepartment.value.division;
+    console.log(previousDepartmentDivision.value);
     if (selectedDepartment.value.parentDepartment === "New") {
-      selectedDepartment.value.division =
-        Number(departments.value[departments.value.length - 1].division) + 1;
-      return await axios.put(departmentsBASE_URL, selectedDepartment.value);
-    }
-    getDepartmentDivisionFromDepartmentName();
-    if (selectedDepartment.value.isLatestDepartment) {
-      departments.value.map(async (department) => {
-        if (
-          Number(department.division) ===
-            Number(previousDepartmentDivision.value) &&
-          selectedDepartment.value.id !== department.id
-        ) {
-          department.division = selectedDepartment.value.division;
-          await axios.put(departmentsBASE_URL, department);
-        }
+      await axios.get(departmentsBASE_URL + "/maxDivision").then((res) => {
+        selectedDepartment.value.division = Number(res.data[0].maxdivision) + 1;
       });
       await axios.put(departmentsBASE_URL, selectedDepartment.value);
     } else {
+      getDepartmentDivisionFromDepartmentName();
       await axios.put(departmentsBASE_URL, selectedDepartment.value);
     }
+    // departments.value.concat().map(async (department) => {
+    //   if (
+    //     Number(department.division) ===
+    //       Number(previousDepartmentDivision.value) &&
+    //     selectedDepartment.value.id !== department.id &&
+    //     new Date(selectedDepartment.value.to) > new Date(department.to)
+    //   ) {
+    //     department.division = selectedDepartment.value.division;
+    //     await axios.put(departmentsBASE_URL, department);
+    //   }
+    // });
+    await axios.put(
+      departmentsBASE_URL +
+        `/changeDivision?previousDivision=${previousDepartmentDivision.value}`,
+      selectedDepartment.value
+    );
   };
 
   // 部署作成
   const registerDepartment = async () => {
     // 新規登録時、NEW(区分)を選択
     if (selectedDepartment.value.parentDepartment === "New") {
-      selectedDepartment.value.division =
-        Number(departments.value[departments.value.length - 1].division) + 1;
+      await axios.get(departmentsBASE_URL + "/maxDivision").then((res) => {
+        selectedDepartment.value.division = Number(res.data[0].maxdivision) + 1;
+      });
       await axios.post(departmentsBASE_URL, selectedDepartment.value);
     } else {
       getDepartmentDivisionFromDepartmentName();
       await axios.post(departmentsBASE_URL, selectedDepartment.value);
-      departments.value.map((department) => {
+      departments.value.concat().map((department) => {
         if (
           selectedDepartment.value.division === department.division &&
           department.to === "9999-12-31"
@@ -270,19 +291,20 @@ export const useDxStore = defineStore("dxManagement", () => {
     departmentId = Number(departmentId);
     if (departmentId) {
       let changedDepartment = {};
-      const foundDepartment = departments.value.find(
-        (item) => Number(item.id) === departmentId
-      );
+      const foundDepartment = departments.value
+        .concat()
+        .find((item) => Number(item.id) === departmentId);
       if (new Date(foundDepartment.to) >= new Date(referenceDate.value)) {
         changedDepartment = foundDepartment;
       } else {
         let latestDepartment = { ...foundDepartment };
-        for (const item of departments.value) {
+        for (const item of departments.value.concat().reverse()) {
           if (
             foundDepartment.division === item.division &&
             new Date(latestDepartment.to) < new Date(item.to)
           ) {
             latestDepartment = item;
+            break;
           }
         }
         changedDepartment = latestDepartment;
@@ -436,7 +458,6 @@ export const useDxStore = defineStore("dxManagement", () => {
     editInsideDxItem.value = Object.assign({}, insideDxItem.value);
     await itemNumberConversion();
     await postFiles();
-    console.log(editInsideDxItem.value);
     axios.put(insideDxBASE_URL, editInsideDxItem.value);
   };
   // 指定した社内DXを削除
@@ -578,7 +599,7 @@ export const useDxStore = defineStore("dxManagement", () => {
           isDetailedFilter.value = false;
           search();
         }
-        for (const list of insideDxLists.value) {
+        for (const list of insideDxLists.value.concat()) {
           if (
             new Date(list.registration_date) > new Date(referenceDate.value)
           ) {
@@ -593,7 +614,7 @@ export const useDxStore = defineStore("dxManagement", () => {
           }
         }
       } else if (startDate.value && endDate.value) {
-        for (const list of insideDxLists.value) {
+        for (const list of insideDxLists.value.concat()) {
           if (
             new Date(list.registration_date) > new Date(referenceDate.value)
           ) {
@@ -736,7 +757,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   // テーマをインスタンス
   const theme = useTheme();
 
-  // 文字を縦文字にする
+  // 文字を縦文字にする。未使用
   const stringToVertically = (word) => {
     let wordLength = word.length;
     let verticallyWord = "";
@@ -810,7 +831,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     // ラベルの傾きをデータ量によって変更
     let minLabelRotation = 0;
     if (labels.length > 10) {
-      minLabelRotation = Math.round(50 * calculateFontSize());
+      minLabelRotation = Math.round(60 * calculateFontSize());
     }
     // グラフのオプションのスケール値設定
     let scales = {
@@ -1002,6 +1023,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     filteringWord,
     columnList,
     isDetailedFilter,
+    isShowedAllDepartment,
     resetInsideDxItem,
     addInsideDxList,
     changeInsideDxList,
@@ -1026,7 +1048,6 @@ export const useDxStore = defineStore("dxManagement", () => {
     changeEffect,
     changeState,
     dxHomeUseGraph,
-    stringToVertically,
     itemNumberConversion,
     calculateFontSize,
     getLastDayOfMonth,
