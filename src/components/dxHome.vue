@@ -6,7 +6,6 @@ import InsideDxDetail from "./parts/insideDx/InsideDxDetail.vue";
 import { useTheme } from "vuetify";
 const theme = useTheme();
 
-const router = useRouter();
 const store = useDxStore();
 
 onBeforeMount(async () => {
@@ -16,8 +15,6 @@ onBeforeMount(async () => {
   await store.getSortInsideDxLists();
   store.dxHomeUseGraph();
 });
-let windowHeight = window.innerHeight;
-let windowWidth = window.innerWidth;
 </script>
 
 <template>

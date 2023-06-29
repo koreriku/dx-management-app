@@ -255,10 +255,10 @@ export const useDxStore = defineStore("dxManagement", () => {
     } else {
       getDepartmentDivisionFromDepartmentName();
       await axios.post(departmentsBASE_URL, selectedDepartment.value);
-      departments.value.concat().map((department) => {
+      for (let department of departments.value.concat()) {
         if (
           selectedDepartment.value.division === department.division &&
-          department.to === "9999-12-31"
+          new Date(department.to) >= new Date(selectedDepartment.value.to)
         ) {
           let dateObject = new Date(selectedDepartment.value.from);
           dateObject.setDate(dateObject.getDate() - 1);
@@ -268,8 +268,9 @@ export const useDxStore = defineStore("dxManagement", () => {
           let dateString = `${year}-${month}-${day}`;
           department.to = dateString;
           axios.put(departmentsBASE_URL, department);
+          break;
         }
-      });
+      }
     }
   };
 
@@ -302,10 +303,16 @@ export const useDxStore = defineStore("dxManagement", () => {
         for (const item of departments.value.concat().reverse()) {
           if (
             foundDepartment.division === item.division &&
-            new Date(latestDepartment.to) < new Date(item.to)
+            new Date(latestDepartment.to) < new Date(item.to) &&
+            new Date(item.to) >= new Date(referenceDate.value)
           ) {
             latestDepartment = item;
             break;
+          } else if (
+            foundDepartment.division === item.division &&
+            new Date(latestDepartment.to) < new Date(item.to)
+          ) {
+            latestDepartment = item;
           }
         }
         changedDepartment = latestDepartment;
