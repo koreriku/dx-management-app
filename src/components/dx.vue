@@ -29,12 +29,8 @@ store.resetDxItem();
 
 <template>
   <div class="container">
-    <dxTitle
-      v-if="store.switchDx"
-      title="社内DX"
-      sub-title="社内DXの進捗状況"
-    />
-    <dxTitle v-else title="社外DX" sub-title="社外DXの進捗状況" />
+    <dxTitle v-if="store.switchDx" title="社内DX" sub-title="進捗状況" />
+    <dxTitle v-else title="社外DX" sub-title="進捗状況" />
     <div class="d-flex justify-space-between mb-5">
       <div class="d-flex">
         <Button

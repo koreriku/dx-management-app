@@ -192,30 +192,32 @@ const showAllDepartment = () => {
 </script>
 
 <template>
-  <div class="gantt-header">
-    <h1 class="text-h5 mr-6">部門一覧</h1>
-    <Button
-      color="yellow"
-      @click="
-        store.showDepartmentDialog = true;
-        resetSelectedDepartment();
-        store.isEditedDepartment = false;
-      "
-      class="mr-4"
-      icon
-      ><v-icon>mdi-plus</v-icon>
-      <v-tooltip activator="parent" location="bottom">新規登録</v-tooltip>
-    </Button>
-    <div style="width: 500px">
-      <v-text-field
-        label="部門検索"
-        variant="outlined"
-        density="compact"
-        class="pt-5"
-        v-model="searchDepartmentName"
-        append-inner-icon="mdi-magnify"
-        @keyup.enter="searchDepartment"
-      ></v-text-field>
+  <div class="container">
+    <h1 class="text-h5 mb-3">部門一覧</h1>
+    <div class="d-flex justify-space-between">
+      <Button
+        color="yellow"
+        @click="
+          store.showDepartmentDialog = true;
+          resetSelectedDepartment();
+          store.isEditedDepartment = false;
+        "
+        class="mr-3"
+        icon
+        ><v-icon>mdi-plus</v-icon>
+        <v-tooltip activator="parent" location="bottom">新規登録</v-tooltip>
+      </Button>
+      <div style="width: 500px">
+        <v-text-field
+          label="部門検索"
+          variant="outlined"
+          density="compact"
+          class="mx-2"
+          v-model="searchDepartmentName"
+          append-inner-icon="mdi-magnify"
+          @keyup.enter="searchDepartment"
+        ></v-text-field>
+      </div>
     </div>
   </div>
   <v-card>
@@ -510,7 +512,7 @@ const showAllDepartment = () => {
   background-color: #00bfff;
   opacity: 0.6;
   border-top-width: 1px;
-  border-radius: 0.5rem;
+  border-radius: 0.2rem;
   height: 1.25rem;
 }
 /* class="rounded-lg absolute h-5 bg-pink-300 bg-opacity-50 border-t z-30" */
@@ -519,7 +521,7 @@ const showAllDepartment = () => {
   background-color: #dc143c;
   opacity: 0.6;
   border-top-width: 1px;
-  border-radius: 0.5rem;
+  border-radius: 0.2rem;
   height: 1.25rem;
 }
 .bar-width {

@@ -110,125 +110,98 @@ const nameCheck = () => {
 <template>
   <v-dialog
     v-model="store.showDepartmentDialog"
-    width="500px"
-    height="400px"
+    width="400"
     :style="{ fontSize: store.calculateFontSize() + 'rem' }"
   >
     <v-card class="card">
+      <v-row>
+        <v-col>
+          <v-card-text v-if="store.isEditedDepartment">部署更新</v-card-text>
+          <v-card-text v-else>部署登録</v-card-text>
+        </v-col>
+        <v-col>
+          <div class="mt-2 me-2" align="end">
+            <Button
+              color="gray"
+              class="mr-3"
+              @click="
+                store.showDepartmentDialog = false;
+                message = '';
+              "
+              icon
+              ><v-icon>mdi-arrow-u-left-bottom</v-icon>
+              <v-tooltip activator="parent" location="bottom"
+                >戻る</v-tooltip
+              ></Button
+            >
+          </div>
+        </v-col>
+      </v-row>
       <v-card-item>
-        <div align="right">
-          <Button
-            color="gray"
-            class="mr-3"
-            @click="
-              store.showDepartmentDialog = false;
-              message = '';
-            "
-            icon
-            ><v-icon>mdi-arrow-u-left-bottom</v-icon>
-            <v-tooltip activator="parent" location="bottom"
-              >戻る</v-tooltip
-            ></Button
-          >
-        </div>
-        <div>
-          <v-table>
-            <tbody>
-              <tr>
-                <th class="text-left">部署名</th>
-                <td>
-                  <v-text-field
-                    type="text"
-                    variant="outlined"
-                    density="compact"
-                    single-line
-                    hide-details
-                    v-model="store.selectedDepartment.name"
-                  ></v-text-field>
-                </td>
-              </tr>
+        <v-text-field
+          type="text"
+          variant="outlined"
+          label="部署名"
+          class="mt-2"
+          v-model="store.selectedDepartment.name"
+        ></v-text-field>
 
-              <tr>
-                <th class="text-left">区分</th>
-                <td>
-                  <v-select
-                    :items="store.departmentsForInput"
-                    density="compact"
-                    variant="outlined"
-                    hide-details
-                    v-model="store.selectedDepartment.parentDepartment"
-                  ></v-select>
-                </td>
-              </tr>
+        <v-select
+          label="区分"
+          :items="store.departmentsForInput"
+          variant="outlined"
+          v-model="store.selectedDepartment.parentDepartment"
+        ></v-select>
 
-              <tr>
-                <th class="text-left">開始日</th>
-                <td>
-                  <v-text-field
-                    type="date"
-                    variant="outlined"
-                    density="compact"
-                    single-line
-                    hide-details
-                    v-model="store.selectedDepartment.from"
-                  ></v-text-field>
-                </td>
-              </tr>
+        <v-text-field
+          type="date"
+          variant="outlined"
+          label="開始日"
+          v-model="store.selectedDepartment.from"
+        ></v-text-field>
 
-              <tr>
-                <th class="text-left">期限</th>
-                <td>
-                  <v-text-field
-                    type="date"
-                    variant="outlined"
-                    density="compact"
-                    single-line
-                    hide-details
-                    v-model="store.selectedDepartment.to"
-                  >
-                  </v-text-field>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-          <div class="message">{{ message }}</div>
-        </div>
+        <v-text-field
+          label="期限"
+          type="date"
+          variant="outlined"
+          v-model="store.selectedDepartment.to"
+        >
+        </v-text-field>
 
-        <div align="center">
-          <Button
-            v-if="store.isEditedDepartment"
-            type="submit"
-            color="primary"
-            @click="updateDepartment"
-            icon
-            style="margin: 0 auto"
-            ><v-icon>mdi-check</v-icon>
-            <v-tooltip activator="parent" location="bottom"
-              >編集完了</v-tooltip
-            ></Button
-          >
-          <Button
-            v-else
-            type="submit"
-            color="yellow"
-            @click="registerDepartment"
-            icon
-            style="margin: 0 auto"
-            ><v-icon>mdi-check</v-icon>
-            <v-tooltip activator="parent" location="bottom"
-              >登録</v-tooltip
-            ></Button
-          >
-        </div>
+        <div class="message" v-if="message">{{ message }}</div>
       </v-card-item>
+
+      <div class="mb-4" style="align-self: center">
+        <Button
+          v-if="store.isEditedDepartment"
+          type="submit"
+          color="primary"
+          @click="updateDepartment"
+          icon
+          style="margin: 0 auto"
+          ><v-icon>mdi-check</v-icon>
+          <v-tooltip activator="parent" location="bottom"
+            >編集完了</v-tooltip
+          ></Button
+        >
+        <Button
+          v-else
+          type="submit"
+          color="yellow"
+          @click="registerDepartment"
+          icon
+          style="margin: 0 auto"
+          ><v-icon>mdi-check</v-icon>
+          <v-tooltip activator="parent" location="bottom"
+            >登録</v-tooltip
+          ></Button
+        >
+      </div>
     </v-card>
   </v-dialog>
 </template>
 
 <style scoped>
-.card {
-  height: 500px;
-}
 .message {
   margin: 5px;
   text-align: center;
