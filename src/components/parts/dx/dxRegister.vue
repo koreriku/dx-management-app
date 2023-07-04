@@ -2,14 +2,16 @@
 import { onBeforeMount } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import Button from "../button.vue";
-import insideDxTitle from "./insideDxTitle.vue";
-import InsideDxItemInput from "./insideDxItemInput.vue";
+import dxTitle from "./dxTitle.vue";
+import dxItemInput from "./dxItemInput.vue";
 
 const store = useDxStore();
 
 onBeforeMount(async () => {
-  await store.resetInsideDxItem();
+  await store.resetDxItem();
   store.newAttachedFiles = [];
+  store.editDxItem.registration_date = store.date;
+  store.editDxItem.update_date = store.date;
 });
 
 const addInsideDxList = async () => {
@@ -33,13 +35,7 @@ const addInsideDxList = async () => {
         <v-tooltip activator="parent" location="right">戻る</v-tooltip></Button
       >
     </div>
-    <InsideDxItemInput
-      :registration_date="store.date"
-      :update_date="store.date"
-      state="--"
-      effect="--"
-      department="--"
-    />
+    <dxItemInput />
     <v-row>
       <v-col class="text-center">
         <Button color="yellow" @click="addInsideDxList" icon

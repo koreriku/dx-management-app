@@ -57,3 +57,5 @@ const vuetify = createVuetify({
 });
 
 app.use(router).use(pinia).use(vuetify).mount("#app");
+
+export { vuetify };

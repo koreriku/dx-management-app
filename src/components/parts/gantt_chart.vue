@@ -204,7 +204,7 @@ const showAllDepartment = () => {
       class="mr-4"
       icon
       ><v-icon>mdi-plus</v-icon>
-      <v-tooltip activator="parent" location="right">新規登録</v-tooltip>
+      <v-tooltip activator="parent" location="bottom">新規登録</v-tooltip>
     </Button>
     <div style="width: 500px">
       <v-text-field

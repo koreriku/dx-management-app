@@ -28,13 +28,13 @@ const comment = ref("");
       </Button>
     </v-col>
   </v-row>
-  <v-row v-if="store.insideDxItem.comment.length > 0">
+  <v-row v-if="store.dxItem.comment.length > 0">
     <v-col>
       <v-card>
         <v-card-text>コメント一覧</v-card-text>
         <v-card-item>
           <v-list class="wrap-text" lines="two">
-            <v-list-item v-for="(comment, index) in store.insideDxItem.comment">
+            <v-list-item v-for="(comment, index) in store.dxItem.comment">
               <div class="d-flex justify-space-between">
                 <span class="pre">{{ comment }}</span>
                 <Button

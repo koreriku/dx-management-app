@@ -20,7 +20,9 @@ const props = defineProps({
   >
     <v-card>
       <v-card-text v-if="props.fileName" align="center"
-        >{{ props.fileName }}を削除しますか？</v-card-text
+        >{{
+          props.fileName.replace(/^(\d+)_/, "")
+        }}を削除しますか？</v-card-text
       >
       <v-card-text align="center" v-else>本当に削除しますか？</v-card-text>
 
@@ -28,18 +30,8 @@ const props = defineProps({
         <v-col class="ms-14 my-3">
           <Button
             color="primary"
-            v-if="props.id >= 0"
             @click="
-              props.method(props.id);
-              store.showDeleteDialog = false;
-            "
-            >Yes</Button
-          >
-          <Button
-            color="primary"
-            v-else
-            @click="
-              props.method;
+              store.deleteFile(props.id);
               store.showDeleteDialog = false;
             "
             >Yes</Button

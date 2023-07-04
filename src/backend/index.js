@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import insideDxRoute from "./api-routes/insideDx.js";
+import dxRoute from "./api-routes/dx.js";
 import departmentsRoute from "./api-routes/departments.js";
 const app = express();
 
@@ -13,7 +13,7 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
-app.use("/insideDx", insideDxRoute);
+app.use("/dx", dxRoute);
 app.use("/departments", departmentsRoute);
 
 app.listen(8000, "172.16.16.134", function () {

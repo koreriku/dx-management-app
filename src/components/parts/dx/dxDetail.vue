@@ -1,18 +1,34 @@
 <script setup>
 import Button from "../button.vue";
-import InsideDxItemRead from "./insideDxItemRead.vue";
-import InsideDxEdit from "./InsideDxEdit.vue";
+import dxItemRead from "./dxItemRead.vue";
+import dxEdit from "./dxEdit.vue";
 import Comment from "../comment.vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const store = useDxStore();
 const showDelete = ref(false);
 const deleteInsideDxList = async () => {
-  await store.deleteInsideDxList(store.insideDxItem.id);
+  await store.deleteInsideDxList(store.dxItem.id);
   showDelete.value = false;
   store.showDetailDialog = false;
 };
+
+// const convertURLtoLink = () => {
+//   let urlPattern = /https?:\/\/\S+/g;
+//   let urls = store.dxItem.expected_effect.match(urlPattern);
+//   console.log(store.dxItem.expected_effect);
+//   console.log(urls);
+//   for (let i = 0; i < urls.length; i++) {
+//     let url = urls[i];
+//     let link = document.createElement("a");
+//     link.href = url;
+//     link.textContent = url;
+//     store.dxItem.expected_effect =
+//       store.dxItem.expected_effect.replace(url, link.outerHTML);
+//   }
+// };
+// convertURLtoLink();
 </script>
 
 <template>
@@ -71,13 +87,13 @@ const deleteInsideDxList = async () => {
       </v-card>
     </v-dialog>
 
-    <InsideDxItemRead />
+    <dxItemRead />
 
     <!-- 編集画面表示 -->
     <v-dialog v-model="store.showEditDialog" width="1100">
       <v-card class="no-box-shadow">
         <v-card-text>
-          <InsideDxEdit />
+          <dxEdit />
         </v-card-text>
       </v-card>
     </v-dialog>

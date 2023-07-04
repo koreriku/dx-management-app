@@ -1,6 +1,6 @@
 <script setup>
 import Button from "../button.vue";
-import InsideDxItemInput from "./insideDxItemInput.vue";
+import dxItemInput from "./dxItemInput.vue";
 import { useDxStore } from "../../../stores/dxManagement";
 import { onBeforeMount } from "vue";
 
@@ -11,17 +11,28 @@ const changeInsideDxList = async () => {
 };
 let fileNames = "";
 onBeforeMount(async () => {
-  if (store.insideDxItem.attached_file.length > 0) {
-    store.insideDxItem.attached_file.map((file) => {
+  if (store.dxItem.attached_file.length > 0) {
+    store.dxItem.attached_file.map((file) => {
       if (fileNames.length) {
-        fileNames = fileNames + ", " + JSON.parse(file).name;
+        if (typeof file === "object" && file !== null) {
+          fileNames = fileNames + ", " + file.name.replace(/^(\d+)_/, "");
+        } else {
+          fileNames =
+            fileNames + ", " + JSON.parse(file).name.replace(/^(\d+)_/, "");
+        }
       } else {
-        fileNames = JSON.parse(file).name;
+        if (typeof file === "object" && file !== null) {
+          fileNames = file.name.replace(/^(\d+)_/, "");
+        } else {
+          fileNames = JSON.parse(file).name.replace(/^(\d+)_/, "");
+        }
       }
     });
   }
   store.newAttachedFiles = [];
 });
+store.editDxItem = Object.assign({}, store.dxItem);
+store.editDxItem.update_date = store.date;
 </script>
 <template>
   <v-container :style="{ fontSize: store.calculateFontSize() + 'rem' }">
@@ -37,19 +48,7 @@ onBeforeMount(async () => {
       </Button>
     </div>
 
-    <InsideDxItemInput
-      :registration_date="store.insideDxItem.registration_date"
-      :update_date="store.date"
-      :department="store.insideDxItem.department"
-      :changer="store.insideDxItem.changer"
-      :work="store.insideDxItem.work"
-      :support_tool="store.insideDxItem.support_tool"
-      :state="store.insideDxItem.state"
-      :staff="store.insideDxItem.staff"
-      :expected_effect="store.insideDxItem.expected_effect"
-      :effect="store.insideDxItem.effect"
-      :fileNames="fileNames"
-    />
+    <dxItemInput :fileNames="fileNames" />
     <v-row>
       <v-col class="text-center">
         <Button color="primary" @click="changeInsideDxList" icon

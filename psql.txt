@@ -45,3 +45,29 @@ CREATE TABLE outsidedxLists (
   attached_file TEXT[],
   comment TEXT[]
 );
+
+// 共通DX
+CREATE TABLE dxLists (
+  id SERIAL PRIMARY KEY,
+  division boolean,
+  registration_date VARCHAR(10),
+  update_date VARCHAR(10),
+  changer VARCHAR(100),
+  department integer,
+  work VARCHAR(100),
+  support_tool VARCHAR(100),
+  state integer,
+  staff VARCHAR(100),
+  expected_effect TEXT,
+  effect integer,
+  product VARCHAR(100),
+  industry integer,
+  technology integer[],
+  technical_details TEXT,
+  customer VARCHAR(100),
+  cooperation_destination VARCHAR(100),
+  sales_strategy TEXT,
+  note TEXT,
+  attached_file TEXT[],
+  comment TEXT[]
+);

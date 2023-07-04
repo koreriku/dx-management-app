@@ -1,7 +1,7 @@
 const items = [
   {
     id: 1,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "aki-doco（駐車場利用状況管理システム）",
     industry: "生活関連サービス業・娯楽業・観光業",
     technology: "AI",
@@ -20,7 +20,7 @@ const items = [
 
   {
     id: 2,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "pickture（遺失物管理システム）",
     industry: "生活関連サービス業・娯楽業・観光業",
     technology: "AI",
@@ -39,7 +39,7 @@ const items = [
 
   {
     id: 3,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "Health Checker ",
     industry: "医療・福祉",
     technology: "AI",
@@ -58,7 +58,7 @@ const items = [
 
   {
     id: 4,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "ドローンサッカー",
     industry: "生活関連サービス業・娯楽業・観光業",
     technology: "ドローン",
@@ -77,7 +77,7 @@ const items = [
 
   {
     id: 5,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "ＤＵＣＴ（ドローン飛行場所管理）",
     industry: "生活関連サービス業・娯楽業・観光業",
     technology: "ドローン",
@@ -96,7 +96,7 @@ const items = [
 
   {
     id: 6,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "ＤＲＯＴＳ（ドローン講習オンライン実技テストシステム）",
     industry: "教育・学習支援業",
     technology: "ドローン,通信",
@@ -115,7 +115,7 @@ const items = [
 
   {
     id: 7,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "ぷらっとワ～プ(オンライン観光システム)  ",
     industry: "生活関連サービス業・娯楽業・観光業",
     technology: "通信",
@@ -134,7 +134,7 @@ const items = [
 
   {
     id: 8,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "デジタル商品券発行スキーム",
     industry: "金融業・保険業",
     technology: "Fintech",
@@ -153,7 +153,7 @@ const items = [
 
   {
     id: 9,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "タグアシスト",
     industry: "医療・福祉",
     technology: "IoT",
@@ -172,7 +172,7 @@ const items = [
 
   {
     id: 10,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "「光センシング」技術を用いた病理診断支 援",
     industry: "医療・福祉",
     technology: "AI",
@@ -210,7 +210,7 @@ const items = [
 
   {
     id: 12,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "シセン",
     industry: "医療・福祉",
     technology: "AI",
@@ -324,7 +324,7 @@ const items = [
 
   {
     id: 18,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "カーボンマネジメント",
     industry: "製造業",
     technology: "クラウド",
@@ -343,7 +343,7 @@ const items = [
 
   {
     id: 19,
-    department: "ＤＸソリューション部",
+    department: "DXソリューション部",
     product: "チャットナースコール",
     industry: "医療・福祉",
     technology: "AI,クラウド",

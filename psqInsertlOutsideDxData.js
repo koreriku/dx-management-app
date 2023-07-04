@@ -31,11 +31,16 @@ for (let data of items) {
   let day = ("0" + parts[2]).slice(-2);
   let registration_date = year + "-" + month + "-" + day;
 
-  parts = data.update_date.split("/");
-  year = parts[0];
-  month = ("0" + parts[1]).slice(-2);
-  day = ("0" + parts[2]).slice(-2);
-  let update_date = year + "-" + month + "-" + day;
+  let update_date;
+  if (data.update_date) {
+    parts = data.update_date.split("/");
+    year = parts[0];
+    month = ("0" + parts[1]).slice(-2);
+    day = ("0" + parts[2]).slice(-2);
+    update_date = year + "-" + month + "-" + day;
+  } else {
+    update_date = registration_date;
+  }
 
   // 部署番号を取得
   for (let department of departments) {
@@ -75,16 +80,15 @@ for (let data of items) {
       technologyNums.push(item);
     }
   }
-  console.log(technologyNums);
   data.technology = technologyNums;
 
   query = {
     text: `
-          INSERT INTO outsidedxLists
+          INSERT INTO dxLists
           (department, product, industry, technology, technical_details, state, customer, 
             cooperation_destination, sales_strategy, note, registration_date, update_date,
-            changer,attached_file,comment)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,$13,$14,$15)
+            changer,attached_file,comment,division)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,$13,$14,$15,$16)
         `,
     values: [
       data.department,
@@ -102,6 +106,7 @@ for (let data of items) {
       data.changer,
       [],
       [],
+      false,
     ],
   };
 

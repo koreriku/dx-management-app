@@ -1,11 +1,11 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import Button from "./parts/button.vue";
-import insideDxTitle from "./parts/insideDx/insideDxTitle.vue";
+import dxTitle from "./parts/dx/dxTitle.vue";
 import { useDxStore } from "../stores/dxManagement.js";
-import InsideDxList from "./parts/insideDx/InsideDxList.vue";
+import dxList from "./parts/dx/dxList.vue";
 import DepartmentStateTable from "./totalization/DepartmentStateTable.vue";
-import InsideDxRegister from "./parts/insideDx/InsideDxRegister.vue";
+import dxRegister from "./parts/dx/dxRegister.vue";
 
 const store = useDxStore();
 
@@ -24,11 +24,17 @@ const createGraph = () => {
 };
 
 const detailedSearchDialog = ref(false);
+store.resetDxItem();
 </script>
 
 <template>
   <div class="container">
-    <insideDxTitle sub-title="社内DXの進捗状況" />
+    <dxTitle
+      v-if="store.switchDx"
+      title="社内DX"
+      sub-title="社内DXの進捗状況"
+    />
+    <dxTitle v-else title="社外DX" sub-title="社外DXの進捗状況" />
     <div class="d-flex justify-space-between mb-5">
       <div class="d-flex">
         <Button
@@ -53,7 +59,7 @@ const detailedSearchDialog = ref(false);
           <Button
             color="gray"
             @click="switchFigure = !switchFigure"
-            class="mr-3"
+            class="mr-3 mb-2"
             v-show="!switchFigure"
             icon
             ><v-icon>mdi-table</v-icon>
@@ -65,7 +71,7 @@ const detailedSearchDialog = ref(false);
           <Button
             color="primary"
             @click="showGraphDialog = !showGraphDialog"
-            class="mr-3"
+            class="mr-3 mb-2"
             icon
           >
             <v-icon>mdi-chart-bar</v-icon>
@@ -89,7 +95,13 @@ const detailedSearchDialog = ref(false);
           class="mx-2"
           v-model="store.searchWord"
           append-inner-icon="mdi-magnify"
-          @keyup.enter="store.search"
+          @keyup.enter="
+            store.isDetailedFilter = false;
+            store.startDate = null;
+            store.endDate = null;
+            store.filteringWord = null;
+            store.search();
+          "
         ></v-text-field>
       </div>
     </div>
@@ -120,8 +132,17 @@ const detailedSearchDialog = ref(false);
         </v-row>
 
         <v-select
-          v-model="store.insideDxVertical"
+          v-if="store.switchDx"
+          v-model="store.dxVertical"
           :items="store.insideDxVerticalList"
+          label="横軸"
+          class="ma-5 mb-0"
+          variant="outlined"
+        ></v-select>
+        <v-select
+          v-else
+          v-model="store.dxVertical"
+          :items="store.outsideDxVerticalList"
           label="横軸"
           class="ma-5 mb-0"
           variant="outlined"
@@ -134,8 +155,8 @@ const detailedSearchDialog = ref(false);
           variant="outlined"
         ></v-select>
         <v-select
-          v-model="store.insideDxChart"
-          :items="store.insideDxChartList"
+          v-model="store.dxChart"
+          :items="store.dxChartList"
           label="グラフの種類"
           class="ma-5 my-0"
           variant="outlined"
@@ -171,14 +192,14 @@ const detailedSearchDialog = ref(false);
         <v-window v-model="showList">
           <v-window-item value="true">
             <!-- リスト表示 -->
-            <InsideDxList :tableHeight="tableHeight" />
+            <dxList :tableHeight="tableHeight" />
           </v-window-item>
 
           <!-- 登録画面表示 -->
           <v-dialog v-model="store.showRegisterDialog" width="1100">
             <v-card class="no-box-shadow">
               <v-card-text>
-                <InsideDxRegister />
+                <dxRegister />
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -223,23 +244,58 @@ const detailedSearchDialog = ref(false);
               color="gray"
               @click="detailedSearchDialog = !detailedSearchDialog"
               icon
+              class="mr-3"
               ><v-icon>mdi-arrow-u-left-bottom</v-icon>
-              <v-tooltip activator="parent" location="right"
+              <v-tooltip activator="parent" location="left"
                 >戻る</v-tooltip
+              ></Button
+            >
+            <Button
+              color="grey"
+              @click="
+                store.resetSearchValue();
+                store.search();
+                detailedSearchDialog = !detailedSearchDialog;
+              "
+              icon
+              ><v-icon>mdi-restore</v-icon>
+              <v-tooltip activator="parent" location="right"
+                >リセット</v-tooltip
               ></Button
             >
           </div>
         </v-col>
       </v-row>
       <v-card-item>
+        <div
+          class="d-flex justify-end mr-15 mt-4"
+          style="cursor: pointer"
+          @click="store.switchSearchMethod = !store.switchSearchMethod"
+        >
+          <v-badge
+            v-if="store.switchSearchMethod"
+            content="部分一致"
+            floating
+            color="grey-lighten-2"
+          ></v-badge>
+          <v-badge v-else content="完全一致" floating color="yellow"></v-badge>
+        </div>
         <v-select
+          v-if="store.switchDx"
           label="列名"
-          :items="Object.keys(store.columnList)"
+          :items="Object.keys(store.insideDxColumnList)"
           variant="outlined"
           class="mt-2"
           v-model="store.filteringTargetColumn"
         ></v-select>
-
+        <v-select
+          v-else
+          label="列名"
+          :items="Object.keys(store.outsideDxColumnList)"
+          variant="outlined"
+          class="mt-2"
+          v-model="store.filteringTargetColumn"
+        ></v-select>
         <v-text-field
           label="キーワード"
           variant="outlined"

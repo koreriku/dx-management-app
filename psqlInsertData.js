@@ -70,9 +70,9 @@ for (let data of datas) {
 
   query = {
     text: `
-          INSERT INTO insidedxLists
-          (registration_date, update_date, changer, department, work, support_tool, state, staff, expected_effect, effect, attached_file, comment)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+          INSERT INTO dxLists
+          (registration_date, update_date, changer, department, work, support_tool, state, staff, expected_effect, effect, attached_file, comment,division)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         `,
     values: [
       registrationDate,
@@ -87,6 +87,7 @@ for (let data of datas) {
       data.effect,
       [],
       data.comment,
+      true,
     ],
   };
 

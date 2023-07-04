@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import dxHome from "../components/dxHome.vue";
-import insideDx from "../components/insideDx.vue";
+import dx from "../components/dx.vue";
 import department from "../components/parts/gantt_chart.vue";
 
 const routes = [
@@ -10,9 +10,9 @@ const routes = [
     component: dxHome,
   },
   {
-    path: "/insideDx",
-    name: "insideDx",
-    component: insideDx,
+    path: "/dx",
+    name: "dx",
+    component: dx,
   },
   {
     path: "/department",

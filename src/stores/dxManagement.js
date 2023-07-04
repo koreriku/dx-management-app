@@ -4,6 +4,7 @@ import chartjsPluginColorschemes from "chartjs-plugin-colorschemes";
 import axios from "axios";
 import ExcelJS from "exceljs";
 import { useTheme } from "vuetify";
+import { vuetify } from "../main";
 
 axios.create({
   baseURL: "http://172.16.16.134:8000",
@@ -43,6 +44,32 @@ export const useDxStore = defineStore("dxManagement", () => {
   // trueの時に社内DX表示、falseの時に社外DX表示
   const switchDx = ref(true);
 
+  const changeThemeColor = () => {
+    let light = vuetify.theme.themes.value.light.colors;
+    let dark = vuetify.theme.themes.value.dark.colors;
+    if (switchDx.value) {
+      light.primary = "#1565C0";
+      light.yellow = "#FB8C00";
+      dark.primary = "#1565C0";
+      dark.yellow = "#FB8C00";
+    } else {
+      light.primary = "#00B8D4";
+      light.yellow = "#CDDC39";
+      dark.primary = "#00B8D4";
+      dark.yellow = "#CDDC39";
+    }
+  };
+
+  if (localStorage.getItem("switchDx")) {
+    switchDx.value = JSON.parse(localStorage.getItem("switchDx").toLowerCase());
+    changeThemeColor();
+  }
+
+  const changeSwitchDx = () => {
+    localStorage.setItem("switchDx", switchDx.value);
+    changeThemeColor();
+  };
+
   // appBarで選択されたフォントサイズを格納
   const fontSizeNum = ref(40);
   if (localStorage.getItem("fontSizeNum")) {
@@ -66,39 +93,36 @@ export const useDxStore = defineStore("dxManagement", () => {
   const showDepartmentDialog = ref(false);
 
   // バックエンドのURL -----------------------------------------
-  // 社内DX
-  const insideDxBASE_URL = "http://172.16.16.134:8000/insideDx";
+  // DX
+  const dxBASE_URL = "http://172.16.16.134:8000/dx";
   // 部署
   const departmentsBASE_URL = "http://172.16.16.134:8000/departments";
 
   // Dx系の変数 -----------------------------------------
   // 単一の社内DXを格納
-  const insideDxItem = ref({
-    id: null,
-    registration_date: null,
-    update_date: null,
-    changer: null,
-    department: null,
-    work: null,
-    support_tool: null,
-    state: null,
-    staff: null,
-    expected_effect: null,
-    effect: null,
-    attached_file: [],
-    comment: [],
-  });
+  const dxItem = ref({});
   // レコード更新時に部署名と状況と効果は値が数字に切り替わるため、数字の切り替えを画面に描写
   // しないようにレコード更新前に別の変数に格納する
-  const editInsideDxItem = ref({});
+  const editDxItem = ref({});
   // 画面に表示させるDxを格納
-  const showInsideDxLists = ref([]);
+  const showDxLists = ref([]);
   // 全てのDxを格納
   const insideDxLists = ref([]);
   // 全ての効果を格納
   const insideDxEffect = ref([]);
   // 全ての状況を格納
   const insideDxState = ref([]);
+
+  // 画面に表示させる社外Dxを格納
+  const showOutsideDxLists = ref([]);
+  // 全てのDxを格納
+  const outsideDxLists = ref([]);
+  // 全ての社外DX状況を格納
+  const outsideDxState = ref([]);
+  // 全ての社外DX状況を格納
+  const outsideDxIndustry = ref([]);
+  // 全ての社外DX状況を格納
+  const outsideDxTechnology = ref([]);
 
   // 部門系の変数 ---------------------------------------
   // 全ての部門を格納
@@ -282,9 +306,27 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
 
   // 状況一覧取得
+  const getOutsideDxIndustry = async () => {
+    await axios.get("/json/outsideDxIndustry.json").then((res) => {
+      outsideDxIndustry.value = res.data;
+    });
+  };
+
   const getInsideDxState = async () => {
     await axios.get("/json/insideDxState.json").then((res) => {
       insideDxState.value = res.data;
+    });
+  };
+
+  const getOutsideDxState = async () => {
+    await axios.get("/json/outsideDxState.json").then((res) => {
+      outsideDxState.value = res.data;
+    });
+  };
+
+  const getOutsideDxTechnology = async () => {
+    await axios.get("/json/outsideDxTechnology.json").then((res) => {
+      outsideDxTechnology.value = res.data;
     });
   };
 
@@ -349,30 +391,95 @@ export const useDxStore = defineStore("dxManagement", () => {
     }
   };
 
+  const changeOutsideDxState = (state) => {
+    state = Number(state);
+    if (state) {
+      const changedState = outsideDxState.value.find(
+        (item) => Number(item.id) === state
+      );
+      return changedState ? changedState.state : "";
+    } else {
+      return "";
+    }
+  };
+
+  const changeOutsideDxIndustry = (industry) => {
+    industry = Number(industry);
+    if (industry) {
+      const changedIndustry = outsideDxIndustry.value.find(
+        (item) => Number(item.id) === industry
+      );
+      return changedIndustry ? changedIndustry.industry : "";
+    } else {
+      return "";
+    }
+  };
+
+  const changeOutsideDxTechnology = (technology) => {
+    technology = Number(technology);
+    if (technology) {
+      const changedTechnology = outsideDxTechnology.value.find(
+        (item) => Number(item.id) === technology
+      );
+      return changedTechnology ? changedTechnology.technology : "";
+    } else {
+      return "";
+    }
+  };
+
+  const showOutsideDxTechnology = (Technologies) => {
+    let changedTechnology = null;
+    if (Technologies) {
+      for (const technology of Technologies) {
+        if (changedTechnology) {
+          changedTechnology = changedTechnology + "、" + technology;
+        } else {
+          changedTechnology = technology;
+        }
+      }
+    }
+    return changedTechnology;
+  };
+
   // グラフの縦軸の要素
   const insideDxHorizontal = ref("レコード数");
   const insideDxHorizontalList = ref(["レコード数"]);
 
   // グラフの横軸の要素
-  const insideDxVertical = ref("部門");
+  const dxVertical = ref("部門");
   const insideDxVerticalList = ref(["部門", "支援ツール", "状況", "効果"]);
+  const outsideDxVerticalList = ref(["部門", "業界", "状況"]);
 
   // グラフ種類
-  const insideDxChart = ref("棒グラフ");
-  const insideDxChartList = ref(["円グラフ", "棒グラフ"]);
+  const dxChart = ref("棒グラフ");
+  const dxChartList = ref(["円グラフ", "棒グラフ"]);
 
   // 単一の社内DXの初期値を設定
-  const resetInsideDxItem = () => {
-    insideDxItem.value = Object.assign({}, insideDxItem.value);
-    for (let item in insideDxItem.value) {
-      if (item === "comment") {
-        insideDxItem.value[item] = [];
-      } else if (item === "attached_file") {
-        insideDxItem.value[item] = [];
-      } else {
-        insideDxItem.value[item] = null;
-      }
-    }
+  const resetDxItem = () => {
+    dxItem.value = {
+      id: null,
+      division: null,
+      registration_date: null,
+      update_date: null,
+      changer: null,
+      department: "--",
+      work: null,
+      support_tool: null,
+      state: "--",
+      staff: null,
+      expected_effect: null,
+      effect: "--",
+      product: null,
+      industry: "--",
+      technology: [],
+      technical_details: null,
+      customer: null,
+      cooperation_destination: null,
+      sales_strategy: null,
+      note: null,
+      attached_file: [],
+      comment: [],
+    };
   };
 
   // 前回の添付ファイルを格納
@@ -387,7 +494,7 @@ export const useDxStore = defineStore("dxManagement", () => {
         const uniqueFileName = timeStamp + "_" + file.name;
         formData.append("file", file, uniqueFileName);
         await axios
-          .post(insideDxBASE_URL + `/upload`, formData, {
+          .post(dxBASE_URL + `/upload`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -407,80 +514,98 @@ export const useDxStore = defineStore("dxManagement", () => {
           type: file.type,
         });
       }
-      if (insideDxItem.value.attached_file.length > 0) {
-        let files = insideDxItem.value.attached_file.concat();
-        for (const file of files) {
-          axios.put(insideDxBASE_URL + "/deleteFile", {
-            file: file,
-          });
-        }
-      }
-      editInsideDxItem.value.attached_file = attachedFiles;
-      insideDxItem.value.attached_file = attachedFiles;
-    } else {
-      editInsideDxItem.value.attached_file = insideDxItem.value.attached_file;
+      editDxItem.value.attached_file.push(...attachedFiles);
     }
   };
 
   // 添付ファイルを削除
   const deleteFile = async (fileIndex) => {
-    const file = insideDxItem.value.attached_file.splice(fileIndex, 1);
-    await axios.put(insideDxBASE_URL + "/deleteFile", {
-      item: insideDxItem.value,
+    const file = dxItem.value.attached_file.splice(fileIndex, 1);
+    console.log(file[0]);
+    await axios.put(dxBASE_URL + "/deleteFile", {
+      item: dxItem.value,
       file: file[0],
     });
   };
 
   // 部署名、状況名、効果名をidに変換
   const itemNumberConversion = async () => {
+    editDxItem.value.division = switchDx.value ? true : false;
     for (let item of await departments.value) {
-      if (item.name === editInsideDxItem.value.department) {
-        editInsideDxItem.value.department = item.id;
+      if (item.name === editDxItem.value.department) {
+        editDxItem.value.department = item.id;
+        break;
+      }
+    }
+    if (editDxItem.value.effect) {
+      for (let item of await insideDxEffect.value) {
+        if (item.effect === editDxItem.value.effect) {
+          editDxItem.value.effect = item.id;
+          break;
+        }
+      }
+    }
+    const selectedStateList = switchDx.value
+      ? insideDxState.value
+      : outsideDxState.value;
+    for (let item of await selectedStateList) {
+      if (item.state === editDxItem.value.state) {
+        editDxItem.value.state = item.id;
         break;
       }
     }
 
-    for (let item of await insideDxEffect.value) {
-      if (item.effect === editInsideDxItem.value.effect) {
-        editInsideDxItem.value.effect = item.id;
-        break;
+    if (editDxItem.value.technology.length > 0) {
+      for (let i = 0; i < editDxItem.value.technology.length; i++) {
+        for (let item of await outsideDxTechnology.value) {
+          if (item.technology === editDxItem.value.technology[i]) {
+            editDxItem.value.technology[i] = item.id;
+            break;
+          }
+        }
       }
     }
-    for (let item of await insideDxState.value) {
-      if (item.state === editInsideDxItem.value.state) {
-        editInsideDxItem.value.state = item.id;
-        break;
+
+    if (editDxItem.value.industry) {
+      for (let item of await outsideDxIndustry.value) {
+        if (item.industry === editDxItem.value.industry) {
+          editDxItem.value.industry = item.id;
+          break;
+        }
       }
     }
   };
 
   // 新しい社内DXをデータベースに格納
   const addInsideDxList = async () => {
-    editInsideDxItem.value = Object.assign({}, insideDxItem.value);
+    dxItem.value.registration_date = date;
+    dxItem.value.update_date = date;
+    editDxItem.value = Object.assign({}, dxItem.value);
     await itemNumberConversion();
     await postFiles();
-    await axios.post(insideDxBASE_URL, editInsideDxItem.value);
+    await axios.post(dxBASE_URL, editDxItem.value);
   };
   // 変更した社内DXをデータベースに格納
   const changeInsideDxList = async () => {
-    editInsideDxItem.value = Object.assign({}, insideDxItem.value);
+    dxItem.value.update_date = date;
+    editDxItem.value = Object.assign({}, dxItem.value);
     await itemNumberConversion();
     await postFiles();
-    axios.put(insideDxBASE_URL, editInsideDxItem.value);
+    axios.put(dxBASE_URL, editDxItem.value);
   };
   // 指定した社内DXを削除
   const deleteInsideDxList = (id) => {
     let data = [];
-    for (let [index, item] of showInsideDxLists.value.entries()) {
+    for (let [index, item] of showDxLists.value.entries()) {
       if (item.id === Number(id)) {
-        data = showInsideDxLists.value.splice(index, 1);
+        data = showDxLists.value.splice(index, 1);
         break;
       }
     }
-    axios.delete(`${insideDxBASE_URL}/${id}`);
+    axios.delete(`${dxBASE_URL}/${id}`);
     if (data[0].attached_file.length > 0) {
       for (const file of data[0].attached_file) {
-        axios.put(insideDxBASE_URL + "/deleteFile", {
+        axios.put(dxBASE_URL + "/deleteFile", {
           file: file,
         });
       }
@@ -496,25 +621,22 @@ export const useDxStore = defineStore("dxManagement", () => {
     for (let i = 0; i < commentArr.length; i++) {
       if (commentArr[i] !== " " && commentArr[i] !== "　") {
         console.log("コメント挿入");
-        insideDxItem.value.comment.unshift(comment);
-        await axios.put(
-          insideDxBASE_URL + "/changeComment",
-          insideDxItem.value
-        );
+        dxItem.value.comment.unshift(comment);
+        await axios.put(dxBASE_URL + "/changeComment", dxItem.value);
         break;
       }
     }
   };
   // コメントを削除
   const deleteComment = async (commentIndex) => {
-    insideDxItem.value.comment.splice(commentIndex, 1);
-    await axios.put(insideDxBASE_URL + "/changeComment", insideDxItem.value);
+    dxItem.value.comment.splice(commentIndex, 1);
+    await axios.put(dxBASE_URL + "/changeComment", dxItem.value);
   };
 
   // エクセル化--------------------------------------------
   const createExcel = async () => {
     let lists = [];
-    await axios.get(`${insideDxBASE_URL}?key=id&sequence=asc`).then((res) => {
+    await axios.get(`${dxBASE_URL}?key=id&sequence=asc`).then((res) => {
       lists = res.data;
     });
 
@@ -524,29 +646,68 @@ export const useDxStore = defineStore("dxManagement", () => {
     const worksheet = workbook.getWorksheet("一覧");
 
     // 列の定義
-    worksheet.columns = [
-      { header: "部門", key: "department" },
-      { header: "担当", key: "staff" },
-      { header: "業務", key: "work" },
-      { header: "支援ツール", key: "tool" },
-      { header: "期待される効果", key: "expected_effect" },
-      { header: "効果", key: "effect" },
-      { header: "状況", key: "state" },
-      { header: "登録日", key: "date" },
-    ];
-
-    // 行の定義
-    for (let list of lists) {
-      worksheet.addRow({
-        department: changeDepartment(list.department),
-        staff: list.staff,
-        work: list.work,
-        tool: list.support_tool,
-        expected_effect: list.expected_effect,
-        effect: changeEffect(list.effect),
-        state: changeState(list.state),
-        date: list.registration_date,
-      });
+    if (switchDx.value) {
+      worksheet.columns = [
+        { header: "部門", key: "department" },
+        { header: "担当", key: "staff" },
+        { header: "業務", key: "work" },
+        { header: "支援ツール", key: "tool" },
+        { header: "期待される効果", key: "expected_effect" },
+        { header: "効果", key: "effect" },
+        { header: "状況", key: "state" },
+        { header: "登録日", key: "date" },
+      ];
+      // 行の定義
+      for (let list of lists) {
+        if (list.division) {
+          worksheet.addRow({
+            department: changeDepartment(list.department),
+            staff: list.staff,
+            work: list.work,
+            tool: list.support_tool,
+            expected_effect: list.expected_effect,
+            effect: changeEffect(list.effect),
+            state: changeState(list.state),
+            date: list.registration_date,
+          });
+        }
+      }
+    } else {
+      worksheet.columns = [
+        { header: "部門", key: "department" },
+        { header: "更新者", key: "changer" },
+        { header: "製品・サービス名", key: "product" },
+        { header: "技術", key: "technology" },
+        { header: "技術詳細", key: "technical_details" },
+        { header: "業界", key: "industry" },
+        { header: "顧客", key: "customer" },
+        { header: "連携先", key: "cooperation_destination" },
+        { header: "販売戦略", key: "sales_strategy" },
+        { header: "状況", key: "state" },
+        { header: "備考", key: "note" },
+        { header: "登録日", key: "date" },
+      ];
+      for (let list of lists) {
+        if (!list.division) {
+          for (let i = 0; i < list.technology.length; i++) {
+            list.technology[i] = changeOutsideDxTechnology(list.technology[i]);
+          }
+          worksheet.addRow({
+            department: changeDepartment(list.department),
+            changer: list.changer,
+            product: list.product,
+            technology: showOutsideDxTechnology(list.technology),
+            technical_details: list.technical_details,
+            industry: changeOutsideDxIndustry(list.industry),
+            customer: list.customer,
+            cooperation_destination: list.cooperation_destination,
+            sales_strategy: list.sales_strategy,
+            state: changeOutsideDxState(list.state),
+            note: list.note,
+            date: list.registration_date,
+          });
+        }
+      }
     }
 
     const uint8Array = await workbook.xlsx.writeBuffer();
@@ -569,7 +730,9 @@ export const useDxStore = defineStore("dxManagement", () => {
   // 詳細検索
   const filteringTargetColumn = ref("部門");
   const filteringWord = ref("");
-  const columnList = {
+  // tureの時に部分一致、falseの時に完全一致
+  const switchSearchMethod = ref(true);
+  const insideDxColumnList = {
     部門: "department",
     担当: "staff",
     業務: "work",
@@ -579,14 +742,40 @@ export const useDxStore = defineStore("dxManagement", () => {
     状況: "state",
     登録日: "registration_date",
   };
+  const outsideDxColumnList = {
+    部門: "department",
+    業界: "industry",
+    "製品・サービス名": "product",
+    技術: "technology",
+    技術詳細: "technical_details",
+    状況: "state",
+    顧客: "customer",
+    登録日: "registration_date",
+  };
   const isDetailedFilter = ref(false);
 
   // 検索 --------------------------------------------------
   const searchWord = ref("");
+  const resetSearchValue = () => {
+    isDetailedFilter.value = false;
+    startDate.value = null;
+    endDate.value = null;
+    filteringWord.value = null;
+    searchWord.value = null;
+  };
   const search = () => {
-    showInsideDxLists.value = [];
+    showDxLists.value = [];
+    let selectedDxLists = [];
+    let selectedColumnList = {};
+    if (switchDx.value) {
+      selectedDxLists = insideDxLists.value.concat();
+      selectedColumnList = insideDxColumnList;
+    } else {
+      selectedDxLists = outsideDxLists.value.concat();
+      selectedColumnList = outsideDxColumnList;
+    }
     if (searchWord.value) {
-      for (let list of insideDxLists.value.concat()) {
+      for (let list of selectedDxLists) {
         if (new Date(list.registration_date) > new Date(referenceDate.value)) {
           continue;
         }
@@ -596,7 +785,7 @@ export const useDxStore = defineStore("dxManagement", () => {
               .toLowerCase()
               .includes(String(searchWord.value).toLowerCase())
           ) {
-            showInsideDxLists.value.push(list);
+            showDxLists.value.push(list);
             break;
           }
         }
@@ -605,24 +794,35 @@ export const useDxStore = defineStore("dxManagement", () => {
       if (isDetailedFilter.value) {
         if (!filteringWord.value) {
           isDetailedFilter.value = false;
-          search();
+          return search();
         }
-        for (const list of insideDxLists.value.concat()) {
+        for (const list of selectedDxLists) {
           if (
             new Date(list.registration_date) > new Date(referenceDate.value)
           ) {
             continue;
           }
-          if (
-            list[columnList[filteringTargetColumn.value]].includes(
+          // 部分一致の時
+          if (switchSearchMethod.value) {
+            if (
+              String(list[selectedColumnList[filteringTargetColumn.value]])
+                .toLowerCase()
+                .includes(String(filteringWord.value).toLowerCase())
+            ) {
+              showDxLists.value.push(list);
+            }
+            // 完全一致の時
+          } else {
+            if (
+              list[selectedColumnList[filteringTargetColumn.value]] ===
               filteringWord.value
-            )
-          ) {
-            showInsideDxLists.value.push(list);
+            ) {
+              showDxLists.value.push(list);
+            }
           }
         }
       } else if (startDate.value && endDate.value) {
-        for (const list of insideDxLists.value.concat()) {
+        for (const list of selectedDxLists) {
           if (
             new Date(list.registration_date) > new Date(referenceDate.value)
           ) {
@@ -632,17 +832,17 @@ export const useDxStore = defineStore("dxManagement", () => {
             new Date(startDate.value) <= new Date(list.registration_date) &&
             new Date(endDate.value) >= new Date(list.registration_date)
           ) {
-            showInsideDxLists.value.push(list);
+            showDxLists.value.push(list);
           }
         }
       } else {
-        for (let list of insideDxLists.value.concat()) {
+        for (let list of selectedDxLists) {
           if (
             new Date(list.registration_date) > new Date(referenceDate.value)
           ) {
             continue;
           }
-          showInsideDxLists.value.push(list);
+          showDxLists.value.push(list);
         }
       }
     }
@@ -662,6 +862,11 @@ export const useDxStore = defineStore("dxManagement", () => {
     期待される効果: "expected_effect",
     効果: "effect",
     状況: "state",
+    業界: "industry",
+    "製品・サービス名": "product",
+    技術: "technology",
+    技術詳細: "technical_details",
+    顧客: "customer",
   };
   const sequence = ref("降順");
   const sequenceTable = {
@@ -680,16 +885,26 @@ export const useDxStore = defineStore("dxManagement", () => {
   const getSortInsideDxLists = async () => {
     let url = "";
     insideDxLists.value = [];
-    url = `${insideDxBASE_URL}?key=${
-      keyTranslationTable[sortValue.value]
-    }&sequence=${sequenceTable[sequence.value]}`;
+    outsideDxLists.value = [];
+    url = `${dxBASE_URL}?key=${keyTranslationTable[sortValue.value]}&sequence=${
+      sequenceTable[sequence.value]
+    }`;
     isSearchDate.value = false;
     await axios.get(url).then((res) => {
       for (const data of res.data) {
         data.department = changeDepartment(data.department);
-        data.effect = changeEffect(data.effect);
-        data.state = changeState(data.state);
-        insideDxLists.value.push(data);
+        if (data.division) {
+          data.effect = changeEffect(data.effect);
+          data.state = changeState(data.state);
+          insideDxLists.value.push(data);
+        } else {
+          data.industry = changeOutsideDxIndustry(data.industry);
+          data.state = changeOutsideDxState(data.state);
+          for (let i = 0; i < data.technology.length; i++) {
+            data.technology[i] = changeOutsideDxTechnology(data.technology[i]);
+          }
+          outsideDxLists.value.push(data);
+        }
       }
       search();
     });
@@ -699,7 +914,13 @@ export const useDxStore = defineStore("dxManagement", () => {
   // 集計用の状況一覧のオブジェクトを作成
   const createInsideDxStateObject = () => {
     let dxStateObject = {};
-    for (let item of insideDxState.value) {
+    let selectedDxState = [];
+    if (switchDx.value) {
+      selectedDxState = insideDxState.value;
+    } else {
+      selectedDxState = outsideDxState.value;
+    }
+    for (let item of selectedDxState) {
       if (Number(item.id) === 1) {
         continue;
       }
@@ -709,7 +930,13 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
   // 状況・部署別の集計表を作成
   const getStateId = (state) => {
-    for (let item of insideDxState.value) {
+    let selectedDxState = [];
+    if (switchDx.value) {
+      selectedDxState = insideDxState.value;
+    } else {
+      selectedDxState = outsideDxState.value;
+    }
+    for (let item of selectedDxState) {
       if (item.state === state) {
         return item.id;
       }
@@ -723,27 +950,27 @@ export const useDxStore = defineStore("dxManagement", () => {
       合計: createInsideDxStateObject(),
     });
     stateTotalizationLists[0]["合計"]["合計"] = 0;
-    for (const insideDxList of showInsideDxLists.value) {
+    for (const dxList of showDxLists.value) {
       beDepartment = false;
-      stateId = getStateId(insideDxList.state);
+      stateId = getStateId(dxList.state);
       for (const stateTotalizationList of stateTotalizationLists) {
-        if (stateTotalizationList[insideDxList.department]) {
+        if (stateTotalizationList[dxList.department]) {
           beDepartment = true;
           break;
         }
       }
       if (beDepartment) {
         for (let stateTotalizationList of stateTotalizationLists) {
-          if (stateTotalizationList[insideDxList.department]) {
-            stateTotalizationList[insideDxList.department][stateId] += 1;
-            stateTotalizationList[insideDxList.department]["合計"] += 1;
+          if (stateTotalizationList[dxList.department]) {
+            stateTotalizationList[dxList.department][stateId] += 1;
+            stateTotalizationList[dxList.department]["合計"] += 1;
 
             stateTotalizationLists[0]["合計"][stateId] += 1;
             stateTotalizationLists[0]["合計"]["合計"] += 1;
           }
         }
       } else {
-        let department = insideDxList.department;
+        let department = dxList.department;
         stateTotalizationLists.push({
           [department]: createInsideDxStateObject(),
         });
@@ -779,17 +1006,17 @@ export const useDxStore = defineStore("dxManagement", () => {
   const getGraphData = (keyName) => {
     let lists = [];
     let beList = false;
-    for (const insideDxList of showInsideDxLists.value) {
+    for (const dxList of showDxLists.value) {
       beList = false;
       for (const list of lists) {
-        if (list[insideDxList[keyName]]) {
-          list[insideDxList[keyName]] += 1;
+        if (list[dxList[keyName]]) {
+          list[dxList[keyName]] += 1;
           beList = true;
           continue;
         }
       }
       if (!beList) {
-        lists.push({ [insideDxList[keyName]]: 1 });
+        lists.push({ [dxList[keyName]]: 1 });
       }
     }
     return lists;
@@ -811,16 +1038,20 @@ export const useDxStore = defineStore("dxManagement", () => {
     let datas = [];
     // ラベルの色を格納
     let labelColor;
+    // ラベルの色の流れを逆順に表示有無
+    let reverseColor;
 
     // 選択された横軸ごとにグラフで使用するdatasetを作成
-    if (insideDxVertical.value === "部門") {
+    if (dxVertical.value === "部門") {
       datasets = getGraphData("department");
-    } else if (insideDxVertical.value === "支援ツール") {
+    } else if (dxVertical.value === "支援ツール") {
       datasets = getGraphData("support_tool");
-    } else if (insideDxVertical.value === "状況") {
+    } else if (dxVertical.value === "状況") {
       datasets = getGraphData("state");
-    } else if (insideDxVertical.value === "効果") {
+    } else if (dxVertical.value === "効果") {
       datasets = getGraphData("effect");
+    } else if (dxVertical.value === "業界") {
+      datasets = getGraphData("industry");
     }
 
     // データセットをラベルとデータに分ける
@@ -907,13 +1138,13 @@ export const useDxStore = defineStore("dxManagement", () => {
     };
 
     // 選択されたグラフの種類ごとに値を設定
-    if (insideDxChart.value === "棒グラフ") {
+    if (dxChart.value === "棒グラフ") {
       chart = "bar";
       scales.yAxes[0].display = true;
-    } else if (insideDxChart.value === "円グラフ") {
+    } else if (dxChart.value === "円グラフ") {
       chart = "doughnut";
       scales.xAxes[0].display = false;
-    } else if (insideDxChart.value === "レーダーチャート") {
+    } else if (dxChart.value === "レーダーチャート") {
       chart = "radar";
       scales.xAxes[0].display = false;
       scales["gridLines"] = {
@@ -921,6 +1152,12 @@ export const useDxStore = defineStore("dxManagement", () => {
         display: true,
         color: "lime",
       };
+    }
+
+    if (switchDx.value) {
+      reverseColor = false;
+    } else {
+      reverseColor = true;
     }
 
     // グラフを作成するhtmlタグ指定
@@ -950,7 +1187,7 @@ export const useDxStore = defineStore("dxManagement", () => {
         plugins: {
           colorschemes: {
             scheme: "tableau.Classic20",
-            // reverse: true,
+            reverse: reverseColor,
           },
         },
       },
@@ -977,15 +1214,21 @@ export const useDxStore = defineStore("dxManagement", () => {
 
   // ホーム画面で仕様するチャートを作成
   const dxHomeUseGraph = () => {
-    insideDxVertical.value = "部門";
-    insideDxChart.value = "棒グラフ";
+    dxVertical.value = "部門";
+    dxChart.value = "棒グラフ";
     createGraph(1, "departmentChart", "top");
-    insideDxVertical.value = "効果";
-    insideDxChart.value = "円グラフ";
-    createGraph(2, "effectChart", "top");
-    insideDxVertical.value = "状況";
-    insideDxChart.value = "円グラフ";
+    dxVertical.value = "状況";
+    dxChart.value = "円グラフ";
     createGraph(3, "stateChart", "top");
+    if (switchDx.value) {
+      dxVertical.value = "効果";
+      dxChart.value = "円グラフ";
+      createGraph(2, "effectChart", "top");
+    } else {
+      dxVertical.value = "業界";
+      dxChart.value = "円グラフ";
+      createGraph(2, "effectChart", "top");
+    }
   };
 
   return {
@@ -994,8 +1237,9 @@ export const useDxStore = defineStore("dxManagement", () => {
     year,
     referenceDate,
     referenceMonth,
-    insideDxItem,
-    showInsideDxLists,
+    dxItem,
+    editDxItem,
+    showDxLists,
     insideDxLists,
     departmentsForInput,
     departments,
@@ -1005,10 +1249,11 @@ export const useDxStore = defineStore("dxManagement", () => {
     insideDxState,
     insideDxHorizontal,
     insideDxHorizontalList,
-    insideDxVertical,
+    dxVertical,
     insideDxVerticalList,
-    insideDxChart,
-    insideDxChartList,
+    outsideDxVerticalList,
+    dxChart,
+    dxChartList,
     searchWord,
     sortValue,
     keyTranslationTable,
@@ -1029,10 +1274,16 @@ export const useDxStore = defineStore("dxManagement", () => {
     fontSizeNum,
     filteringTargetColumn,
     filteringWord,
-    columnList,
+    switchSearchMethod,
+    insideDxColumnList,
+    outsideDxColumnList,
     isDetailedFilter,
     isShowedAllDepartment,
-    resetInsideDxItem,
+    outsideDxLists,
+    outsideDxIndustry,
+    outsideDxState,
+    outsideDxTechnology,
+    resetDxItem,
     addInsideDxList,
     changeInsideDxList,
     deleteInsideDxList,
@@ -1040,6 +1291,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     deleteComment,
     deleteFile,
     search,
+    resetSearchValue,
     getSortInsideDxLists,
     calculationStateTotalization,
     createGraph,
@@ -1059,5 +1311,11 @@ export const useDxStore = defineStore("dxManagement", () => {
     itemNumberConversion,
     calculateFontSize,
     getLastDayOfMonth,
+    getOutsideDxIndustry,
+    getOutsideDxState,
+    getOutsideDxTechnology,
+    showOutsideDxTechnology,
+    changeThemeColor,
+    changeSwitchDx,
   };
 });

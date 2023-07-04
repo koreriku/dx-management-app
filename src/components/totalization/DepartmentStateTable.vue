@@ -17,9 +17,19 @@ const store = useDxStore();
           <tr>
             <th class="text-center">分類</th>
             <th
+              v-if="store.switchDx"
               class="text-center"
               v-for="item of [
                 ...store.insideDxState.slice(1, store.insideDxState.length),
+              ]"
+            >
+              {{ item.state }}
+            </th>
+            <th
+              v-else
+              class="text-center"
+              v-for="item of [
+                ...store.outsideDxState.slice(1, store.outsideDxState.length),
               ]"
             >
               {{ item.state }}
@@ -39,8 +49,16 @@ const store = useDxStore();
               {{ Object.entries(state)[0][0] }}
             </td>
             <td
+              v-if="store.switchDx"
               class="text-center"
               v-for="index of store.insideDxState.length - 1"
+            >
+              {{ state[Object.entries(state)[0][0]][index + 1] }}
+            </td>
+            <td
+              v-else
+              class="text-center"
+              v-for="index of store.outsideDxState.length - 1"
             >
               {{ state[Object.entries(state)[0][0]][index + 1] }}
             </td>

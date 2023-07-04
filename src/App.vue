@@ -60,8 +60,24 @@ const setFontSize = () => {
             >ホーム</v-tooltip
           ></v-btn
         >
-        <v-btn to="/insideDx">社内DX</v-btn>
-        <v-btn>社外DX</v-btn>
+        <v-btn
+          @click="
+            store.switchDx = true;
+            store.changeSwitchDx();
+            store.search();
+            router.push('/dx');
+          "
+          >社内DX</v-btn
+        >
+        <v-btn
+          @click="
+            store.switchDx = false;
+            store.changeSwitchDx();
+            store.search();
+            router.push('/dx');
+          "
+          >社外DX</v-btn
+        >
         <v-btn to="/department">部署一覧</v-btn>
         <v-divider
           vertical
@@ -140,7 +156,12 @@ const setFontSize = () => {
           prepend-icon="mdi-alpha-d-box"
           title="社内DX"
           value="inside"
-          @click="router.push('/insideDx')"
+          @click="
+            store.switchDx = true;
+            store.changeSwitchDx();
+            store.search();
+            router.push('/dx');
+          "
           class="hamburger_font"
         ></v-list-item>
         <!--Todo outside設定-->
@@ -148,6 +169,12 @@ const setFontSize = () => {
           prepend-icon="mdi-alpha-d-box-outline"
           title="社外DX"
           value="outside"
+          @click="
+            store.switchDx = false;
+            store.changeSwitchDx();
+            store.search();
+            router.push('/dx');
+          "
           class="hamburger_font"
         ></v-list-item>
         <v-list-item
