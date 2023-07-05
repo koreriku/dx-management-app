@@ -715,7 +715,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "社内DX一覧.xlsx";
+    a.download = switchDx.value ? "社内DX一覧.xlsx" : "社外DX一覧.xlsx";
     a.click();
     a.remove();
   };
