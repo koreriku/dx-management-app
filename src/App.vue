@@ -196,6 +196,14 @@ const setFontSize = () => {
           value="department"
           class="hamburger_font"
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-help-circle-outline"
+          title="help"
+          @click="router.push('/manual')"
+          value="help"
+          class="hamburger-font"
+        >
+        </v-list-item>
       </v-list>
 
       <template v-slot:append>
