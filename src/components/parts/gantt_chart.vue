@@ -155,7 +155,8 @@ const resetSelectedDepartment = () => {
   };
 };
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
+  await store.getDepartments();
   store.loadDepartmentsForGanttChart();
   getCalender();
 });
@@ -189,24 +190,46 @@ const showAllDepartment = () => {
     store.isShowedDepartmentLength += 1;
   });
 };
+
+const showOrderChangeForm = ref(false);
+const isSelectedStartingDepartment = ref(true);
+const inputDepartment = (departmentName) => {
+  if (isSelectedStartingDepartment.value) {
+    store.startingDepartment = departmentName;
+    isSelectedStartingDepartment.value = false;
+  } else {
+    store.destinationDepartment = departmentName;
+    isSelectedStartingDepartment.value = true;
+  }
+};
 </script>
 
 <template>
   <div class="container">
     <h1 class="text-h5 mb-3">部門一覧</h1>
     <div class="d-flex justify-space-between">
-      <Button
-        color="yellow"
-        @click="
-          store.showDepartmentDialog = true;
-          resetSelectedDepartment();
-          store.isEditedDepartment = false;
-        "
-        class="mr-3"
-        icon
-        ><v-icon>mdi-plus</v-icon>
-        <v-tooltip activator="parent" location="bottom">新規登録</v-tooltip>
-      </Button>
+      <div>
+        <Button
+          color="yellow"
+          @click="
+            store.showDepartmentDialog = true;
+            resetSelectedDepartment();
+            store.isEditedDepartment = false;
+          "
+          class="mr-3"
+          icon
+          ><v-icon>mdi-plus</v-icon>
+          <v-tooltip activator="parent" location="bottom">新規登録</v-tooltip>
+        </Button>
+        <Button
+          color="primary"
+          @click="showOrderChangeForm = true"
+          class="mr-3"
+          icon
+          ><v-icon>mdi-order-alphabetical-ascending</v-icon>
+          <v-tooltip activator="parent" location="bottom">順序変更</v-tooltip>
+        </Button>
+      </div>
       <div style="width: 500px">
         <v-text-field
           label="部門検索"
@@ -382,6 +405,83 @@ const showAllDepartment = () => {
   </v-card>
 
   <departmentDialog></departmentDialog>
+
+  <v-dialog
+    v-model="showOrderChangeForm"
+    width="700"
+    :style="{ fontSize: store.calculateFontSize() + 'rem' }"
+  >
+    <v-card class="card">
+      <v-row>
+        <v-col>
+          <v-card-text>順序変更</v-card-text>
+        </v-col>
+        <v-col>
+          <div class="mt-2 me-2" align="end">
+            <Button
+              color="gray"
+              class="mr-3"
+              @click="showOrderChangeForm = false"
+              icon
+              ><v-icon>mdi-arrow-u-left-bottom</v-icon>
+              <v-tooltip activator="parent" location="bottom"
+                >戻る</v-tooltip
+              ></Button
+            >
+          </div>
+        </v-col>
+      </v-row>
+      <v-card-item>
+        <v-row>
+          <v-col>
+            <v-table height="800px">
+              <v-list>
+                <v-list-subheader>部署一覧</v-list-subheader>
+                <v-list-item
+                  v-for="(item, i) in store.departmentsForInput.slice(1)"
+                  :key="i"
+                  :value="item"
+                  color="primary"
+                  style="border-bottom: 1px solid #e0e0e0"
+                  @click="inputDepartment(item)"
+                >
+                  <v-list-item-title v-text="item"></v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-table>
+          </v-col>
+          <v-col>
+            <v-select
+              label="起点"
+              :items="store.departmentsForInput.slice(1)"
+              variant="outlined"
+              v-model="store.startingDepartment"
+              class="mt-3"
+            ></v-select>
+            <v-select
+              label="終点"
+              :items="store.departmentsForInput.slice(1)"
+              variant="outlined"
+              v-model="store.destinationDepartment"
+            ></v-select>
+            <div class="my-4 text-center">
+              <Button
+                type="submit"
+                color="primary"
+                @click="store.changeDepartmentDivision"
+                icon
+                style="margin: 0 auto"
+                ><v-icon>mdi-check</v-icon>
+                <v-tooltip activator="parent" location="bottom"
+                  >順序変更</v-tooltip
+                ></Button
+              >
+            </div>
+          </v-col>
+        </v-row>
+      </v-card-item>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>

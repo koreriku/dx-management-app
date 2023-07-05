@@ -26,6 +26,29 @@ router.put("/", async (req, res) => {
   await throwQuery(res, query);
 });
 
+// 指定された区分をもつレコードの区分を全て書き換える
+// router.put("/changeDivision", async (req, res) => {
+//   const data = req.query;
+//   console.log(data.destinationDivision);
+//   query = {
+//     text: `UPDATE departments
+//     SET division = $1
+//     WHERE division = $2;
+//     `,
+//     values: [Number(data.destinationDivision), Number(data.startingDivision)],
+//   };
+//   await throwQueryNoRes(res, query);
+
+//   query = {
+//     text: `UPDATE departments
+//     SET division = $1
+//     WHERE division = $2;
+//     `,
+//     values: [Number(data.startingDivision), Number(data.destinationDivision)],
+//   };
+//   await throwQueryNoRes(res, query);
+// });
+
 // 部門登録
 router.post("/", async (req, res) => {
   const data = req.body;

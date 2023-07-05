@@ -13,6 +13,7 @@ const message = ref("");
 const updateDepartment = async () => {
   if (validateCheck()) {
     await store.updateDepartment();
+    await store.getDepartments();
     store.loadDepartmentsForGanttChart();
     store.showDepartmentDialog = false;
     message.value = "";
@@ -22,6 +23,7 @@ const updateDepartment = async () => {
 const registerDepartment = async () => {
   if (validateCheck()) {
     await store.registerDepartment();
+    await store.getDepartments();
     store.loadDepartmentsForGanttChart();
     store.showDepartmentDialog = false;
     message.value = "";
