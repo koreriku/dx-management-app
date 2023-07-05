@@ -448,7 +448,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   // グラフの横軸の要素
   const dxVertical = ref("部門");
   const insideDxVerticalList = ref(["部門", "支援ツール", "状況", "効果"]);
-  const outsideDxVerticalList = ref(["部門", "業界", "状況"]);
+  const outsideDxVerticalList = ref(["部門", "業界", "状況", "技術"]);
 
   // グラフ種類
   const dxChart = ref("棒グラフ");
@@ -556,6 +556,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     }
 
     if (editDxItem.value.technology.length > 0) {
+      editDxItem.value.technology = editDxItem.value.technology.concat();
       for (let i = 0; i < editDxItem.value.technology.length; i++) {
         for (let item of await outsideDxTechnology.value) {
           if (item.technology === editDxItem.value.technology[i]) {
@@ -1022,6 +1023,27 @@ export const useDxStore = defineStore("dxManagement", () => {
     return lists;
   };
 
+  const getTechnologyGraphData = (keyName) => {
+    let lists = [];
+    let beList = false;
+    for (const dxList of showDxLists.value) {
+      beList = false;
+      for (const item of dxList[keyName]) {
+        for (const list of lists) {
+          if (list[item]) {
+            list[item] += 1;
+            beList = true;
+            continue;
+          }
+        }
+        if (!beList) {
+          lists.push({ [item]: 1 });
+        }
+      }
+    }
+    return lists;
+  };
+
   let chart1Instance;
   let chart2Instance;
   let chart3Instance;
@@ -1052,6 +1074,8 @@ export const useDxStore = defineStore("dxManagement", () => {
       datasets = getGraphData("effect");
     } else if (dxVertical.value === "業界") {
       datasets = getGraphData("industry");
+    } else if (dxVertical.value === "技術") {
+      datasets = getTechnologyGraphData("technology");
     }
 
     // データセットをラベルとデータに分ける

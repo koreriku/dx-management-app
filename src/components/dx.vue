@@ -25,6 +25,15 @@ const createGraph = () => {
 
 const detailedSearchDialog = ref(false);
 store.resetDxItem();
+if (store.switchDx) {
+  if (!store.insideDxVerticalList.includes(store.dxVertical)) {
+    store.dxVertical = "部門";
+  }
+} else {
+  if (!store.outsideDxVerticalList.includes(store.dxVertical)) {
+    store.dxVertical = "部門";
+  }
+}
 </script>
 
 <template>

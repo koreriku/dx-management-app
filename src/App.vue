@@ -19,7 +19,16 @@ onBeforeMount(() => {
 const reloadGraph = () => {
   if (route.path === "/") {
     store.dxHomeUseGraph();
-  } else if (route.path === "/insideDx" && document.getElementById("chart")) {
+  } else if (route.path === "/dx" && document.getElementById("chart")) {
+    if (store.switchDx) {
+      if (!store.insideDxVerticalList.includes(store.dxVertical)) {
+        store.dxVertical = "部門";
+      }
+    } else {
+      if (!store.outsideDxVerticalList.includes(store.dxVertical)) {
+        store.dxVertical = "部門";
+      }
+    }
     store.createGraph(1, "chart", "top");
   }
 };
@@ -65,6 +74,7 @@ const setFontSize = () => {
             store.switchDx = true;
             store.changeSwitchDx();
             store.search();
+            reloadGraph();
             router.push('/dx');
           "
           >社内DX</v-btn
@@ -74,6 +84,7 @@ const setFontSize = () => {
             store.switchDx = false;
             store.changeSwitchDx();
             store.search();
+            reloadGraph();
             router.push('/dx');
           "
           >社外DX</v-btn
@@ -117,6 +128,7 @@ const setFontSize = () => {
             </v-list>
           </v-menu>
         </v-btn>
+        <v-btn to="/manual">操作方法</v-btn>
       </v-toolbar-items>
 
       <v-toolbar-items class="nav">
