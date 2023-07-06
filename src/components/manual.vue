@@ -9,29 +9,31 @@
   </div>
 
   <div class="wrapper">
-    <v-row justify="center" width="1000">
-      <v-col class="list" lg="6" md="12" xs="12" sm="12">
-        <ul style="width: 30rem">
-          <li><a href="#new">新規登録</a></li>
-          <li><a href="#edit">編集</a></li>
-          <li><a href="#keyword">キーワード検索と詳細検索</a></li>
-          <li><a href="#sort">並び替え</a></li>
-          <li><a href="#display">全表示について</a></li>
-          <li><a href="#table">表の切り替え</a></li>
-          <li><a href="#month">基準月について</a></li>
+    <v-row justify="center">
+      <v-col md="3" sm="12">
+        <div class="list">
+          <ul style="max-width: 450px">
+            <li><a href="#new">新規登録</a></li>
+            <li><a href="#edit">編集</a></li>
+            <li><a href="#keyword">キーワード検索と詳細検索</a></li>
+            <li><a href="#sort">並び替え</a></li>
+            <li><a href="#display">全表示について</a></li>
+            <li><a href="#table">表の切り替え</a></li>
+            <li><a href="#month">基準月について</a></li>
 
-          <v-divider class="border-opacity-75"></v-divider>
+            <v-divider class="border-opacity-75"></v-divider>
 
-          <li><a href="#department">部署一覧について</a></li>
-          <li><a href="#newD">部署登録</a></li>
-          <li><a href="#editD">部署変更</a></li>
-          <li><a href="displayD">部署全表示</a></li>
-          <li><a href="searchD">部署検索</a></li>
-        </ul>
+            <li><a href="#department">部署一覧について</a></li>
+            <li><a href="#newD">部署登録</a></li>
+            <li><a href="#editD">部署変更</a></li>
+            <li><a href="#displayD">部署全表示</a></li>
+            <li><a href="#searchD">部署検索</a></li>
+          </ul>
+        </div>
       </v-col>
 
-      <v-col lg="6" md="12" xs="12" sm="12">
-        <div class="margin">
+      <v-col md="9" xs="12">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="new">・新規登録</a>
           <v-btn color="yellow" icon class="icon">
             <v-icon>mdi-plus</v-icon>
@@ -45,7 +47,7 @@
           <p>各項目を入力し、チェックボタンをクリックすると登録完了です</p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="edit">・編集</a>
           <v-btn color="primary" icon class="icon">
             <v-icon color="#fff">mdi-pencil</v-icon>
@@ -64,7 +66,7 @@
           <p>ごみ箱ボタンで削除が出来ます</p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="keyword">・キーワード検索と詳細検索</a>
 
           <v-text-field
@@ -94,13 +96,13 @@
           </p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="sort">・並び替え</a>
           <p>項目名をクリックすると昇順・降順で並び替えが行われます</p>
           <p></p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="display">・全表示について</a>
           <v-badge color="red" content="全表示" class="mr-2" inline></v-badge>
           <p>デフォルトでは二行に収まるように表示されていますが</p>
@@ -108,7 +110,7 @@
           <p>一覧で詳細が確認出来るようになります</p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <p class="text-h5" id="table">・表の切り替え</p>
           <v-btn class="icon" color="gray">
             <v-icon>mdi-chart-bar</v-icon>
@@ -138,7 +140,7 @@
           <p>DX一覧をExcelに出力します</p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="month">・基準月について</a>
           <p>ヘッダー部分に表示されている基準月の欄にて設定が行えます</p>
           <p>基準にする月を選択し、Enterを押すと変更が適応されます</p>
@@ -154,7 +156,7 @@
           ></v-text-field>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="department">・部署一覧について</a>
           <p>管理者向けのページです</p>
           <p>過去・現在の部署を一覧で見ることが出来ます</p>
@@ -163,7 +165,7 @@
           </p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="newD">・部署登録</a>
           <v-btn color="yellow" icon class="icon">
             <v-icon>mdi-plus</v-icon>
@@ -176,7 +178,7 @@
           <p>特に制限がなければ区分と期限はそのままをおすすめします</p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="editD">・部署変更</a>
           <p>部署名をクリックすると変更が行えます</p>
           <p class="text-subtitle-1">変更の仕方</p>
@@ -206,7 +208,7 @@
           </ol>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="displayD">・部署全表示</a>
           <v-badge color="red" content="全表示" class="mr-2" inline></v-badge>
           <p>
@@ -215,7 +217,7 @@
           <p>全表示ボタンを押すと過去の部署も含めて表示されるようになります</p>
         </div>
 
-        <div class="margin">
+        <div class="mb-10">
           <a class="text-h5 anchor" id="searchD">・部署検索</a>
           <v-text-field
             label="部門検索"
@@ -253,28 +255,30 @@ ol {
 ol li {
   padding: 0.5em 0;
 }
-.margin {
-  margin-bottom: 6rem;
-  margin-left: 10px;
-}
 .icon {
   margin: 10px;
 }
 .wrapper {
-  width: 1000px;
+  max-width: 1500px;
   margin: 0 auto;
   line-height: 1.8rem;
   padding: 1rem;
 }
 a.anchor {
   display: block;
-  padding-top: 70px;
-  margin-top: -70px;
+  padding-top: 100px;
+  margin-top: -100px;
 }
 
 .list {
   margin-bottom: 50px;
   position: sticky;
-  top: 0px;
+  top: 5rem;
+}
+
+@media (max-width: 960px) {
+  .list {
+    position: static;
+  }
 }
 </style>
