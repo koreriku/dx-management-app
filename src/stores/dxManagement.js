@@ -7,7 +7,7 @@ import { useTheme } from "vuetify";
 import { vuetify } from "../main";
 
 axios.create({
-  baseURL: "http://172.16.16.134:8000",
+  baseURL: "http://localhost:8000",
   headers: {
     "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest",
@@ -94,9 +94,9 @@ export const useDxStore = defineStore("dxManagement", () => {
 
   // バックエンドのURL -----------------------------------------
   // DX
-  const dxBASE_URL = "http://172.16.16.134:8000/dx";
+  const dxBASE_URL = "http://localhost:8000/dx";
   // 部署
-  const departmentsBASE_URL = "http://172.16.16.134:8000/departments";
+  const departmentsBASE_URL = "http://localhost:8000/departments";
 
   // Dx系の変数 -----------------------------------------
   // 単一の社内DXを格納

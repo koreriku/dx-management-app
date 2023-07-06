@@ -10,24 +10,26 @@
 
   <div class="wrapper">
     <v-row justify="center" width="1000">
-      <v-col class="list" lg="6" md="12" xs="12" sm="12">
-        <ul style="width: 30rem">
-          <li><a href="#new">新規登録</a></li>
-          <li><a href="#edit">編集</a></li>
-          <li><a href="#keyword">キーワード検索と詳細検索</a></li>
-          <li><a href="#sort">並び替え</a></li>
-          <li><a href="#display">全表示について</a></li>
-          <li><a href="#table">表の切り替え</a></li>
-          <li><a href="#month">基準月について</a></li>
+      <v-col lg="6" md="12" xs="12" sm="12">
+        <div class="list">
+          <ul style="width: 30rem">
+            <li><a href="#new">新規登録</a></li>
+            <li><a href="#edit">編集</a></li>
+            <li><a href="#keyword">キーワード検索と詳細検索</a></li>
+            <li><a href="#sort">並び替え</a></li>
+            <li><a href="#display">全表示について</a></li>
+            <li><a href="#table">表の切り替え</a></li>
+            <li><a href="#month">基準月について</a></li>
 
-          <v-divider class="border-opacity-75"></v-divider>
+            <v-divider class="border-opacity-75"></v-divider>
 
-          <li><a href="#department">部署一覧について</a></li>
-          <li><a href="#newD">部署登録</a></li>
-          <li><a href="#editD">部署変更</a></li>
-          <li><a href="displayD">部署全表示</a></li>
-          <li><a href="searchD">部署検索</a></li>
-        </ul>
+            <li><a href="#department">部署一覧について</a></li>
+            <li><a href="#newD">部署登録</a></li>
+            <li><a href="#editD">部署変更</a></li>
+            <li><a href="displayD">部署全表示</a></li>
+            <li><a href="searchD">部署検索</a></li>
+          </ul>
+        </div>
       </v-col>
 
       <v-col lg="6" md="12" xs="12" sm="12">
@@ -268,13 +270,13 @@ ol li {
 }
 a.anchor {
   display: block;
-  padding-top: 70px;
-  margin-top: -70px;
+  padding-top: 100px;
+  margin-top: -100px;
 }
 
 .list {
   margin-bottom: 50px;
   position: sticky;
-  top: 0px;
+  top: 5rem;
 }
 </style>
