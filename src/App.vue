@@ -128,7 +128,12 @@ const setFontSize = () => {
             </v-list>
           </v-menu>
         </v-btn>
-        <v-btn to="/manual">操作方法</v-btn>
+        <v-btn to="/manual"
+          ><v-icon>mdi-help-circle-outline</v-icon
+          ><v-tooltip activator="parent" location="bottom"
+            >マニュアル</v-tooltip
+          ></v-btn
+        >
       </v-toolbar-items>
 
       <v-toolbar-items class="nav">
@@ -198,9 +203,9 @@ const setFontSize = () => {
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-help-circle-outline"
-          title="help"
+          title="マニュアル"
           @click="router.push('/manual')"
-          value="help"
+          value="マニュアル"
           class="hamburger-font"
         >
         </v-list-item>

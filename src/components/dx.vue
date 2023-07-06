@@ -148,17 +148,18 @@ if (store.switchDx) {
           v-else
           v-model="store.dxVertical"
           :items="store.outsideDxVerticalList"
-          label="横軸"
+          label="データ"
           class="ma-5 mb-0"
           variant="outlined"
         ></v-select>
-        <v-select
+        <!-- <v-select
           v-model="store.insideDxHorizontal"
           :items="store.insideDxHorizontalList"
           label="縦軸"
           class="ma-5 my-0"
           variant="outlined"
-        ></v-select>
+          disabled
+        ></v-select> -->
         <v-select
           v-model="store.dxChart"
           :items="store.dxChartList"

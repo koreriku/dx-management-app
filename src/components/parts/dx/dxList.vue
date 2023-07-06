@@ -182,7 +182,7 @@ const omittedText = (text, max_length) => {
           </th>
 
           <th
-            class="b"
+            class="c"
             @click="
               store.sortValue = '技術';
               sort();
@@ -262,7 +262,7 @@ const omittedText = (text, max_length) => {
             {{ omittedText(item.support_tool, 25) }}
           </td>
           <td class="text-left wrap py-2">
-            {{ omittedText(item.expected_effect, 58) }}
+            {{ omittedText(item.expected_effect, 54) }}
           </td>
           <td class="text-left">
             {{ item.effect }}
@@ -294,10 +294,12 @@ const omittedText = (text, max_length) => {
             {{ omittedText(item.product, 16) }}
           </td>
           <td class="text-left wrap">
-            {{ store.showOutsideDxTechnology(item.technology) }}
+            {{
+              omittedText(store.showOutsideDxTechnology(item.technology), 12)
+            }}
           </td>
           <td class="text-left wrap py-2">
-            {{ omittedText(item.technical_details, 58) }}
+            {{ omittedText(item.technical_details, 54) }}
           </td>
           <td class="text-left">
             {{ item.state }}
@@ -334,13 +336,13 @@ const omittedText = (text, max_length) => {
 }
 
 .a {
-  width: 20rem;
+  width: 24rem;
 }
 .b {
   width: 7rem;
 }
 .c {
-  width: 12rem;
+  width: 16rem;
 }
 
 /*期待できる効果 */

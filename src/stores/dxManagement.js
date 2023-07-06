@@ -4,7 +4,6 @@ import chartjsPluginColorschemes from "chartjs-plugin-colorschemes";
 import axios from "axios";
 import ExcelJS from "exceljs";
 import { useTheme } from "vuetify";
-import { vuetify } from "../main";
 
 axios.create({
   baseURL: "http://172.16.16.134:8000",
@@ -43,10 +42,11 @@ export const useDxStore = defineStore("dxManagement", () => {
 
   // trueの時に社内DX表示、falseの時に社外DX表示
   const switchDx = ref(true);
-
+  // テーマをインスタンス
+  const theme = useTheme();
   const changeThemeColor = () => {
-    let light = vuetify.theme.themes.value.light.colors;
-    let dark = vuetify.theme.themes.value.dark.colors;
+    let light = theme.themes.value.light.colors;
+    let dark = theme.themes.value.dark.colors;
     if (switchDx.value) {
       light.primary = "#1565C0";
       light.yellow = "#FB8C00";
@@ -142,8 +142,8 @@ export const useDxStore = defineStore("dxManagement", () => {
   // 部門を全表示するか有無
   const isShowedAllDepartment = ref(false);
   // 部門の順番変更時に選択した部署名
-  const startingDepartment = ref("--");
-  const destinationDepartment = ref("--");
+  const startingDepartment = ref("");
+  const destinationDepartment = ref("");
 
   // 部門系の関数 ----------------------------------------------------
   // 部門一覧を全て取得
@@ -310,56 +310,70 @@ export const useDxStore = defineStore("dxManagement", () => {
 
   // 部門区分を変更（順序変更）
   const changeDepartmentDivision = () => {
-    let startingDivision = getDepartmentDivisionFromDepartmentName(
-      startingDepartment.value
+    if (startingDepartment.value === destinationDepartment.value) {
+      return;
+    }
+    let startingDivision = Number(
+      getDepartmentDivisionFromDepartmentName(startingDepartment.value)
     );
-    let destinationDivision = getDepartmentDivisionFromDepartmentName(
-      destinationDepartment.value
+    let destinationDivision = Number(
+      getDepartmentDivisionFromDepartmentName(destinationDepartment.value)
     );
 
     const sortedDepartment = [];
-    for (const department of departments.value) {
-      if (Number(department.division) === Number(startingDivision)) {
-        department.division = Number(destinationDivision) + 1;
-        console.log(department);
-        // if (
-        //   department.division ===
-        //   departments.value[departments.value.length - 1].division
-        // ) {
-        //   sortedDepartment.push(department);
-        // } else {
-        for (let i = 0; i < sortedDepartment.length; ++i) {
-          if (Number(sortedDepartment[i].division) > department.division) {
-            sortedDepartment.splice(i, 0, department);
-            break;
+
+    if (startingDivision > destinationDivision) {
+      console.log("YES");
+      for (const department of departments.value) {
+        if (Number(department.division) === Number(startingDivision)) {
+          department.division = Number(destinationDivision);
+
+          for (let i = 0; i < sortedDepartment.length; ++i) {
+            if (Number(sortedDepartment[i].division) > department.division) {
+              sortedDepartment.splice(i, 0, department);
+              break;
+            }
           }
+        } else if (Number(department.division) >= Number(destinationDivision)) {
+          department.division = Number(department.division) + 1;
+          sortedDepartment.push(department);
+        } else {
+          sortedDepartment.push(department);
         }
-        // }
-      } else if (Number(department.division) > Number(destinationDivision)) {
-        department.division = Number(department.division) + 1;
-        sortedDepartment.push(department);
-      } else {
-        sortedDepartment.push(department);
+      }
+    } else {
+      console.log("NO");
+      for (const department of departments.value) {
+        if (Number(department.division) === startingDivision) {
+          department.division = destinationDivision;
+          sortedDepartment.push(department);
+        } else if (
+          Number(department.division) >= startingDivision &&
+          Number(department.division) <= destinationDivision
+        ) {
+          department.division = Number(department.division) - 1;
+          for (let i = 0; i < sortedDepartment.length; ++i) {
+            if (Number(sortedDepartment[i].division) > department.division) {
+              sortedDepartment.splice(i, 0, department);
+              break;
+            }
+          }
+        } else {
+          sortedDepartment.push(department);
+        }
       }
     }
+
     console.log(sortedDepartment);
     departments.value = sortedDepartment;
 
-    // for (const department of departments.value) {
-    //   if (department.division === startingDivision) {
-    //     department.division = destinationDivision;
-    //     await axios.put(departmentsBASE_URL, department);
-    //   } else if (department.division === destinationDivision) {
-    //     department.division = startingDivision;
-    //     await axios.put(departmentsBASE_URL, department);
-    //   }
-    // }
     loadDepartmentsForGanttChart();
+  };
 
-    // await axios.put(
-    //   departmentsBASE_URL +
-    //     `/changeDivision?startingDivision=${startingDivision}&destinationDivision=${destinationDivision}`
-    // );
+  const confirmDepartmentDivision = () => {
+    for (const department of departments.value) {
+      axios.put(departmentsBASE_URL, department);
+    }
   };
 
   // 効果一覧取得
@@ -1054,9 +1068,6 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
 
   // グラフ -----------------------------------------------------
-  // テーマをインスタンス
-  const theme = useTheme();
-
   // 文字を縦文字にする。未使用
   const stringToVertically = (word) => {
     let wordLength = word.length;
@@ -1393,6 +1404,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     updateDepartment,
     registerDepartment,
     changeDepartmentDivision,
+    confirmDepartmentDivision,
     getInsideDxEffect,
     getInsideDxState,
     changeDepartment,

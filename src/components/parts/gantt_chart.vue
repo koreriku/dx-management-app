@@ -201,7 +201,13 @@ const inputDepartment = (departmentName) => {
     store.destinationDepartment = departmentName;
     isSelectedStartingDepartment.value = true;
   }
+  if (store.startingDepartment && store.destinationDepartment) {
+    store.changeDepartmentDivision();
+    store.startingDepartment = "";
+    store.destinationDepartment = "";
+  }
 };
+const orderChangeModalHeight = window.innerHeight * 0.7;
 </script>
 
 <template>
@@ -223,7 +229,10 @@ const inputDepartment = (departmentName) => {
         </Button>
         <Button
           color="primary"
-          @click="showOrderChangeForm = true"
+          @click="
+            store.startingDepartment = '';
+            showOrderChangeForm = true;
+          "
           class="mr-3"
           icon
           ><v-icon>mdi-order-alphabetical-ascending</v-icon>
@@ -409,7 +418,8 @@ const inputDepartment = (departmentName) => {
   <v-dialog
     v-model="showOrderChangeForm"
     width="700"
-    :style="{ fontSize: store.calculateFontSize() + 'rem' }"
+    :style="{ fontSize: store.calculateFontSize() * 0.95 + 'rem' }"
+    style="line-height: 2rem"
   >
     <v-card class="card">
       <v-row>
@@ -434,46 +444,59 @@ const inputDepartment = (departmentName) => {
       <v-card-item>
         <v-row>
           <v-col>
-            <v-table height="800px">
-              <v-list>
-                <v-list-subheader>部署一覧</v-list-subheader>
+            <v-list>
+              <v-card-text class="text-medium-emphasis">部署一覧</v-card-text>
+              <!-- <v-list-subheader>部署一覧</v-list-subheader> -->
+              <v-table :height="orderChangeModalHeight">
                 <v-list-item
                   v-for="(item, i) in store.departmentsForInput.slice(1)"
                   :key="i"
                   :value="item"
-                  color="primary"
+                  :active="false"
                   style="border-bottom: 1px solid #e0e0e0"
                   @click="inputDepartment(item)"
                 >
-                  <v-list-item-title v-text="item"></v-list-item-title>
+                  <v-list-item-title
+                    :style="{
+                      color:
+                        store.startingDepartment === item
+                          ? theme.themes.value.light.colors.primary
+                          : '',
+                    }"
+                    >{{ item }}</v-list-item-title
+                  >
                 </v-list-item>
-              </v-list>
-            </v-table>
+              </v-table>
+            </v-list>
           </v-col>
           <v-col>
-            <v-select
-              label="起点"
-              :items="store.departmentsForInput.slice(1)"
-              variant="outlined"
-              v-model="store.startingDepartment"
-              class="mt-3"
-            ></v-select>
-            <v-select
-              label="終点"
-              :items="store.departmentsForInput.slice(1)"
-              variant="outlined"
-              v-model="store.destinationDepartment"
-            ></v-select>
+            <div class="text-medium-emphasis mb-5">
+              <v-card-text>操作説明</v-card-text>
+              <p class="mb-3">
+                ・部署一覧の部署をクリックすると選択中になり、
+                移動したい位置の部署をクリックすると選択中の部署が挿入させる。
+              </p>
+              <p class="mb-3">
+                ・選択中を解除したい場合は、選択中の部署をもう一度クリックする。
+              </p>
+              <p class="mb-3">
+                ・並べ替え終了後、チェックボタン(順序確定)をクリックすると、保存される
+              </p>
+            </div>
+            <v-divider class="mb-8"></v-divider>
             <div class="my-4 text-center">
               <Button
                 type="submit"
                 color="primary"
-                @click="store.changeDepartmentDivision"
+                @click="
+                  store.confirmDepartmentDivision();
+                  showOrderChangeForm = false;
+                "
                 icon
                 style="margin: 0 auto"
                 ><v-icon>mdi-check</v-icon>
                 <v-tooltip activator="parent" location="bottom"
-                  >順序変更</v-tooltip
+                  >順序確定</v-tooltip
                 ></Button
               >
             </div>
@@ -513,7 +536,6 @@ const inputDepartment = (departmentName) => {
   position: sticky;
   top: 0px;
   height: 5rem;
-  width: 300px;
   z-index: 50;
 }
 /* class="border-t border-r border-b flex items-center justify-center font-bold text-xs w-3/4 h-full" */
