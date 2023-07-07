@@ -202,12 +202,3 @@ const nameCheck = () => {
     </v-card>
   </v-dialog>
 </template>
-
-<style scoped>
-.message {
-  margin: 5px;
-  text-align: center;
-  color: #ff0000;
-  font-size: 1rem;
-}
-</style>

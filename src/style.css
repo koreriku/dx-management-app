@@ -14,3 +14,9 @@
 td {
   line-height: 1.5rem;
 }
+.message {
+  margin: 5px;
+  text-align: center;
+  color: #ff0000;
+  font-size: 1rem;
+}
