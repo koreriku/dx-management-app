@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useDxStore } from "../stores/dxManagement.js";
 import dxDetail from "./parts/dx/dxDetail.vue";
 import { useTheme } from "vuetify";
@@ -33,6 +33,26 @@ const item = {
   effect: "中",
   attached_file: "",
   comment: [],
+};
+
+const showTop = ref(false);
+const scr = ref(0);
+
+const scroll = () => {
+  const top = 100;
+  scr.value = window.scrollY;
+  if (top <= scr.value) {
+    showTop.value = true;
+  } else {
+    showTop.value = false;
+  }
+};
+
+const jump = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 };
 
 // 目次項目
@@ -117,9 +137,17 @@ const headerContents = [
   },
 ];
 const open = ref(["Users"]);
+
+onMounted(() => {
+  window.addEventListener("scroll", scroll);
+});
 </script>
 
 <template>
+  <button @click="jump()" class="scroll-top" v-if="showTop">
+    <v-icon>mdi-chevron-double-up</v-icon>
+  </button>
+
   <div align="center" style="padding: 1rem; margin-bottom: 1rem">
     <h1
       :style="{ backgroundColor: theme.themes.value.light.colors.primary }"
@@ -629,6 +657,20 @@ a.anchor {
 @media (max-width: 960px) {
   .list {
     position: static;
+  }
+
+  .scroll-top {
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    border: none;
+    background-color: #396ddd;
+    color: #fff;
+    opacity: 75%;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    z-index: 2;
   }
 }
 </style>
