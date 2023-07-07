@@ -71,6 +71,14 @@ const dxContents = [
     id: "#table",
     title: "表の切り替え",
   },
+  {
+    id: "#graph",
+    title: "グラフ",
+  },
+  {
+    id: "#excel",
+    title: "エクセル生成",
+  },
 ];
 const departmentsContent = [
   {
@@ -79,15 +87,19 @@ const departmentsContent = [
   },
   {
     id: "#editD",
-    title: "部署変更",
+    title: "部署訂正",
   },
   {
     id: "#displayD",
-    title: "部署全表示",
+    title: "過去の部署表示",
   },
   {
     id: "#searchD",
     title: "部署検索",
+  },
+  {
+    id: "#orderD",
+    title: "部署順序変更",
   },
 ];
 const headerContents = [
@@ -137,27 +149,17 @@ const open = ref(["Users"]);
 
                 <v-list-item v-for="item in dxContents" :key="item.id">
                   <v-list-item-title
-                    ><a class="contents" :href="item.id">{{
-                      item.title
-                    }}</a></v-list-item-title
-                  >
-                </v-list-item>
-              </v-list-group>
-
-              <v-list-group value="department">
-                <template v-slot:activator="{ props }">
-                  <v-list-item
-                    v-bind="props"
-                    prepend-icon="mdi-office-building-cog"
-                    title="部署一覧"
-                  ></v-list-item>
-                </template>
-
-                <v-list-item v-for="item in departmentsContent" :key="item.id">
-                  <v-list-item-title
-                    ><a class="contents" :href="item.id">{{
-                      item.title
-                    }}</a></v-list-item-title
+                    ><a
+                      class="contents"
+                      :href="item.id"
+                      :style="{
+                        color:
+                          theme.global.name.value === 'light'
+                            ? '#212121'
+                            : '#FAFAFA',
+                      }"
+                      >{{ item.title }}</a
+                    ></v-list-item-title
                   >
                 </v-list-item>
               </v-list-group>
@@ -173,9 +175,43 @@ const open = ref(["Users"]);
 
                 <v-list-item v-for="item in headerContents" :key="item.id">
                   <v-list-item-title
-                    ><a class="contents" :href="item.id">{{
-                      item.title
-                    }}</a></v-list-item-title
+                    ><a
+                      class="contents"
+                      :href="item.id"
+                      :style="{
+                        color:
+                          theme.global.name.value === 'light'
+                            ? '#212121'
+                            : '#FAFAFA',
+                      }"
+                      >{{ item.title }}</a
+                    ></v-list-item-title
+                  >
+                </v-list-item>
+              </v-list-group>
+
+              <v-list-group value="department">
+                <template v-slot:activator="{ props }">
+                  <v-list-item
+                    v-bind="props"
+                    prepend-icon="mdi-office-building-cog"
+                    title="部署一覧"
+                  ></v-list-item>
+                </template>
+
+                <v-list-item v-for="item in departmentsContent" :key="item.id">
+                  <v-list-item-title
+                    ><a
+                      class="contents"
+                      :href="item.id"
+                      :style="{
+                        color:
+                          theme.global.name.value === 'light'
+                            ? '#212121'
+                            : '#FAFAFA',
+                      }"
+                      >{{ item.title }}</a
+                    ></v-list-item-title
                   >
                 </v-list-item>
               </v-list-group>
@@ -369,8 +405,8 @@ const open = ref(["Users"]);
               表の切り替えを行うと、新規登録と詳細検索がグラフとエクセル出力ボタンに変化します
             </p>
           </div>
-          <div class="mb-10">
-            <p class="text-h6">・グラフボタン</p>
+          <div class="mb-10" id="graph">
+            <p class="text-h5">・グラフ</p>
             <v-btn color="primary" icon class="icon">
               <v-icon>mdi-chart-bar</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -382,8 +418,9 @@ const open = ref(["Users"]);
               グラフを出力中は左上に表ボタンが表示され、クリックすると集計表が作成されます。
             </p>
           </div>
-          <div class="mb-10">
-            <p class="text-h6">・エクセル生成ボタン</p>
+
+          <div class="mb-10" id="excel">
+            <p class="text-h5">・エクセル生成</p>
             <v-btn color="green" icon class="icon">
               <v-icon>mdi-microsoft-excel</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -476,7 +513,6 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-
             <p class="text-h5 anchor" id="editD">・部署訂正</p>
             <p class="mb-3">部署名をクリックすると訂正が行えます</p>
             <ol>
@@ -499,7 +535,6 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-
             <p class="text-h5 anchor" id="displayD">・過去の部署表示</p>
             <p>
               過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます
@@ -530,7 +565,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="searchD">・部署順序変更</p>
+            <p class="text-h5 anchor" id="orderD">・部署順序変更</p>
             <v-btn color="primary" class="icon" icon
               ><v-icon>mdi-order-alphabetical-ascending</v-icon>
               <v-tooltip activator="parent" location="right"
