@@ -35,11 +35,41 @@ const item = {
   comment: [],
 };
 
+// 目次項目
 const showDxContents = ref(false);
 const dxContents = [
   {
     id: "#new",
     title: "新規登録",
+  },
+  {
+    id: "#detail",
+    title: "詳細",
+  },
+  {
+    id: "#sort",
+    title: "並び替え",
+  },
+  {
+    id: "#display",
+    title: "全表示について",
+  },
+  {
+    id: "#edit",
+    title: "編集",
+  },
+  {
+    id: "#delete",
+    title: "削除",
+  },
+  {
+    id: "#keyword",
+    title: "キーワード検索と詳細検索",
+  },
+
+  {
+    id: "#table",
+    title: "表の切り替え",
   },
 ];
 const departmentsContent = [
@@ -47,11 +77,31 @@ const departmentsContent = [
     id: "#newD",
     title: "部署登録",
   },
+  {
+    id: "#editD",
+    title: "部署変更",
+  },
+  {
+    id: "#displayD",
+    title: "部署全表示",
+  },
+  {
+    id: "#searchD",
+    title: "部署検索",
+  },
 ];
 const headerContents = [
   {
-    id: "#newD",
+    id: "#month",
     title: "基準月",
+  },
+  {
+    id: "#theme",
+    title: "テーマカラー",
+  },
+  {
+    id: "#fontsize",
+    title: "文字サイズ",
   },
 ];
 const open = ref(["Users"]);
@@ -74,25 +124,6 @@ const open = ref(["Users"]);
         <div class="list">
           <v-card class="mr-10">
             <v-card-title class="text-medium-emphasis">目次</v-card-title>
-            <!-- <v-list-item-title>{{ item.title }}</v-list-item-title> -->
-            <!-- <a href="#new">新規登録</a>
-                <a href="#edit">編集</a>
-                <a href="#keyword">キーワード検索と詳細検索</a>
-                <a href="#sort">並び替え</a>
-                <a href="#display">全表示について</a>
-                <a href="#table">表の切り替え</a> -->
-
-            <!-- <ul style="max-width: 450px">
-              <li><a href="#month">基準月について</a></li>
-
-              <v-divider class="border-opacity-75"></v-divider>
-
-              <li><a href="#department">部署一覧について</a></li>
-              <li><a href="#newD">部署登録</a></li>
-              <li><a href="#editD">部署変更</a></li>
-              <li><a href="#displayD">部署全表示</a></li>
-              <li><a href="#searchD">部署検索</a></li>
-            </ul> -->
 
             <v-list v-model:opened="open">
               <v-list-group value="dx">
@@ -106,7 +137,9 @@ const open = ref(["Users"]);
 
                 <v-list-item v-for="item in dxContents" :key="item.id">
                   <v-list-item-title
-                    ><a :href="item.id">{{ item.title }}</a></v-list-item-title
+                    ><a class="contents" :href="item.id">{{
+                      item.title
+                    }}</a></v-list-item-title
                   >
                 </v-list-item>
               </v-list-group>
@@ -122,7 +155,9 @@ const open = ref(["Users"]);
 
                 <v-list-item v-for="item in departmentsContent" :key="item.id">
                   <v-list-item-title
-                    ><a :href="item.id">{{ item.title }}</a></v-list-item-title
+                    ><a class="contents" :href="item.id">{{
+                      item.title
+                    }}</a></v-list-item-title
                   >
                 </v-list-item>
               </v-list-group>
@@ -138,7 +173,9 @@ const open = ref(["Users"]);
 
                 <v-list-item v-for="item in headerContents" :key="item.id">
                   <v-list-item-title
-                    ><a :href="item.id">{{ item.title }}</a></v-list-item-title
+                    ><a class="contents" :href="item.id">{{
+                      item.title
+                    }}</a></v-list-item-title
                   >
                 </v-list-item>
               </v-list-group>
@@ -151,7 +188,7 @@ const open = ref(["Users"]);
           <h2 class="mb-10 text-h4">社内DX・社外DX</h2>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="new">・新規登録</p>
+            <a class="text-h5 anchor" id="new">・新規登録</a>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -165,7 +202,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="new">・詳細</p>
+            <a class="text-h5 anchor" id="detail">・詳細</a>
             <v-table class="icon">
               <thead>
                 <tr>
@@ -244,7 +281,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="sort">・並び替え</p>
+            <a class="text-h5 anchor" id="sort">・並び替え</a>
             <p>
               テーブルの列名をクリックすると昇順・降順で並び替えが行われます
             </p>
@@ -252,7 +289,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="display">・全表示について</p>
+            <a class="text-h5 anchor" id="display">・全表示について</a>
             <v-badge
               style="cursor: pointer"
               :color="showAllWord ? 'red' : 'grey-lighten-2'"
@@ -278,7 +315,7 @@ const open = ref(["Users"]);
             <p>詳細画面の右上のペンマークで編集が行えます</p>
           </div>
           <div class="mb-10">
-            <p class="text-h5 anchor" id="delete">・削除</p>
+            <a class="text-h5 anchor" id="delete">・削除</a>
             <v-btn color="red" icon class="icon">
               <v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -321,7 +358,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5" id="table">・表の切り替え</p>
+            <a class="text-h5 anchor" id="table">・表の切り替え</a>
             <v-btn class="icon" color="gray">
               <v-icon>mdi-chart-bar</v-icon>
             </v-btn>
@@ -414,7 +451,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="newD">・部署登録</p>
+            <a class="text-h5 anchor" id="newD">・部署登録</a>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -427,7 +464,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="editD">・部署変更</p>
+            <a class="text-h5 anchor" id="editD">・部署変更</a>
             <p>部署名をクリックすると変更が行えます</p>
             <p class="text-subtitle-1">変更の仕方</p>
             <ol>
@@ -457,7 +494,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="displayD">・部署全表示</p>
+            <a class="text-h5 anchor" id="displayD">・部署全表示</a>
             <v-badge color="red" content="全表示" class="mr-2" inline></v-badge>
             <p>
               過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます
@@ -468,7 +505,7 @@ const open = ref(["Users"]);
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="searchD">・部署検索</p>
+            <a class="text-h5 anchor" id="searchD">・部署検索</a>
             <v-text-field
               label="部門検索"
               variant="outlined"
@@ -488,8 +525,7 @@ const open = ref(["Users"]);
 
 <!-- 文字、写真のデザインを指定するスタイルシート -->
 <style>
-a {
-  list-style: none;
+a.contents {
   opacity: 0.8;
   text-decoration: none;
 }
