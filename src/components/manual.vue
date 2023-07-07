@@ -452,7 +452,7 @@ store.changeSwitchDx();
           </div>
 
           <div class="mb-16" id="graph">
-            <p class="text-h5 anchor">グラフ</p>
+            <a class="text-h5 anchor">グラフ</a>
 
             <v-btn color="primary" icon class="icon">
               <v-icon>mdi-chart-bar</v-icon>
@@ -466,9 +466,8 @@ store.changeSwitchDx();
             </p>
           </div>
 
-
           <div class="mb-16" id="excel">
-            <p class="text-h5 anchor">エクセル生成</p>
+            <a class="text-h5 anchor">エクセル生成</a>
             <v-btn color="green" icon class="icon">
               <v-icon>mdi-microsoft-excel</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -576,9 +575,8 @@ store.changeSwitchDx();
             </ol>
           </div>
 
-
           <div class="mb-16">
-            <p class="text-h5 anchor" id="editD">部署訂正</p>
+            <a class="text-h5 anchor" id="editD">部署訂正</a>
             <p class="mb-3">部署名をクリックすると訂正が行えます</p>
             <ol>
               <p class="text-subtitle-1">用途</p>
@@ -599,9 +597,8 @@ store.changeSwitchDx();
             </ol>
           </div>
 
-
           <div class="mb-16">
-            <p class="text-h5 anchor" id="displayD">過去の部署表示</p>
+            <a class="text-h5 anchor" id="displayD">過去の部署表示</a>
             <p>
               過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます。
             </p>
@@ -632,9 +629,8 @@ store.changeSwitchDx();
             </p>
           </div>
 
-
           <div class="mb-16">
-            <p class="text-h5 anchor" id="orderD">部署順序変更</p>
+            <a class="text-h5 anchor" id="orderD">部署順序変更</a>
             <v-btn color="primary" class="icon" icon
               ><v-icon>mdi-order-alphabetical-ascending</v-icon>
               <v-tooltip activator="parent" location="right"
