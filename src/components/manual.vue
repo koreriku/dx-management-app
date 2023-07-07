@@ -374,6 +374,33 @@ const open = ref(["Users"]);
               style="width: 200px"
             ></v-text-field>
           </div>
+
+          <div class="mb-10">
+            <a class="text-h5 anchor" id="theme">・テーマカラー </a>
+            <p class="my-5">
+              <v-icon>mdi-weather-sunny </v-icon>
+              <v-icon class="mx-5">mdi-swap-horizontal</v-icon>
+              <v-icon>mdi-weather-night</v-icon>
+            </p>
+            <p>ライトモードとダークモードの二種類を切り替えることが出来ます</p>
+            <p>
+              ローカルストレージに設定が保存されるので、サイトを更新してもテーマは変わりません
+            </p>
+          </div>
+
+          <div class="mb-10">
+            <a class="text-h5 anchor" id="fontsize">・文字サイズ</a>
+            <v-icon size="large">mdi-format-font-size-increase</v-icon>
+            <v-slider
+              class="mb-2"
+              style="width: 500px"
+              @mouseup="setFontSize"
+            ></v-slider>
+            <p>バーを使って文字サイズの変更が出来ます</p>
+            <p>
+              ローカルストレージに設定が保存されるので、サイトを更新してもサイズは変わりません
+            </p>
+          </div>
         </section>
 
         <section id="department" class="mt-15">
