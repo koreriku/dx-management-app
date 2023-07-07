@@ -138,7 +138,6 @@ const headerContents = [
 ];
 const open = ref(["Users"]);
 
-
 onMounted(() => {
   window.addEventListener("scroll", scroll);
 });
@@ -179,7 +178,7 @@ store.changeSwitchDx();
                     <v-list-item
                       v-bind="props"
                       prepend-icon="mdi-alpha-d-box"
-                      title="社内DX社外DX"
+                      title="社内DX・社外DX"
                     ></v-list-item>
                   </template>
 
@@ -262,16 +261,16 @@ store.changeSwitchDx();
       <v-col md="9" xs="12">
         <section id="insideDx">
           <h2
-            class="mb-10 text-h4 title"
+            class="mb-16 text-h4 title"
             :style="{
               'border-color':
                 theme.global.name.value === 'light' ? 'black' : 'white',
             }"
           >
-            <v-icon>mdi-alpha-d-box</v-icon> 社内DX社外DX
+            <v-icon>mdi-alpha-d-box</v-icon> 社内DX・社外DX
           </h2>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="new">新規登録</a>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
@@ -285,7 +284,7 @@ store.changeSwitchDx();
             <p>各項目を入力し、チェックボタンをクリックすると登録完了です</p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="detail">詳細</a>
             <v-table class="icon">
               <thead>
@@ -364,13 +363,13 @@ store.changeSwitchDx();
             <p>テーブルの行を選択すると、詳細画面が表示されます。</p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="sort">並び替え</a>
             <p>テーブルの列名をクリックすると昇順降順で並び替えが行われます</p>
             <p></p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="display">全表示について</a>
             <v-badge
               style="cursor: pointer"
@@ -386,7 +385,7 @@ store.changeSwitchDx();
             </p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="edit">編集</a>
             <v-btn color="primary" icon class="icon">
               <v-icon color="#fff">mdi-pencil</v-icon>
@@ -396,7 +395,7 @@ store.changeSwitchDx();
             </v-btn>
             <p>詳細画面の右上のペンマークで編集が行えます</p>
           </div>
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="delete">削除</a>
             <v-btn color="red" icon class="icon">
               <v-icon>mdi-delete</v-icon>
@@ -407,7 +406,7 @@ store.changeSwitchDx();
             <p>詳細画面の右上のごみ箱で削除が出来ます</p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="keyword">キーワード検索と詳細検索</a>
 
             <v-text-field
@@ -437,7 +436,7 @@ store.changeSwitchDx();
             </p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="table">表の切り替え</a>
             <v-btn class="icon" color="gray">
               <v-icon>mdi-chart-bar</v-icon>
@@ -449,7 +448,7 @@ store.changeSwitchDx();
               表の切り替えを行うと、新規登録と詳細検索がグラフとエクセル出力ボタンに変化します
             </p>
           </div>
-          <div class="mb-10" id="graph">
+          <div class="mb-16" id="graph">
             <p class="text-h5">グラフ</p>
             <v-btn color="primary" icon class="icon">
               <v-icon>mdi-chart-bar</v-icon>
@@ -463,7 +462,7 @@ store.changeSwitchDx();
             </p>
           </div>
 
-          <div class="mb-10" id="excel">
+          <div class="mb-16" id="excel">
             <p class="text-h5">エクセル生成</p>
             <v-btn color="green" icon class="icon">
               <v-icon>mdi-microsoft-excel</v-icon>
@@ -477,7 +476,7 @@ store.changeSwitchDx();
 
         <section id="header" class="mt-15">
           <h2
-            class="mb-10 text-h4 title"
+            class="mb-16 text-h4 title"
             :style="{
               'border-color':
                 theme.global.name.value === 'light' ? 'black' : 'white',
@@ -486,7 +485,7 @@ store.changeSwitchDx();
             <v-icon>mdi-format-header-pound</v-icon> ヘッダー
           </h2>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="month">基準月について</a>
             <p>
               ヘッダーに表示されている基準月の欄にて月を入力し、Enterを押すと、その月時点の部署名のデータが表示されます。
@@ -501,7 +500,7 @@ store.changeSwitchDx();
             ></v-text-field>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="theme">テーマカラー </a>
             <p class="my-5">
               <v-icon>mdi-weather-sunny </v-icon>
@@ -516,7 +515,7 @@ store.changeSwitchDx();
             </p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="fontsize">文字サイズ</a>
             <v-icon size="large">mdi-format-font-size-increase</v-icon>
             <v-slider
@@ -532,9 +531,9 @@ store.changeSwitchDx();
         </section>
 
         <section id="department" class="mt-15">
-          <div class="mb-10">
+          <div class="mb-16">
             <h2
-              class="mb-10 text-h4 title"
+              class="mb-16 text-h4 title"
               :style="{
                 'border-color':
                   theme.global.name.value === 'light' ? 'black' : 'white',
@@ -549,7 +548,7 @@ store.changeSwitchDx();
             </p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="newD">部署登録</a>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
@@ -572,7 +571,7 @@ store.changeSwitchDx();
             </ol>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <p class="text-h5 anchor" id="editD">部署訂正</p>
             <p class="mb-3">部署名をクリックすると訂正が行えます</p>
             <ol>
@@ -594,7 +593,7 @@ store.changeSwitchDx();
             </ol>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <p class="text-h5 anchor" id="displayD">過去の部署表示</p>
             <p>
               過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます
@@ -610,7 +609,7 @@ store.changeSwitchDx();
             </p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <a class="text-h5 anchor" id="searchD">部署検索</a>
             <v-text-field
               label="部門検索"
@@ -624,7 +623,7 @@ store.changeSwitchDx();
             <p>部署検索を使用することで部署を捜さずに表示することが出来ます</p>
           </div>
 
-          <div class="mb-10">
+          <div class="mb-16">
             <p class="text-h5 anchor" id="orderD">部署順序変更</p>
             <v-btn color="primary" class="icon" icon
               ><v-icon>mdi-order-alphabetical-ascending</v-icon>
