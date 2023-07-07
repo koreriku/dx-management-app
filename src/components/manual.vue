@@ -138,7 +138,6 @@ const headerContents = [
 ];
 const open = ref(["Users"]);
 
-
 onMounted(() => {
   window.addEventListener("scroll", scroll);
 });
@@ -282,7 +281,7 @@ store.changeSwitchDx();
             <p>
               DX一覧に表示されているプラスボタンをクリックすると登録画面が表示されます。
             </p>
-            <p>各項目を入力し、チェックボタンをクリックすると登録完了です</p>
+            <p>各項目を入力し、チェックボタンをクリックすると登録完了です。</p>
           </div>
 
           <div class="mb-10">
@@ -366,7 +365,9 @@ store.changeSwitchDx();
 
           <div class="mb-10">
             <a class="text-h5 anchor" id="sort">並び替え</a>
-            <p>テーブルの列名をクリックすると昇順降順で並び替えが行われます</p>
+            <p>
+              テーブルの列名をクリックすると昇順降順で並び替えが行われます。
+            </p>
             <p></p>
           </div>
 
@@ -380,7 +381,7 @@ store.changeSwitchDx();
               @click="showAllWord = !showAllWord"
               inline
             ></v-badge>
-            <p>テーブルの行が大体二行に収まるように表示されていますが</p>
+            <p>テーブルの行が大体二行に収まるように表示されていますが、</p>
             <p>
               期待される効果の欄に表示されている全表示をクリックすると、全ての文字が表示されます。
             </p>
@@ -394,7 +395,7 @@ store.changeSwitchDx();
                 >編集(サンプル)</v-tooltip
               >
             </v-btn>
-            <p>詳細画面の右上のペンマークで編集が行えます</p>
+            <p>詳細画面の右上のペンマークで編集が行えます。</p>
           </div>
           <div class="mb-10">
             <a class="text-h5 anchor" id="delete">削除</a>
@@ -404,7 +405,7 @@ store.changeSwitchDx();
                 >削除(サンプル)</v-tooltip
               >
             </v-btn>
-            <p>詳細画面の右上のごみ箱で削除が出来ます</p>
+            <p>詳細画面の右上のごみ箱で削除が出来ます。</p>
           </div>
 
           <div class="mb-10">
@@ -430,10 +431,10 @@ store.changeSwitchDx();
               >
             </v-btn>
             <p>
-              より詳細に検索したい場合は、画面右の虫眼鏡のボタンをクリックすると詳細検索が行えます
+              より詳細に検索したい場合は、画面右の虫眼鏡のボタンをクリックすると詳細検索が行えます。
             </p>
             <p>
-              検索したい列名とキーワードを入力し、チェックボタンをクリックすると検索が行えます
+              検索したい列名とキーワードを入力し、チェックボタンをクリックすると検索が行えます。
             </p>
           </div>
 
@@ -443,35 +444,35 @@ store.changeSwitchDx();
               <v-icon>mdi-chart-bar</v-icon>
             </v-btn>
             <p>
-              テーブルの左上に表示されているタグをクリックすると表が切り替わります
+              テーブルの左上に表示されているタグをクリックすると表が切り替わります。
             </p>
             <p>
-              表の切り替えを行うと、新規登録と詳細検索がグラフとエクセル出力ボタンに変化します
+              表の切り替えを行うと、新規登録と詳細検索がグラフとエクセル出力ボタンに変化します。
             </p>
           </div>
           <div class="mb-10" id="graph">
-            <p class="text-h5">グラフ</p>
+            <a class="text-h5 anchor">グラフ</a>
             <v-btn color="primary" icon class="icon">
               <v-icon>mdi-chart-bar</v-icon>
               <v-tooltip activator="parent" location="right"
                 >グラフ作成(サンプル)</v-tooltip
               >
             </v-btn>
-            <p>データを元に円グラフと棒グラフが作成出来ます</p>
+            <p>データを元に円グラフと棒グラフが作成出来ます。</p>
             <p>
               グラフを出力中は左上に表ボタンが表示され、クリックすると集計表が作成されます。
             </p>
           </div>
 
           <div class="mb-10" id="excel">
-            <p class="text-h5">エクセル生成</p>
+            <a class="text-h5 anchor">エクセル生成</a>
             <v-btn color="green" icon class="icon">
               <v-icon>mdi-microsoft-excel</v-icon>
               <v-tooltip activator="parent" location="right"
                 >excel作成(サンプル)</v-tooltip
               >
             </v-btn>
-            <p>DX一覧をExcelに出力します</p>
+            <p>DX一覧をExcelに出力します。</p>
           </div>
         </section>
 
@@ -542,10 +543,10 @@ store.changeSwitchDx();
             >
               <v-icon>mdi-office-building-cog</v-icon> 部署一覧
             </h2>
-            <p>管理者向けのページです</p>
-            <p>過去現在の部署を一覧で見ることが出来ます</p>
+            <p>管理者向けのページです。</p>
+            <p>過去現在の部署を一覧で見ることが出来ます。</p>
             <p>
-              部署は基準月を元に表示されており、月を変えると部署の表示も変化します
+              部署は基準月を元に表示されており、月を変えると部署の表示も変化します。
             </p>
           </div>
 
@@ -573,8 +574,8 @@ store.changeSwitchDx();
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="editD">部署訂正</p>
-            <p class="mb-3">部署名をクリックすると訂正が行えます</p>
+            <a class="text-h5 anchor" id="editD">部署訂正</a>
+            <p class="mb-3">部署名をクリックすると訂正が行えます。</p>
             <ol>
               <p class="text-subtitle-1">用途</p>
               <li>
@@ -589,15 +590,15 @@ store.changeSwitchDx();
                 </p>
               </li>
               <li>
-                <p>部署の区分を独立させたいときはNewを選択してください</p>
+                <p>部署の区分を独立させたいときはNewを選択してください。</p>
               </li>
             </ol>
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="displayD">過去の部署表示</p>
+            <a class="text-h5 anchor" id="displayD">過去の部署表示</a>
             <p>
-              過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます
+              過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます。
             </p>
             <v-badge
               color="grey-lighten-2"
@@ -606,7 +607,7 @@ store.changeSwitchDx();
               inline
             ></v-badge>
             <p>
-              全表示ボタンを押すと過去の部署も含めて表示されるようになります
+              全表示ボタンを押すと過去の部署も含めて表示されるようになります。
             </p>
           </div>
 
@@ -621,11 +622,13 @@ store.changeSwitchDx();
               hide-details="auto"
               style="width: 200px"
             ></v-text-field>
-            <p>部署検索を使用することで部署を捜さずに表示することが出来ます</p>
+            <p>
+              部署検索を使用することで部署を捜さずに表示することが出来ます。
+            </p>
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="orderD">部署順序変更</p>
+            <a class="text-h5 anchor" id="orderD">部署順序変更</a>
             <v-btn color="primary" class="icon" icon
               ><v-icon>mdi-order-alphabetical-ascending</v-icon>
               <v-tooltip activator="parent" location="right"
