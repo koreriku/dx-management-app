@@ -363,7 +363,7 @@ const open = ref(["Users"]);
           <div class="mb-10">
             <a class="text-h5 anchor" id="month">・基準月について</a>
             <p>
-              ヘッダーに表示されている基準月の欄にて月を選択し、Enterを押すと、その月時点の部署名でレコードが表示されます。
+              ヘッダーに表示されている基準月の欄にて月を入力し、Enterを押すと、その月時点の部署名のデータが表示されます。
             </p>
             <v-text-field
               type="month"
@@ -382,9 +382,11 @@ const open = ref(["Users"]);
               <v-icon class="mx-5">mdi-swap-horizontal</v-icon>
               <v-icon>mdi-weather-night</v-icon>
             </p>
-            <p>ライトモードとダークモードの二種類を切り替えることが出来ます</p>
             <p>
-              ローカルストレージに設定が保存されるので、サイトを更新してもテーマは変わりません
+              ライトモードとダークモードの二種類を切り替えることが出来ます。
+            </p>
+            <p>
+              ローカルストレージに設定が保存されるので、サイトを更新してもテーマは保持されます。
             </p>
           </div>
 
@@ -396,9 +398,9 @@ const open = ref(["Users"]);
               style="width: 500px"
               @mouseup="setFontSize"
             ></v-slider>
-            <p>バーを使って文字サイズの変更が出来ます</p>
+            <p>バーを使って文字サイズの変更が出来ます。</p>
             <p>
-              ローカルストレージに設定が保存されるので、サイトを更新してもサイズは変わりません
+              ローカルストレージに設定が保存されるので、サイトを更新してもサイズは保持されます。
             </p>
           </div>
         </section>
@@ -421,47 +423,54 @@ const open = ref(["Users"]);
                 >新規登録(サンプル)</v-tooltip
               >
             </v-btn>
-            <p>DX一覧と同様にプラスボタンで新規追加が行えます</p>
-            <p>各項目を入力後登録が出来ます</p>
-            <p>特に制限がなければ区分と期限はそのままをおすすめします</p>
-          </div>
-
-          <div class="mb-10">
-            <p class="text-h5 anchor" id="editD">・部署変更</p>
-            <p>部署名をクリックすると変更が行えます</p>
-            <p class="text-subtitle-1">変更の仕方</p>
+            <p>プラスボタンで部署の新規登録、部署名変更が行えます。</p>
+            <p>各項目を全て入力後、登録が出来ます。</p>
             <ol>
+              <p class="text-subtitle-1">用途</p>
+              <li><p>新規登録の場合は、区分を「New」にします。</p></li>
+              <li><p>部署名変更の場合は、区分を対象の部署名にします。</p></li>
               <li>
-                <p>部署名と開始日の変更はおすすめしません、</p>
-                <p>部署名が変わった場合は新規追加を行ってください</p>
-              </li>
-              <li>
-                <p>部署名変更を行った過去の部署は区分を現在の部署に変更し</p>
-                <p>期限を変更してください</p>
-              </li>
-              <li>
+                <p>部署が二つ以上に分裂する場合、新規登録を二度行います。</p>
                 <p>
-                  部署が他部署に吸収された場合は、部署の区分を他部署に変更して下さい
+                  一度目は区分を分裂する部署にし、二度目は区分をNewにし登録します。
                 </p>
-                <p>こちらでも期限を変更してください</p>
-              </li>
-              <li>
-                <p>部署が二つ以上に分裂する場合、登録を二回行い</p>
-                <p>どちらかに過去の部署を入れてください</p>
-              </li>
-              <li>
-                <p>部署を元の区分に戻すときはNEWを選択してください</p>
-                <p>この場合、部署名は最後に移ります</p>
               </li>
             </ol>
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="displayD">・部署全表示</p>
-            <v-badge color="red" content="全表示" class="mr-2" inline></v-badge>
+            <p class="text-h5 anchor" id="editD">・部署訂正</p>
+            <p class="mb-3">部署名をクリックすると訂正が行えます</p>
+            <ol>
+              <p class="text-subtitle-1">用途</p>
+              <li>
+                <p>部署名に誤りがある場合は、部署名を訂正可能です。</p>
+                <p>
+                  ※部署名変更の場合は、過去の部署名を残すために新規追加を行ってください。
+                </p>
+              </li>
+              <li>
+                <p>
+                  部署が吸収される場合は、吸収される部署の区分を吸収する部署の区分にし、期限を吸収日の前日に設定して下さい。
+                </p>
+              </li>
+              <li>
+                <p>部署の区分を独立させたいときはNewを選択してください</p>
+              </li>
+            </ol>
+          </div>
+
+          <div class="mb-10">
+            <p class="text-h5 anchor" id="displayD">・過去の部署表示</p>
             <p>
               過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます
             </p>
+            <v-badge
+              color="grey-lighten-2"
+              content="全表示"
+              class="mr-2 icon"
+              inline
+            ></v-badge>
             <p>
               全表示ボタンを押すと過去の部署も含めて表示されるようになります
             </p>
@@ -473,12 +482,23 @@ const open = ref(["Users"]);
               label="部門検索"
               variant="outlined"
               density="compact"
-              class="mx-2 my-3"
+              class="icon"
               append-inner-icon="mdi-magnify"
               hide-details="auto"
               style="width: 200px"
             ></v-text-field>
             <p>部署検索を使用することで部署を捜さずに表示することが出来ます</p>
+          </div>
+
+          <div class="mb-10">
+            <p class="text-h5 anchor" id="searchD">・部署順序変更</p>
+            <v-btn color="primary" class="icon" icon
+              ><v-icon>mdi-order-alphabetical-ascending</v-icon>
+              <v-tooltip activator="parent" location="right"
+                >順序変更</v-tooltip
+              >
+            </v-btn>
+            <p>順序変更ボタンを押すと部署の順序を変更することができます。</p>
           </div>
         </section>
       </v-col>
