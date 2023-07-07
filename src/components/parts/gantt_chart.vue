@@ -6,6 +6,7 @@ import { useDxStore } from "../../stores/dxManagement";
 import { useTheme } from "vuetify";
 import departmentDialog from "./dialog.vue";
 import Button from "./button.vue";
+import { useRouter } from "vue-router";
 
 const theme = useTheme();
 const now = dayjs();
@@ -16,6 +17,11 @@ const year_end = ref(dayjs(`${now.add(1, "year").year()}-12-31`));
 const block_size = ref(30);
 const calendars = ref([]);
 const store = useDxStore();
+const router = useRouter();
+
+if (!store.departmentsPermission) {
+  router.push("/");
+}
 
 // 年ごとの月数を取得
 const getMonths = (year, block_number) => {

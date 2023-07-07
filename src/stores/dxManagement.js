@@ -4,6 +4,7 @@ import chartjsPluginColorschemes from "chartjs-plugin-colorschemes";
 import axios from "axios";
 import ExcelJS from "exceljs";
 import { useTheme } from "vuetify";
+import { useRouter } from "vue-router";
 
 axios.create({
   baseURL: "http://172.16.16.134:8000",
@@ -15,6 +16,7 @@ axios.create({
 });
 
 export const useDxStore = defineStore("dxManagement", () => {
+  const router = useRouter();
   // 現在の日付を取得
   const today = new Date();
   const year = today.getFullYear();
@@ -145,6 +147,9 @@ export const useDxStore = defineStore("dxManagement", () => {
   const startingDepartment = ref("");
   const destinationDepartment = ref("");
 
+  // trueの時に部署変更
+  const departmentsPermission = ref(false);
+
   // 部門系の関数 ----------------------------------------------------
   // 部門一覧を全て取得
   const getDepartments = async () => {
@@ -239,6 +244,20 @@ export const useDxStore = defineStore("dxManagement", () => {
     departmentsForInput.value.unshift("New");
   };
 
+  const password = ref("");
+  const message = ref("");
+  const showUnlockModal = ref(false);
+  const unlockDepartmentChangeAuthority = () => {
+    axios.get("../../json/administratorInfo.json").then((res) => {
+      if (res.data.password === password.value) {
+        departmentsPermission.value = true;
+        router.push("/department");
+        showUnlockModal.value = false;
+      } else {
+        message.value = "パスワードが違います。";
+      }
+    });
+  };
   // 選択された部門の変更前の区分コードを格納。選択された部門の子も変更後の区分コードにする際に使用
   const previousDepartmentDivision = ref(null);
   // 部署更新
@@ -1355,6 +1374,10 @@ export const useDxStore = defineStore("dxManagement", () => {
     departmentsForInput,
     departments,
     departmentsForGanttChart,
+    departmentsPermission,
+    showUnlockModal,
+    password,
+    message,
     startingDepartment,
     destinationDepartment,
     isShowedDepartmentLength,
@@ -1417,6 +1440,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     registerDepartment,
     changeDepartmentDivision,
     confirmDepartmentDivision,
+    unlockDepartmentChangeAuthority,
     getInsideDxEffect,
     getInsideDxState,
     changeDepartment,

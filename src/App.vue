@@ -3,6 +3,7 @@ import { ref, onBeforeMount } from "vue";
 import { useTheme } from "vuetify";
 import { useRouter, useRoute } from "vue-router";
 import { useDxStore } from "./stores/dxManagement.js";
+import Button from "./components/parts/button.vue";
 
 const store = useDxStore();
 const theme = useTheme();
@@ -89,7 +90,14 @@ const setFontSize = () => {
           "
           >社外DX</v-btn
         >
-        <v-btn to="/department">部署一覧</v-btn>
+        <v-btn
+          @click="
+            store.message = '';
+            store.password = '';
+            store.showUnlockModal = true;
+          "
+          >部署一覧</v-btn
+        >
         <v-divider
           vertical
           inset
@@ -197,7 +205,11 @@ const setFontSize = () => {
         <v-list-item
           prepend-icon="mdi-office-building-cog"
           title="部署一覧"
-          @click="router.push('/department')"
+          @click="
+            store.message = '';
+            store.password = '';
+            store.showUnlockModal = true;
+          "
           value="department"
           class="hamburger_font"
         ></v-list-item>
@@ -266,6 +278,57 @@ const setFontSize = () => {
       <div class="text-center">&copy;{{ store.year }} DX Hub</div></v-footer
     >
   </v-app>
+
+  <v-dialog
+    v-model="store.showUnlockModal"
+    width="400"
+    :style="{ fontSize: store.calculateFontSize() * 0.95 + 'rem' }"
+    style="line-height: 2rem"
+  >
+    <v-card class="card">
+      <v-row>
+        <v-col>
+          <v-card-text class="text-medium-emphasis"
+            >部署変更権限解除</v-card-text
+          >
+        </v-col>
+        <v-col>
+          <div class="mt-2 me-2" align="end">
+            <Button
+              color="gray"
+              class="mr-3"
+              @click="store.showUnlockModal = false"
+              icon
+              ><v-icon>mdi-arrow-u-left-bottom</v-icon>
+              <v-tooltip activator="parent" location="bottom"
+                >戻る</v-tooltip
+              ></Button
+            >
+          </div>
+        </v-col>
+      </v-row>
+      <v-card-item>
+        <v-text-field
+          type="password"
+          variant="outlined"
+          label="パスワード"
+          class="mt-2"
+          v-model="store.password"
+        ></v-text-field>
+      </v-card-item>
+      <div v-if="store.message" class="message">{{ store.message }}</div>
+      <div class="mb-4" style="align-self: center">
+        <Button
+          type="submit"
+          color="yellow"
+          @click="store.unlockDepartmentChangeAuthority"
+          icon
+          ><v-icon>mdi-check</v-icon>
+          <v-tooltip activator="parent" location="bottom">OK</v-tooltip></Button
+        >
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>

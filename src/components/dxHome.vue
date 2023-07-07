@@ -1,7 +1,6 @@
 <script setup>
 import { useDxStore } from "../stores/dxManagement.js";
 import { onBeforeMount, ref } from "vue";
-import { useRouter } from "vue-router";
 import dxDetail from "./parts/dx/dxDetail.vue";
 import { useTheme } from "vuetify";
 const theme = useTheme();

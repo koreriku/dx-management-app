@@ -138,9 +138,14 @@ const headerContents = [
 ];
 const open = ref(["Users"]);
 
+
 onMounted(() => {
   window.addEventListener("scroll", scroll);
 });
+
+const contentsHeight = window.innerHeight * 0.7;
+store.switchDx = true;
+store.changeSwitchDx();
 </script>
 
 <template>
@@ -162,97 +167,112 @@ onMounted(() => {
     <v-row justify="center">
       <v-col md="3" sm="12">
         <div class="list">
-          <v-card class="mr-10">
-            <v-card-title class="text-medium-emphasis">目次</v-card-title>
+          <div
+            class="mr-10 contentsBar"
+            :style="{ 'max-height': contentsHeight + 'px' }"
+          >
+            <v-card>
+              <v-card-title class="text-medium-emphasis">目次</v-card-title>
+              <v-list v-model:opened="open">
+                <v-list-group value="dx">
+                  <template v-slot:activator="{ props }">
+                    <v-list-item
+                      v-bind="props"
+                      prepend-icon="mdi-alpha-d-box"
+                      title="社内DX社外DX"
+                    ></v-list-item>
+                  </template>
 
-            <v-list v-model:opened="open">
-              <v-list-group value="dx">
-                <template v-slot:activator="{ props }">
+                  <v-list-item v-for="item in dxContents" :key="item.id">
+                    <v-list-item-title
+                      ><a
+                        class="contents"
+                        :href="item.id"
+                        :style="{
+                          color:
+                            theme.global.name.value === 'light'
+                              ? '#212121'
+                              : '#FAFAFA',
+                        }"
+                        >{{ item.title }}</a
+                      ></v-list-item-title
+                    >
+                  </v-list-item>
+                </v-list-group>
+
+                <v-list-group value="header">
+                  <template v-slot:activator="{ props }">
+                    <v-list-item
+                      v-bind="props"
+                      prepend-icon="mdi-format-header-pound"
+                      title="ヘッダー"
+                    ></v-list-item>
+                  </template>
+
+                  <v-list-item v-for="item in headerContents" :key="item.id">
+                    <v-list-item-title
+                      ><a
+                        class="contents"
+                        :href="item.id"
+                        :style="{
+                          color:
+                            theme.global.name.value === 'light'
+                              ? '#212121'
+                              : '#FAFAFA',
+                        }"
+                        >{{ item.title }}</a
+                      ></v-list-item-title
+                    >
+                  </v-list-item>
+                </v-list-group>
+
+                <v-list-group value="department">
+                  <template v-slot:activator="{ props }">
+                    <v-list-item
+                      v-bind="props"
+                      prepend-icon="mdi-office-building-cog"
+                      title="部署一覧"
+                    ></v-list-item>
+                  </template>
+
                   <v-list-item
-                    v-bind="props"
-                    prepend-icon="mdi-alpha-d-box"
-                    title="社内DX・社外DX"
-                  ></v-list-item>
-                </template>
-
-                <v-list-item v-for="item in dxContents" :key="item.id">
-                  <v-list-item-title
-                    ><a
-                      class="contents"
-                      :href="item.id"
-                      :style="{
-                        color:
-                          theme.global.name.value === 'light'
-                            ? '#212121'
-                            : '#FAFAFA',
-                      }"
-                      >{{ item.title }}</a
-                    ></v-list-item-title
+                    v-for="item in departmentsContent"
+                    :key="item.id"
                   >
-                </v-list-item>
-              </v-list-group>
-
-              <v-list-group value="header">
-                <template v-slot:activator="{ props }">
-                  <v-list-item
-                    v-bind="props"
-                    prepend-icon="mdi-format-header-pound"
-                    title="ヘッダー"
-                  ></v-list-item>
-                </template>
-
-                <v-list-item v-for="item in headerContents" :key="item.id">
-                  <v-list-item-title
-                    ><a
-                      class="contents"
-                      :href="item.id"
-                      :style="{
-                        color:
-                          theme.global.name.value === 'light'
-                            ? '#212121'
-                            : '#FAFAFA',
-                      }"
-                      >{{ item.title }}</a
-                    ></v-list-item-title
-                  >
-                </v-list-item>
-              </v-list-group>
-
-              <v-list-group value="department">
-                <template v-slot:activator="{ props }">
-                  <v-list-item
-                    v-bind="props"
-                    prepend-icon="mdi-office-building-cog"
-                    title="部署一覧"
-                  ></v-list-item>
-                </template>
-
-                <v-list-item v-for="item in departmentsContent" :key="item.id">
-                  <v-list-item-title
-                    ><a
-                      class="contents"
-                      :href="item.id"
-                      :style="{
-                        color:
-                          theme.global.name.value === 'light'
-                            ? '#212121'
-                            : '#FAFAFA',
-                      }"
-                      >{{ item.title }}</a
-                    ></v-list-item-title
-                  >
-                </v-list-item>
-              </v-list-group>
-            </v-list>
-          </v-card>
+                    <v-list-item-title
+                      ><a
+                        class="contents"
+                        :href="item.id"
+                        :style="{
+                          color:
+                            theme.global.name.value === 'light'
+                              ? '#212121'
+                              : '#FAFAFA',
+                        }"
+                        >{{ item.title }}</a
+                      ></v-list-item-title
+                    >
+                  </v-list-item>
+                </v-list-group>
+              </v-list>
+            </v-card>
+          </div>
         </div>
       </v-col>
       <v-col md="9" xs="12">
         <section id="insideDx">
-          <h2 class="mb-10 text-h4">社内DX・社外DX</h2>
+          <h2
+            class="mb-10 text-h4 title"
+            :style="{
+              'border-color':
+                theme.global.name.value === 'light' ? 'black' : 'white',
+            }"
+          >
+            <v-icon>mdi-alpha-d-box</v-icon> 社内DX社外DX
+          </h2>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="new">・新規登録</a>
+            <a class="text-h5 anchor" id="new">新規登録</a>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -266,7 +286,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="detail">・詳細</a>
+            <a class="text-h5 anchor" id="detail">詳細</a>
             <v-table class="icon">
               <thead>
                 <tr>
@@ -345,15 +365,13 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="sort">・並び替え</a>
-            <p>
-              テーブルの列名をクリックすると昇順・降順で並び替えが行われます
-            </p>
+            <a class="text-h5 anchor" id="sort">並び替え</a>
+            <p>テーブルの列名をクリックすると昇順降順で並び替えが行われます</p>
             <p></p>
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="display">・全表示について</a>
+            <a class="text-h5 anchor" id="display">全表示について</a>
             <v-badge
               style="cursor: pointer"
               :color="showAllWord ? 'red' : 'grey-lighten-2'"
@@ -369,7 +387,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="edit">・編集</a>
+            <a class="text-h5 anchor" id="edit">編集</a>
             <v-btn color="primary" icon class="icon">
               <v-icon color="#fff">mdi-pencil</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -379,7 +397,7 @@ onMounted(() => {
             <p>詳細画面の右上のペンマークで編集が行えます</p>
           </div>
           <div class="mb-10">
-            <a class="text-h5 anchor" id="delete">・削除</a>
+            <a class="text-h5 anchor" id="delete">削除</a>
             <v-btn color="red" icon class="icon">
               <v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -390,9 +408,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="keyword"
-              >・キーワード検索と詳細検索</a
-            >
+            <a class="text-h5 anchor" id="keyword">キーワード検索と詳細検索</a>
 
             <v-text-field
               label="キーワード検索"
@@ -422,7 +438,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="table">・表の切り替え</a>
+            <a class="text-h5 anchor" id="table">表の切り替え</a>
             <v-btn class="icon" color="gray">
               <v-icon>mdi-chart-bar</v-icon>
             </v-btn>
@@ -434,7 +450,7 @@ onMounted(() => {
             </p>
           </div>
           <div class="mb-10" id="graph">
-            <p class="text-h5">・グラフ</p>
+            <p class="text-h5">グラフ</p>
             <v-btn color="primary" icon class="icon">
               <v-icon>mdi-chart-bar</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -448,7 +464,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10" id="excel">
-            <p class="text-h5">・エクセル生成</p>
+            <p class="text-h5">エクセル生成</p>
             <v-btn color="green" icon class="icon">
               <v-icon>mdi-microsoft-excel</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -460,10 +476,18 @@ onMounted(() => {
         </section>
 
         <section id="header" class="mt-15">
-          <h2 class="mb-10 text-h4">ヘッダー</h2>
+          <h2
+            class="mb-10 text-h4 title"
+            :style="{
+              'border-color':
+                theme.global.name.value === 'light' ? 'black' : 'white',
+            }"
+          >
+            <v-icon>mdi-format-header-pound</v-icon> ヘッダー
+          </h2>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="month">・基準月について</a>
+            <a class="text-h5 anchor" id="month">基準月について</a>
             <p>
               ヘッダーに表示されている基準月の欄にて月を入力し、Enterを押すと、その月時点の部署名のデータが表示されます。
             </p>
@@ -478,7 +502,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="theme">・テーマカラー </a>
+            <a class="text-h5 anchor" id="theme">テーマカラー </a>
             <p class="my-5">
               <v-icon>mdi-weather-sunny </v-icon>
               <v-icon class="mx-5">mdi-swap-horizontal</v-icon>
@@ -493,7 +517,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="fontsize">・文字サイズ</a>
+            <a class="text-h5 anchor" id="fontsize">文字サイズ</a>
             <v-icon size="large">mdi-format-font-size-increase</v-icon>
             <v-slider
               class="mb-2"
@@ -509,16 +533,24 @@ onMounted(() => {
 
         <section id="department" class="mt-15">
           <div class="mb-10">
-            <h2 class="text-h4 anchor mb-2" id="department">部署一覧</h2>
+            <h2
+              class="mb-10 text-h4 title"
+              :style="{
+                'border-color':
+                  theme.global.name.value === 'light' ? 'black' : 'white',
+              }"
+            >
+              <v-icon>mdi-office-building-cog</v-icon> 部署一覧
+            </h2>
             <p>管理者向けのページです</p>
-            <p>過去・現在の部署を一覧で見ることが出来ます</p>
+            <p>過去現在の部署を一覧で見ることが出来ます</p>
             <p>
               部署は基準月を元に表示されており、月を変えると部署の表示も変化します
             </p>
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="newD">・部署登録</a>
+            <a class="text-h5 anchor" id="newD">部署登録</a>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -541,7 +573,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="editD">・部署訂正</p>
+            <p class="text-h5 anchor" id="editD">部署訂正</p>
             <p class="mb-3">部署名をクリックすると訂正が行えます</p>
             <ol>
               <p class="text-subtitle-1">用途</p>
@@ -563,7 +595,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="displayD">・過去の部署表示</p>
+            <p class="text-h5 anchor" id="displayD">過去の部署表示</p>
             <p>
               過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます
             </p>
@@ -579,7 +611,7 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="searchD">・部署検索</a>
+            <a class="text-h5 anchor" id="searchD">部署検索</a>
             <v-text-field
               label="部門検索"
               variant="outlined"
@@ -593,11 +625,11 @@ onMounted(() => {
           </div>
 
           <div class="mb-10">
-            <p class="text-h5 anchor" id="orderD">・部署順序変更</p>
+            <p class="text-h5 anchor" id="orderD">部署順序変更</p>
             <v-btn color="primary" class="icon" icon
               ><v-icon>mdi-order-alphabetical-ascending</v-icon>
               <v-tooltip activator="parent" location="right"
-                >順序変更</v-tooltip
+                >順序変更(サンプル)</v-tooltip
               >
             </v-btn>
             <p>順序変更ボタンを押すと部署の順序を変更することができます。</p>
@@ -609,11 +641,21 @@ onMounted(() => {
 </template>
 
 <!-- 文字、写真のデザインを指定するスタイルシート -->
-<style>
+<style scoped>
+.contentsBar {
+  overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.title {
+  border-bottom: solid 1px;
+  border-top: solid 1px;
+  padding: 1rem;
+}
 a.contents {
   opacity: 0.8;
   text-decoration: none;
 }
+
 section {
   margin-bottom: 12rem;
 }
@@ -646,6 +688,18 @@ a.anchor {
   display: block;
   padding-top: 100px;
   margin-top: -100px;
+  position: relative; /*相対位置*/
+  padding-left: 2.5rem; /*アイコン分のスペース*/
+}
+a.anchor:before {
+  content: "";
+  position: absolute; /*絶対位置*/
+  left: 12px;
+  bottom: 10px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #1565c0;
 }
 
 .list {
