@@ -2,8 +2,10 @@
 import { ref } from "vue";
 import { useDxStore } from "../stores/dxManagement.js";
 import dxDetail from "./parts/dx/dxDetail.vue";
+import { useTheme } from "vuetify";
 
 const store = useDxStore();
+const theme = useTheme();
 
 let showAllWord = ref(false);
 const omittedText = (text, max_length) => {
@@ -17,7 +19,7 @@ const omittedText = (text, max_length) => {
 };
 
 const item = {
-  id: 1,
+  id: null,
   registration_date: "2021/7/20",
   update_date: "2021/9/22",
   changer: "佐藤亜紀",
@@ -32,12 +34,34 @@ const item = {
   attached_file: "",
   comment: [],
 };
+
+const showDxContents = ref(false);
+const dxContents = [
+  {
+    id: "#new",
+    title: "新規登録",
+  },
+];
+const departmentsContent = [
+  {
+    id: "#newD",
+    title: "部署登録",
+  },
+];
+const headerContents = [
+  {
+    id: "#newD",
+    title: "基準月",
+  },
+];
+const open = ref(["Users"]);
 </script>
 
 <template>
-  <div align="center">
+  <div align="center" style="padding: 1rem; margin-bottom: 1rem">
     <h1
-      style="background-color: #4169e1; color: #fff; margin-bottom: 20px"
+      :style="{ backgroundColor: theme.themes.value.light.colors.primary }"
+      style="padding: 10px; color: white"
       id="top"
     >
       マニュアル
@@ -48,23 +72,78 @@ const item = {
     <v-row justify="center">
       <v-col md="3" sm="12">
         <div class="list">
-          <ul style="max-width: 450px">
-            <li><a href="#new">新規登録</a></li>
-            <li><a href="#edit">編集</a></li>
-            <li><a href="#keyword">キーワード検索と詳細検索</a></li>
-            <li><a href="#sort">並び替え</a></li>
-            <li><a href="#display">全表示について</a></li>
-            <li><a href="#table">表の切り替え</a></li>
-            <li><a href="#month">基準月について</a></li>
+          <v-card class="mr-10">
+            <v-card-title class="text-medium-emphasis">目次</v-card-title>
+            <!-- <v-list-item-title>{{ item.title }}</v-list-item-title> -->
+            <!-- <a href="#new">新規登録</a>
+                <a href="#edit">編集</a>
+                <a href="#keyword">キーワード検索と詳細検索</a>
+                <a href="#sort">並び替え</a>
+                <a href="#display">全表示について</a>
+                <a href="#table">表の切り替え</a> -->
 
-            <v-divider class="border-opacity-75"></v-divider>
+            <!-- <ul style="max-width: 450px">
+              <li><a href="#month">基準月について</a></li>
 
-            <li><a href="#department">部署一覧について</a></li>
-            <li><a href="#newD">部署登録</a></li>
-            <li><a href="#editD">部署変更</a></li>
-            <li><a href="#displayD">部署全表示</a></li>
-            <li><a href="#searchD">部署検索</a></li>
-          </ul>
+              <v-divider class="border-opacity-75"></v-divider>
+
+              <li><a href="#department">部署一覧について</a></li>
+              <li><a href="#newD">部署登録</a></li>
+              <li><a href="#editD">部署変更</a></li>
+              <li><a href="#displayD">部署全表示</a></li>
+              <li><a href="#searchD">部署検索</a></li>
+            </ul> -->
+
+            <v-list v-model:opened="open">
+              <v-list-group value="dx">
+                <template v-slot:activator="{ props }">
+                  <v-list-item
+                    v-bind="props"
+                    prepend-icon="mdi-alpha-d-box"
+                    title="社内DX・社外DX"
+                  ></v-list-item>
+                </template>
+
+                <v-list-item v-for="item in dxContents" :key="item.id">
+                  <v-list-item-title
+                    ><a :href="item.id">{{ item.title }}</a></v-list-item-title
+                  >
+                </v-list-item>
+              </v-list-group>
+
+              <v-list-group value="department">
+                <template v-slot:activator="{ props }">
+                  <v-list-item
+                    v-bind="props"
+                    prepend-icon="mdi-office-building-cog"
+                    title="部署一覧"
+                  ></v-list-item>
+                </template>
+
+                <v-list-item v-for="item in departmentsContent" :key="item.id">
+                  <v-list-item-title
+                    ><a :href="item.id">{{ item.title }}</a></v-list-item-title
+                  >
+                </v-list-item>
+              </v-list-group>
+
+              <v-list-group value="header">
+                <template v-slot:activator="{ props }">
+                  <v-list-item
+                    v-bind="props"
+                    prepend-icon="mdi-format-header-pound"
+                    title="ヘッダー"
+                  ></v-list-item>
+                </template>
+
+                <v-list-item v-for="item in headerContents" :key="item.id">
+                  <v-list-item-title
+                    ><a :href="item.id">{{ item.title }}</a></v-list-item-title
+                  >
+                </v-list-item>
+              </v-list-group>
+            </v-list>
+          </v-card>
         </div>
       </v-col>
       <v-col md="9" xs="12">
@@ -72,7 +151,7 @@ const item = {
           <h2 class="mb-10 text-h4">社内DX・社外DX</h2>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="new">・新規登録</a>
+            <p class="text-h5 anchor" id="new">・新規登録</p>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -86,7 +165,7 @@ const item = {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="new">・詳細</a>
+            <p class="text-h5 anchor" id="new">・詳細</p>
             <v-table class="icon">
               <thead>
                 <tr>
@@ -165,7 +244,7 @@ const item = {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="sort">・並び替え</a>
+            <p class="text-h5 anchor" id="sort">・並び替え</p>
             <p>
               テーブルの列名をクリックすると昇順・降順で並び替えが行われます
             </p>
@@ -173,7 +252,7 @@ const item = {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="display">・全表示について</a>
+            <p class="text-h5 anchor" id="display">・全表示について</p>
             <v-badge
               style="cursor: pointer"
               :color="showAllWord ? 'red' : 'grey-lighten-2'"
@@ -199,7 +278,7 @@ const item = {
             <p>詳細画面の右上のペンマークで編集が行えます</p>
           </div>
           <div class="mb-10">
-            <a class="text-h5 anchor" id="delete">・削除</a>
+            <p class="text-h5 anchor" id="delete">・削除</p>
             <v-btn color="red" icon class="icon">
               <v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -308,7 +387,7 @@ const item = {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="newD">・部署登録</a>
+            <p class="text-h5 anchor" id="newD">・部署登録</p>
             <v-btn color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
@@ -321,7 +400,7 @@ const item = {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="editD">・部署変更</a>
+            <p class="text-h5 anchor" id="editD">・部署変更</p>
             <p>部署名をクリックすると変更が行えます</p>
             <p class="text-subtitle-1">変更の仕方</p>
             <ol>
@@ -351,7 +430,7 @@ const item = {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="displayD">・部署全表示</a>
+            <p class="text-h5 anchor" id="displayD">・部署全表示</p>
             <v-badge color="red" content="全表示" class="mr-2" inline></v-badge>
             <p>
               過去の部署を見たいときは、部署名の隣にある三角マークを押すと見ることが出来ます
@@ -362,7 +441,7 @@ const item = {
           </div>
 
           <div class="mb-10">
-            <a class="text-h5 anchor" id="searchD">・部署検索</a>
+            <p class="text-h5 anchor" id="searchD">・部署検索</p>
             <v-text-field
               label="部門検索"
               variant="outlined"
@@ -375,7 +454,6 @@ const item = {
             <p>部署検索を使用することで部署を捜さずに表示することが出来ます</p>
           </div>
         </section>
-        <p style="height: 500px"></p>
       </v-col>
     </v-row>
   </div>
@@ -383,8 +461,15 @@ const item = {
 
 <!-- 文字、写真のデザインを指定するスタイルシート -->
 <style>
+a {
+  list-style: none;
+  opacity: 0.8;
+  text-decoration: none;
+}
+section {
+  margin-bottom: 12rem;
+}
 ul {
-  border: dotted 1px; /*ドット 色 太さ*/
   padding: 0.5em 0.5em 0.5em 2em;
 }
 

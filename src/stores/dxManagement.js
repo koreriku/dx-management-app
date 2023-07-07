@@ -655,7 +655,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     }
   };
 
-  // 新しい社内DXをデータベースに格納
+  // 新しいDXをデータベースに格納
   const addInsideDxList = async () => {
     dxItem.value.registration_date = date;
     dxItem.value.update_date = date;
@@ -664,16 +664,22 @@ export const useDxStore = defineStore("dxManagement", () => {
     await postFiles();
     await axios.post(dxBASE_URL, editDxItem.value);
   };
-  // 変更した社内DXをデータベースに格納
+  // 変更したDXをデータベースに格納
   const changeInsideDxList = async () => {
+    if (!dxItem.value.id) {
+      return;
+    }
     dxItem.value.update_date = date;
     editDxItem.value = Object.assign({}, dxItem.value);
     await itemNumberConversion();
     await postFiles();
     axios.put(dxBASE_URL, editDxItem.value);
   };
-  // 指定した社内DXを削除
+  // 指定したDXを削除
   const deleteInsideDxList = (id) => {
+    if (!dxItem.value.id) {
+      return;
+    }
     let data = [];
     for (let [index, item] of showDxLists.value.entries()) {
       if (item.id === Number(id)) {
@@ -701,6 +707,9 @@ export const useDxStore = defineStore("dxManagement", () => {
       if (commentArr[i] !== " " && commentArr[i] !== "　") {
         console.log("コメント挿入");
         dxItem.value.comment.unshift(comment);
+        if (!dxItem.value.id) {
+          return;
+        }
         await axios.put(dxBASE_URL + "/changeComment", dxItem.value);
         break;
       }
@@ -709,6 +718,9 @@ export const useDxStore = defineStore("dxManagement", () => {
   // コメントを削除
   const deleteComment = async (commentIndex) => {
     dxItem.value.comment.splice(commentIndex, 1);
+    if (!dxItem.value.id) {
+      return;
+    }
     await axios.put(dxBASE_URL + "/changeComment", dxItem.value);
   };
 
