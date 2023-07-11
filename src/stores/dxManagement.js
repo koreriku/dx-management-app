@@ -248,7 +248,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   const message = ref("");
   const showUnlockModal = ref(false);
   const unlockDepartmentChangeAuthority = () => {
-    axios.get("../../json/administratorInfo.json").then((res) => {
+    axios.get("./json/administratorInfo.json").then((res) => {
       if (res.data.password === password.value) {
         departmentsPermission.value = true;
         router.push("/department");
@@ -397,20 +397,20 @@ export const useDxStore = defineStore("dxManagement", () => {
 
   // 効果一覧取得
   const getInsideDxEffect = async () => {
-    await axios.get("/json/insideDxEffect.json").then((res) => {
+    await axios.get("./json/insideDxEffect.json").then((res) => {
       insideDxEffect.value = res.data;
     });
   };
 
   // 状況一覧取得
   const getOutsideDxIndustry = async () => {
-    await axios.get("/json/outsideDxIndustry.json").then((res) => {
+    await axios.get("./json/outsideDxIndustry.json").then((res) => {
       outsideDxIndustry.value = res.data;
     });
   };
 
   const getInsideDxState = async () => {
-    await axios.get("/json/insideDxState.json").then((res) => {
+    await axios.get("./json/insideDxState.json").then((res) => {
       insideDxState.value = res.data;
     });
   };
@@ -422,7 +422,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
 
   const getOutsideDxTechnology = async () => {
-    await axios.get("/json/outsideDxTechnology.json").then((res) => {
+    await axios.get("./json/outsideDxTechnology.json").then((res) => {
       outsideDxTechnology.value = res.data;
     });
   };
@@ -862,12 +862,17 @@ export const useDxStore = defineStore("dxManagement", () => {
     顧客: "customer",
     登録日: "registration_date",
   };
+  // 詳細検索がされているか有無
   const isDetailedFilter = ref(false);
+  // 詳細検索かキーワード検索がされているか有無
+  const isSearched = ref(false);
 
   // 検索 --------------------------------------------------
+  // キーワード検索の変数
   const searchWord = ref("");
   const resetSearchValue = () => {
     isDetailedFilter.value = false;
+    isSearched.value = false;
     startDate.value = null;
     endDate.value = null;
     filteringWord.value = null;
@@ -884,77 +889,82 @@ export const useDxStore = defineStore("dxManagement", () => {
       selectedDxLists = outsideDxLists.value.concat();
       selectedColumnList = outsideDxColumnList;
     }
-    if (searchWord.value) {
-      for (let list of selectedDxLists) {
-        if (new Date(list.registration_date) > new Date(referenceDate.value)) {
-          continue;
-        }
-        for (let item in list) {
-          if (
-            String(list[item])
-              .toLowerCase()
-              .includes(String(searchWord.value).toLowerCase())
-          ) {
-            showDxLists.value.push(list);
-            break;
-          }
-        }
-      }
-    } else {
-      if (isDetailedFilter.value) {
-        if (!filteringWord.value) {
-          isDetailedFilter.value = false;
-          return search();
-        }
-        for (const list of selectedDxLists) {
-          if (
-            new Date(list.registration_date) > new Date(referenceDate.value)
-          ) {
-            continue;
-          }
-          // 部分一致の時
-          if (switchSearchMethod.value) {
-            if (
-              String(list[selectedColumnList[filteringTargetColumn.value]])
-                .toLowerCase()
-                .includes(String(filteringWord.value).toLowerCase())
-            ) {
-              showDxLists.value.push(list);
-            }
-            // 完全一致の時
-          } else {
-            if (
-              list[selectedColumnList[filteringTargetColumn.value]] ===
-              filteringWord.value
-            ) {
-              showDxLists.value.push(list);
-            }
-          }
-        }
-      } else if (startDate.value && endDate.value) {
-        for (const list of selectedDxLists) {
-          if (
-            new Date(list.registration_date) > new Date(referenceDate.value)
-          ) {
-            continue;
-          }
-          if (
-            new Date(startDate.value) <= new Date(list.registration_date) &&
-            new Date(endDate.value) >= new Date(list.registration_date)
-          ) {
-            showDxLists.value.push(list);
-          }
-        }
-      } else {
+    if (isSearched.value) {
+      if (searchWord.value) {
         for (let list of selectedDxLists) {
           if (
             new Date(list.registration_date) > new Date(referenceDate.value)
           ) {
             continue;
           }
-          showDxLists.value.push(list);
+          for (let item in list) {
+            if (
+              String(list[item])
+                .toLowerCase()
+                .includes(String(searchWord.value).toLowerCase())
+            ) {
+              showDxLists.value.push(list);
+              break;
+            }
+          }
+        }
+      } else {
+        if (isDetailedFilter.value) {
+          if (!filteringWord.value) {
+            isDetailedFilter.value = false;
+            return search();
+          }
+          for (const list of selectedDxLists) {
+            if (
+              new Date(list.registration_date) > new Date(referenceDate.value)
+            ) {
+              continue;
+            }
+            // 部分一致の時
+            if (switchSearchMethod.value) {
+              if (
+                String(list[selectedColumnList[filteringTargetColumn.value]])
+                  .toLowerCase()
+                  .includes(String(filteringWord.value).toLowerCase())
+              ) {
+                showDxLists.value.push(list);
+              }
+              // 完全一致の時
+            } else {
+              if (
+                list[selectedColumnList[filteringTargetColumn.value]] ===
+                filteringWord.value
+              ) {
+                showDxLists.value.push(list);
+              }
+            }
+          }
+        } else if (startDate.value && endDate.value) {
+          for (const list of selectedDxLists) {
+            if (
+              new Date(list.registration_date) > new Date(referenceDate.value)
+            ) {
+              continue;
+            }
+            if (
+              new Date(startDate.value) <= new Date(list.registration_date) &&
+              new Date(endDate.value) >= new Date(list.registration_date)
+            ) {
+              showDxLists.value.push(list);
+            }
+          }
         }
       }
+    } else {
+      for (let list of selectedDxLists) {
+        if (new Date(list.registration_date) > new Date(referenceDate.value)) {
+          continue;
+        }
+        showDxLists.value.push(list);
+      }
+    }
+    if (document.getElementById("chart")) {
+      createGraph(1, "chart", "top");
     }
   };
 
@@ -1398,6 +1408,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     startDate,
     endDate,
     isSearchDate,
+    isSearched,
     showDetailDialog,
     showEditDialog,
     showRegisterDialog,

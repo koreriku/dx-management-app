@@ -82,7 +82,13 @@ if (store.switchDx) {
             <v-icon>mdi-chart-bar</v-icon>
             <v-tooltip activator="parent" location="bottom">グラフ</v-tooltip>
           </Button>
-          <Button color="green" @click="store.createExcel" class="mr-2" icon>
+
+          <Button
+            color="green"
+            @click="store.createExcel"
+            class="mr-3 mb-2"
+            icon
+          >
             <v-icon>mdi-microsoft-excel</v-icon>
 
             <v-tooltip activator="parent" location="bottom"
@@ -90,6 +96,20 @@ if (store.switchDx) {
             >
           </Button>
         </div>
+        <Button
+          color="grey"
+          class="mr-3 mb-2"
+          v-if="store.isSearched"
+          @click="
+            store.resetSearchValue();
+            store.search();
+          "
+          icon
+          ><v-icon>mdi-restore</v-icon>
+          <v-tooltip activator="parent" location="right"
+            >リセット</v-tooltip
+          ></Button
+        >
       </div>
 
       <div style="width: 500px">
@@ -101,6 +121,7 @@ if (store.switchDx) {
           v-model="store.searchWord"
           append-inner-icon="mdi-magnify"
           @keyup.enter="
+            store.isSearched = true;
             store.isDetailedFilter = false;
             store.startDate = null;
             store.endDate = null;
@@ -250,23 +271,9 @@ if (store.switchDx) {
               color="gray"
               @click="detailedSearchDialog = !detailedSearchDialog"
               icon
-              class="mr-3"
               ><v-icon>mdi-arrow-u-left-bottom</v-icon>
-              <v-tooltip activator="parent" location="left"
-                >戻る</v-tooltip
-              ></Button
-            >
-            <Button
-              color="grey"
-              @click="
-                store.resetSearchValue();
-                store.search();
-                detailedSearchDialog = !detailedSearchDialog;
-              "
-              icon
-              ><v-icon>mdi-restore</v-icon>
               <v-tooltip activator="parent" location="right"
-                >リセット</v-tooltip
+                >戻る</v-tooltip
               ></Button
             >
           </div>
@@ -274,17 +281,24 @@ if (store.switchDx) {
       </v-row>
       <v-card-item>
         <div
-          class="d-flex justify-end mr-15 mt-4"
+          class="d-flex justify-end mr-15"
           style="cursor: pointer"
           @click="store.switchSearchMethod = !store.switchSearchMethod"
         >
-          <v-badge
-            v-if="store.switchSearchMethod"
-            content="部分一致"
-            floating
-            color="grey-lighten-2"
-          ></v-badge>
-          <v-badge v-else content="完全一致" floating color="yellow"></v-badge>
+          <div v-if="store.filteringTargetColumn !== '登録日'">
+            <v-badge
+              v-if="store.switchSearchMethod"
+              content="部分一致"
+              floating
+              color="grey-lighten-2"
+            ></v-badge>
+            <v-badge
+              v-else
+              content="完全一致"
+              floating
+              color="yellow"
+            ></v-badge>
+          </div>
         </div>
         <v-select
           v-if="store.switchDx"
@@ -306,6 +320,15 @@ if (store.switchDx) {
           label="キーワード"
           variant="outlined"
           v-model="store.filteringWord"
+          @keyup.enter="
+            store.isSearched = true;
+            store.isDetailedFilter = true;
+            store.searchWord = null;
+            store.startDate = null;
+            store.endDate = null;
+            store.search();
+            detailedSearchDialog = false;
+          "
           v-if="store.filteringTargetColumn !== '登録日'"
         >
         </v-text-field>
@@ -324,6 +347,15 @@ if (store.switchDx) {
             label="終了日"
             class="mb-5"
             v-model="store.endDate"
+            @keyup.enter="
+              store.isSearched = true;
+              store.isDetailedFilter = true;
+              store.searchWord = null;
+              store.startDate = null;
+              store.endDate = null;
+              store.search();
+              detailedSearchDialog = false;
+            "
           ></v-text-field>
         </div>
       </v-card-item>
@@ -332,10 +364,9 @@ if (store.switchDx) {
         <Button
           color="primary"
           @click="
+            store.isSearched = true;
             store.isDetailedFilter = true;
             store.searchWord = null;
-            store.startDate = null;
-            store.endDate = null;
             store.search();
             detailedSearchDialog = false;
           "
@@ -349,6 +380,7 @@ if (store.switchDx) {
         <Button
           color="primary"
           @click="
+            store.isSearched = true;
             store.isDetailedFilter = false;
             store.searchWord = null;
             store.search();

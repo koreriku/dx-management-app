@@ -2,6 +2,7 @@
 ・index.html
 ・CSSファイルに記載されたmdiIcon（/assetsも削除）
 ・jsファイルに記載されたoecIcon(/assetsは残す)
+・jsファイルに記載された~.Jsonファイル
 
 2.添付ファイルの参照先のPathを修正
 ・jsファイルに記載された/public/uploads/insideDx/を/uploads/insideDx/に修正

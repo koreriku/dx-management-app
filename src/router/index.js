@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import dxHome from "../components/dxHome.vue";
 import dx from "../components/dx.vue";
-import department from "../components/parts/gantt_chart.vue";
+import department from "../components/department.vue";
 import manual from "../components/manual.vue";
 
 const routes = [

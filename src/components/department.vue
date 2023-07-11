@@ -1,11 +1,11 @@
 <script setup>
-import { ref, computed, onBeforeMount } from "vue";
+import { ref, onBeforeMount } from "vue";
 // momentがメンテナンスモード二なったのでdayjs
 import dayjs from "dayjs";
-import { useDxStore } from "../../stores/dxManagement";
+import { useDxStore } from "../stores/dxManagement";
 import { useTheme } from "vuetify";
-import departmentDialog from "./dialog.vue";
-import Button from "./button.vue";
+import departmentDialog from "./parts/departmentDialog.vue";
+import Button from "./parts/button.vue";
 import { useRouter } from "vue-router";
 
 const theme = useTheme();

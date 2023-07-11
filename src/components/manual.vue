@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useDxStore } from "../stores/dxManagement.js";
 import dxDetail from "./parts/dx/dxDetail.vue";
 import { useTheme } from "vuetify";
+import Button from "./parts/button.vue";
 
 const store = useDxStore();
 const theme = useTheme();
@@ -83,11 +84,6 @@ const dxContents = [
     title: "削除",
   },
   {
-    id: "#keyword",
-    title: "キーワード検索と詳細検索",
-  },
-
-  {
     id: "#table",
     title: "表の切り替え",
   },
@@ -98,6 +94,10 @@ const dxContents = [
   {
     id: "#excel",
     title: "エクセル生成",
+  },
+  {
+    id: "#keyword",
+    title: "キーワード検索と詳細検索",
   },
 ];
 const departmentsContent = [
@@ -142,7 +142,7 @@ onMounted(() => {
   window.addEventListener("scroll", scroll);
 });
 
-const contentsHeight = window.innerHeight * 0.7;
+const contentsHeight = window.innerHeight * 0.8;
 store.switchDx = true;
 store.changeSwitchDx();
 </script>
@@ -164,7 +164,7 @@ store.changeSwitchDx();
 
   <div class="wrapper">
     <v-row justify="center">
-      <v-col md="3" sm="12">
+      <v-col lg="3" md="4" sm="12">
         <div class="list">
           <div
             class="mr-10 contentsBar"
@@ -258,7 +258,7 @@ store.changeSwitchDx();
           </div>
         </div>
       </v-col>
-      <v-col md="9" xs="12">
+      <v-col lg="9" md="8" xs="12">
         <section id="insideDx">
           <h2
             class="mb-16 text-h4 title"
@@ -272,12 +272,12 @@ store.changeSwitchDx();
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="new">新規登録</a>
-            <v-btn color="yellow" icon class="icon">
+            <Button color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
                 >新規登録(サンプル)</v-tooltip
               >
-            </v-btn>
+            </Button>
             <p>
               DX一覧に表示されているプラスボタンをクリックすると登録画面が表示されます。
             </p>
@@ -389,28 +389,69 @@ store.changeSwitchDx();
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="edit">編集</a>
-            <v-btn color="primary" icon class="icon">
+            <Button color="primary" icon class="icon">
               <v-icon color="#fff">mdi-pencil</v-icon>
               <v-tooltip activator="parent" location="right"
                 >編集(サンプル)</v-tooltip
               >
-            </v-btn>
+            </Button>
             <p>詳細画面の右上のペンマークで編集が行えます。</p>
           </div>
           <div class="mb-16">
             <a class="text-h5 anchor" id="delete">削除</a>
-            <v-btn color="red" icon class="icon">
+            <Button color="red" icon class="icon">
               <v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="right"
                 >削除(サンプル)</v-tooltip
               >
-            </v-btn>
+            </Button>
             <p>詳細画面の右上のごみ箱で削除が出来ます。</p>
           </div>
 
           <div class="mb-16">
-            <a class="text-h5 anchor" id="keyword">キーワード検索と詳細検索</a>
+            <a class="text-h5 anchor" id="table">表の切り替え</a>
+            <Button class="icon" color="gray">
+              <v-icon>mdi-chart-bar</v-icon>
+            </Button>
+            <p>
+              テーブルの左上に表示されているタグをクリックすると集計画面に切り替わります。
+            </p>
+            <p>
+              集計画面に切り替えを行うと、新規登録と詳細検索がグラフとエクセル出力ボタンに変化します。
+            </p>
+          </div>
 
+          <div class="mb-16" id="graph">
+            <a class="text-h5 anchor">グラフ</a>
+
+            <Button color="primary" icon class="icon">
+              <v-icon>mdi-chart-bar</v-icon>
+              <v-tooltip activator="parent" location="right"
+                >グラフ作成(サンプル)</v-tooltip
+              >
+            </Button>
+            <p>データを元に円グラフと棒グラフが作成出来ます。</p>
+            <p>
+              グラフを出力中は左上に表ボタンが表示され、クリックすると集計表が作成されます。
+            </p>
+          </div>
+
+          <div class="mb-16" id="excel">
+            <a class="text-h5 anchor">エクセル生成</a>
+            <Button color="green" icon class="icon">
+              <v-icon>mdi-microsoft-excel</v-icon>
+              <v-tooltip activator="parent" location="right"
+                >excel作成(サンプル)</v-tooltip
+              >
+            </Button>
+            <p>DX一覧をExcelに出力します。</p>
+          </div>
+
+          <div class="mb-16">
+            <a class="text-h5 anchor mb-5" id="keyword"
+              >キーワード検索と詳細検索</a
+            >
+            <p>検索中は、検索結果に応じた集計表やグラフを出力できます。</p>
             <v-text-field
               label="キーワード検索"
               variant="outlined"
@@ -424,57 +465,51 @@ store.changeSwitchDx();
               キーワード検索では、画面右上に表示されている入力欄に検索したいワードを入力し、Enterキーを押下するとワードが含まれている行が表示されます。
             </p>
 
-            <v-btn color="primary" icon class="icon">
+            <Button color="primary" icon class="icon">
               <v-icon>mdi-magnify</v-icon>
               <v-tooltip activator="parent" location="right"
                 >詳細検索(サンプル)</v-tooltip
               >
-            </v-btn>
+            </Button>
             <p>
               より詳細に検索したい場合は、画面右の虫眼鏡のボタンをクリックすると詳細検索が行えます。
             </p>
-            <p>
-              検索したい列名とキーワードを入力し、チェックボタンをクリックすると検索が行えます。
+            <p class="mb-5">
+              検索したい列名とキーワードを入力し、Enterキーを押下 or
+              チェックボタンをクリックすると検索が行えます。
             </p>
-          </div>
-
-          <div class="mb-16">
-            <a class="text-h5 anchor" id="table">表の切り替え</a>
-            <v-btn class="icon" color="gray">
-              <v-icon>mdi-chart-bar</v-icon>
-            </v-btn>
+            <div
+              class="icon"
+              @click="store.switchSearchMethod = !store.switchSearchMethod"
+            >
+              <v-badge
+                v-if="store.switchSearchMethod"
+                content="部分一致"
+                floating
+                color="grey-lighten-2"
+                style="cursor: pointer"
+              ></v-badge>
+              <v-badge
+                v-else
+                content="完全一致"
+                floating
+                color="yellow"
+                style="cursor: pointer"
+              ></v-badge>
+            </div>
             <p>
-              テーブルの左上に表示されているタグをクリックすると表が切り替わります。
+              バッジをクリックすると、部分一致と完全一致を切り替えることができます。
             </p>
-            <p>
-              表の切り替えを行うと、新規登録と詳細検索がグラフとエクセル出力ボタンに変化します。
-            </p>
-          </div>
-
-          <div class="mb-16" id="graph">
-            <a class="text-h5 anchor">グラフ</a>
-
-            <v-btn color="primary" icon class="icon">
-              <v-icon>mdi-chart-bar</v-icon>
+            <Button color="grey" class="mr-2 icon" icon
+              ><v-icon>mdi-restore</v-icon>
               <v-tooltip activator="parent" location="right"
-                >グラフ作成(サンプル)</v-tooltip
-              >
-            </v-btn>
-            <p>データを元に円グラフと棒グラフが作成出来ます。</p>
+                >リセット</v-tooltip
+              ></Button
+            >
             <p>
-              グラフを出力中は左上に表ボタンが表示され、クリックすると集計表が作成されます。
+              キーワード検索 or
+              詳細検索中はリセットボタンが画面左上に表示されます。
             </p>
-          </div>
-
-          <div class="mb-16" id="excel">
-            <a class="text-h5 anchor">エクセル生成</a>
-            <v-btn color="green" icon class="icon">
-              <v-icon>mdi-microsoft-excel</v-icon>
-              <v-tooltip activator="parent" location="right"
-                >excel作成(サンプル)</v-tooltip
-              >
-            </v-btn>
-            <p>DX一覧をExcelに出力します。</p>
           </div>
         </section>
 
@@ -554,12 +589,12 @@ store.changeSwitchDx();
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="newD">部署登録</a>
-            <v-btn color="yellow" icon class="icon">
+            <Button color="yellow" icon class="icon">
               <v-icon>mdi-plus</v-icon>
               <v-tooltip activator="parent" location="right"
                 >新規登録(サンプル)</v-tooltip
               >
-            </v-btn>
+            </Button>
             <p>プラスボタンで部署の新規登録、部署名変更が行えます。</p>
             <p>各項目を全て入力後、登録が出来ます。</p>
             <ol>
@@ -631,12 +666,12 @@ store.changeSwitchDx();
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="orderD">部署順序変更</a>
-            <v-btn color="primary" class="icon" icon
+            <Button color="primary" class="icon" icon
               ><v-icon>mdi-order-alphabetical-ascending</v-icon>
               <v-tooltip activator="parent" location="right"
                 >順序変更(サンプル)</v-tooltip
               >
-            </v-btn>
+            </Button>
             <p>順序変更ボタンを押すと部署の順序を変更することができます。</p>
           </div>
         </section>
