@@ -111,7 +111,7 @@ const setFontSize = () => {
           density="compact"
           class="mx-1 mt-3"
           v-model="store.referenceMonth"
-          @keyup.enter="reloadDxLists"
+          @input="reloadDxLists"
         ></v-text-field>
         <v-btn @click="changeTheme">
           <v-icon v-if="theme.global.name.value === 'light'" size="large"
@@ -162,7 +162,7 @@ const setFontSize = () => {
           density="compact"
           class="mx-2 mt-3 name"
           v-model="store.referenceMonth"
-          @change="reloadDxLists"
+          @input="reloadDxLists"
         ></v-text-field>
       </v-toolbar-items>
     </v-app-bar>
@@ -313,6 +313,7 @@ const setFontSize = () => {
           variant="outlined"
           label="パスワード"
           class="mt-2"
+          @keyup.enter="store.unlockDepartmentChangeAuthority"
           v-model="store.password"
         ></v-text-field>
       </v-card-item>

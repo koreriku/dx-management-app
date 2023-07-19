@@ -503,7 +503,7 @@ store.changeSwitchDx();
             <Button color="grey" class="mr-2 icon" icon
               ><v-icon>mdi-restore</v-icon>
               <v-tooltip activator="parent" location="right"
-                >リセット</v-tooltip
+                >リセット(サンプル)</v-tooltip
               ></Button
             >
             <p>
@@ -604,7 +604,7 @@ store.changeSwitchDx();
               <li>
                 <p>部署が二つ以上に分裂する場合、新規登録を二度行います。</p>
                 <p>
-                  一度目は区分を分裂する部署にし、二度目は区分をNewにし登録します。
+                  一度目は区分を分裂する部署名にし、二度目は区分をNewにし登録します。
                 </p>
               </li>
             </ol>
@@ -623,7 +623,7 @@ store.changeSwitchDx();
               </li>
               <li>
                 <p>
-                  部署が吸収される場合は、吸収される部署の区分を吸収する部署の区分にし、期限を吸収日の前日に設定して下さい。
+                  部署が吸収される場合は、吸収される部署の区分を吸収する部署名にし、期限を吸収日の前日に設定して下さい。
                 </p>
               </li>
               <li>

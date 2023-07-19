@@ -5,7 +5,7 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   plugins: [vue()],
   server: {
-    host: "172.16.16.134",
+    host: "localhost",
     // port: 80, // 必要に応じてポート番号を変更してください
   },
 });

@@ -27,13 +27,32 @@ const store = useDxStore();
 // };
 
 onBeforeMount(async () => {
-  await store.getDepartments();
-  await store.getInsideDxEffect();
-  await store.getInsideDxState();
-  await store.getOutsideDxIndustry();
-  await store.getOutsideDxState();
-  await store.getOutsideDxTechnology();
-  await store.getSortInsideDxLists();
+  if (store.departments.length === 0) {
+    await store.getDepartments();
+  }
+
+  if (store.insideDxEffect.length === 0) {
+    await store.getInsideDxEffect();
+  }
+  if (store.insideDxState.length === 0) {
+    await store.getInsideDxState();
+  }
+
+  if (store.outsideDxIndustry.length === 0) {
+    await store.getOutsideDxIndustry();
+  }
+  if (store.outsideDxState.length === 0) {
+    await store.getOutsideDxState();
+  }
+  if (store.outsideDxTechnology.length === 0) {
+    await store.getOutsideDxTechnology();
+  }
+
+  if (store.insideDxLists.length === 0 || store.outsideDxLists.length === 0) {
+    await store.getSortInsideDxLists();
+  } else {
+    await store.search();
+  }
   store.dxHomeUseGraph();
 });
 </script>

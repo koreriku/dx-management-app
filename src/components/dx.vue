@@ -198,7 +198,7 @@ if (store.switchDx) {
             icon
             ><v-icon>mdi-check</v-icon>
             <v-tooltip activator="parent" location="right"
-              >絞り込み</v-tooltip
+              >作成</v-tooltip
             ></Button
           >
         </div>
@@ -351,8 +351,6 @@ if (store.switchDx) {
               store.isSearched = true;
               store.isDetailedFilter = true;
               store.searchWord = null;
-              store.startDate = null;
-              store.endDate = null;
               store.search();
               detailedSearchDialog = false;
             "
@@ -367,6 +365,8 @@ if (store.switchDx) {
             store.isSearched = true;
             store.isDetailedFilter = true;
             store.searchWord = null;
+            store.startDate = null;
+            store.endDate = null;
             store.search();
             detailedSearchDialog = false;
           "

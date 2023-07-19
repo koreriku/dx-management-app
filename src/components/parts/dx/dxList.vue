@@ -59,6 +59,7 @@ const omittedText = (text, max_length) => {
     return text;
   }
 };
+const windowWidth = window.innerWidth;
 </script>
 
 <template>
@@ -262,7 +263,7 @@ const omittedText = (text, max_length) => {
             {{ omittedText(item.support_tool, 25) }}
           </td>
           <td class="text-left wrap py-2">
-            {{ omittedText(item.expected_effect, 54) }}
+            {{ omittedText(item.expected_effect, windowWidth * 0.03) }}
           </td>
           <td class="text-left">
             {{ item.effect }}
@@ -327,9 +328,9 @@ const omittedText = (text, max_length) => {
 
 <style scoped>
 /* tableの列幅固定 */
-.table {
-  min-width: 1450px;
-}
+/* .table {
+  min-width: 700px;
+} */
 
 .tr-data {
   white-space: pre-line;
@@ -344,8 +345,6 @@ const omittedText = (text, max_length) => {
 .c {
   width: 16rem;
 }
-
-/*期待できる効果 */
 .e {
   width: 70rem;
 }

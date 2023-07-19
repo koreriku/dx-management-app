@@ -2,7 +2,6 @@
 ・index.html
 ・CSSファイルに記載されたmdiIcon（/assetsも削除）
 ・jsファイルに記載されたoecIcon(/assetsは残す)
-・jsファイルに記載された~.Jsonファイル
 
 2.添付ファイルの参照先のPathを修正
 ・jsファイルに記載された/public/uploads/insideDx/を/uploads/insideDx/に修正
@@ -11,7 +10,8 @@
 
 4.backendのcorsのoriginで設定したport番号を削除
 
+5.distフォルダにuploads/insideDxというフォルダを作成する
+
 ※本番環境の場合は以下も実施
 
 1.jsファイルに記載された172.16.16.134を10.100.1.226に変更
-2.distフォルダを置き換えた場合、IISのアクセス許可がリセットされるため再設定する
