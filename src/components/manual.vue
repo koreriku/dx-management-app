@@ -260,15 +260,21 @@ store.changeSwitchDx();
       </v-col>
       <v-col lg="9" md="8" xs="12">
         <section id="insideDx">
-          <h2
-            class="mb-16 text-h4 title"
-            :style="{
-              'border-color':
-                theme.global.name.value === 'light' ? 'black' : 'white',
-            }"
-          >
-            <v-icon>mdi-alpha-d-box</v-icon> 社内DX・社外DX
-          </h2>
+          <div class="mb-16">
+            <h2
+              class="mb-16 text-h4 title"
+              :style="{
+                'border-color':
+                  theme.global.name.value === 'light' ? 'black' : 'white',
+              }"
+            >
+              <v-icon>mdi-alpha-d-box</v-icon> 社内DX・社外DX
+            </h2>
+            <p>
+              ヘッダーに表示されている「社内DX」または「社外DX」をクリックすると
+            </p>
+            <p>基準月をもとにDXの一覧が表示され、登録や編集等が行えます。</p>
+          </div>
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="new">新規登録</a>
@@ -278,9 +284,7 @@ store.changeSwitchDx();
                 >新規登録(サンプル)</v-tooltip
               >
             </Button>
-            <p>
-              DX一覧に表示されているプラスボタンをクリックすると登録画面が表示されます。
-            </p>
+            <p>プラスボタンをクリックすると登録画面が表示されます。</p>
             <p>各項目を入力し、チェックボタンをクリックすると登録完了です。</p>
           </div>
 
