@@ -260,15 +260,20 @@ store.changeSwitchDx();
       </v-col>
       <v-col lg="9" md="8" xs="12">
         <section id="insideDx">
-          <h2
-            class="mb-16 text-h4 title"
-            :style="{
-              'border-color':
-                theme.global.name.value === 'light' ? 'black' : 'white',
-            }"
-          >
-            <v-icon>mdi-alpha-d-box</v-icon> 社内DX・社外DX
-          </h2>
+          <div class="mb-16">
+            <h2
+              class="mb-16 text-h4 title"
+              :style="{
+                'border-color':
+                  theme.global.name.value === 'light' ? 'black' : 'white',
+              }"
+            >
+              <v-icon>mdi-alpha-d-box</v-icon> 社内DX・社外DX
+            </h2>
+            <p>
+              ヘッダーに表示されている「社内DX」または「社外DX」をクリックするとDXの一覧が表示されます。
+            </p>
+          </div>
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="new">新規登録</a>
@@ -278,79 +283,79 @@ store.changeSwitchDx();
                 >新規登録(サンプル)</v-tooltip
               >
             </Button>
-            <p>
-              DX一覧に表示されているプラスボタンをクリックすると登録画面が表示されます。
-            </p>
+            <p>プラスボタンをクリックすると登録画面が表示されます。</p>
             <p>各項目を入力し、チェックボタンをクリックすると登録完了です。</p>
           </div>
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="detail">詳細</a>
-            <v-table class="icon">
-              <thead>
-                <tr>
-                  <th class="a">部門</th>
-                  <th>担当</th>
-                  <th>業務</th>
-                  <th>支援ツール</th>
-                  <th class="e">
-                    <div class="d-flex justify-space-between">
-                      <span
-                        @click="
-                          store.sortValue = '期待される効果';
-                          sort();
-                        "
-                        >期待される効果<sortToggle column="期待される効果"
-                      /></span>
-                      <v-badge
-                        :color="showAllWord ? 'red' : 'grey-lighten-2'"
-                        content="全表示"
-                        class="mr-2"
-                        @click="showAllWord = !showAllWord"
-                        inline
-                      ></v-badge>
-                    </div>
-                  </th>
-                  <th>効果</th>
-                  <th>状況</th>
-                  <th>登録日</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  class="tr-data"
-                  @click="
-                    store.dxItem = item;
-                    store.showDetailDialog = true;
-                  "
-                >
-                  <td class="text-left">
-                    {{ item.department }}
-                  </td>
-                  <td class="text-left">
-                    {{ item.staff }}
-                  </td>
-                  <td class="text-left wrap">
-                    {{ omittedText(item.work, 10) }}
-                  </td>
-                  <td class="text-left wrap">
-                    {{ omittedText(item.support_tool, 10) }}
-                  </td>
-                  <td class="text-left wrap py-2">
-                    {{ omittedText(item.expected_effect, 20) }}
-                  </td>
-                  <td class="text-left">
-                    {{ item.effect }}
-                  </td>
-                  <td class="text-left">
-                    {{ item.state }}
-                  </td>
-                  <td class="text-left">
-                    {{ item.registration_date }}
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
+            <v-card class="icon">
+              <v-table>
+                <thead>
+                  <tr>
+                    <th class="a">部門</th>
+                    <th>担当</th>
+                    <th>業務</th>
+                    <th>支援ツール</th>
+                    <th class="e">
+                      <div class="d-flex justify-space-between">
+                        <span
+                          @click="
+                            store.sortValue = '期待される効果';
+                            sort();
+                          "
+                          >期待される効果<sortToggle column="期待される効果"
+                        /></span>
+                        <v-badge
+                          :color="showAllWord ? 'red' : 'grey-lighten-2'"
+                          content="全表示"
+                          class="mr-2"
+                          @click="showAllWord = !showAllWord"
+                          inline
+                        ></v-badge>
+                      </div>
+                    </th>
+                    <th>効果</th>
+                    <th>状況</th>
+                    <th>登録日</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    class="tr-data"
+                    @click="
+                      store.dxItem = item;
+                      store.showDetailDialog = true;
+                    "
+                  >
+                    <td class="text-left">
+                      {{ item.department }}
+                    </td>
+                    <td class="text-left">
+                      {{ item.staff }}
+                    </td>
+                    <td class="text-left wrap">
+                      {{ omittedText(item.work, 10) }}
+                    </td>
+                    <td class="text-left wrap">
+                      {{ omittedText(item.support_tool, 10) }}
+                    </td>
+                    <td class="text-left wrap py-2">
+                      {{ omittedText(item.expected_effect, 20) }}
+                    </td>
+                    <td class="text-left">
+                      {{ item.effect }}
+                    </td>
+                    <td class="text-left">
+                      {{ item.state }}
+                    </td>
+                    <td class="text-left">
+                      {{ item.registration_date }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card>
 
             <v-dialog v-model="store.showDetailDialog" width="1100">
               <v-card bg-color="black" class="no-box-shadow transparent">
@@ -360,7 +365,9 @@ store.changeSwitchDx();
               </v-card>
             </v-dialog>
 
-            <p>テーブルの行を選択すると、詳細画面が表示されます。</p>
+            <p>
+              社内・社外DXにあるテーブルの行を選択すると、詳細画面が表示されます。
+            </p>
           </div>
 
           <div class="mb-16">
