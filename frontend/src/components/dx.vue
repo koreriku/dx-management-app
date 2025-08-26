@@ -208,7 +208,7 @@ if (store.switchDx) {
       </v-card>
     </v-dialog>
 
-    <v-card>
+    <v-card border flat>
       <v-tabs v-model="showList" bg-color="grey-lighten-4">
         <v-tab value="true"
           ><v-icon class="custom-icon">mdi-format-list-bulleted</v-icon></v-tab

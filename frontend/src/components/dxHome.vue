@@ -3,6 +3,7 @@ import { useDxStore } from "../stores/dxManagement.js";
 import { onBeforeMount, ref, watch } from "vue";
 import dxDetail from "./parts/dx/dxDetail.vue";
 import dxWgDetail from "./parts/dxWg/dxWgDetail.vue";
+import Button from "./parts/button.vue";
 
 import { useTheme } from "vuetify";
 const theme = useTheme();
@@ -104,24 +105,24 @@ watch(dxTitle, (newTitle, oldTitle) => {
                 <v-card-item>
                   <v-window v-model="dxTitle" show-arrows>
                     <template v-slot:prev="{ props }">
-                      <v-btn
+                      <Button
                         icon
                         size="small"
                         @click="props.onClick"
                         class="ml-n3"
                       >
                         <v-icon>mdi-chevron-left</v-icon>
-                      </v-btn>
+                      </Button>
                     </template>
                     <template v-slot:next="{ props }">
-                      <v-btn
+                      <Button
                         icon
                         size="small"
                         @click="props.onClick"
                         class="mr-n3"
                       >
                         <v-icon> mdi-chevron-right</v-icon>
-                      </v-btn>
+                      </Button>
                     </template>
                     <v-window-item v-for="title of dxTitles">
                       <v-card class="d-flex justify-center align-center">

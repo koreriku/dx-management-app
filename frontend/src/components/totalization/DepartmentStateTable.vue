@@ -10,7 +10,7 @@ const store = useDxStore();
 </script>
 
 <template>
-  <v-card>
+  <v-card border flat>
     <v-card-item>
       <v-table fixed-header="true" :height="props.height">
         <thead>

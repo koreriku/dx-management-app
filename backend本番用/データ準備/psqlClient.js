@@ -14,11 +14,11 @@ const { Client } = pkg;
 let client = new Client({
   user: "postgres",
   host: "localhost",
-  database: "dx",
-  password: PASSWORD,
+  database: "school",
+  password: "AyuniD0401",
   port: 5432,
 });
 
-// client.connect();
+client.connect();
 
 export default client;

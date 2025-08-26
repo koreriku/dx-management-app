@@ -212,6 +212,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     update_date: null,
     support_update_date: null,
     effect_update_date: null,
+    year: null,
     attached_file: [],
     comment: [],
   });
@@ -225,7 +226,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     draft_department_name: [],
     priority: false,
     state: null,
-    state_name: "--",
+    state_name: null,
     support_department: [],
     support_department_name: [],
     staff: null,
@@ -237,12 +238,13 @@ export const useDxStore = defineStore("dxManagement", () => {
     four_q_progress: null,
     result: null,
     effect: null,
-    effect_name: "--",
+    effect_name: null,
     effect_comment: null,
     registration_date: null,
     update_date: null,
     support_update_date: null,
     effect_update_date: null,
+    year: null,
     attached_file: [],
     comment: [],
   });
@@ -257,6 +259,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   const dxWgStates = ref([]);
   // 単一のDXの初期値を設定
   const resetDxWgItem = () => {
+    const thisYear = new Date().getFullYear()
     dxWg.value = {
       id: null,
       category: [],
@@ -285,6 +288,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       update_date: null,
       support_update_date: null,
       effect_update_date: null,
+      year: thisYear,
       attached_file: [],
       comment: [],
     };
@@ -316,6 +320,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       update_date: null,
       support_update_date: null,
       effect_update_date: null,
+      year: thisYear,
       attached_file: [],
       comment: [],
     };
@@ -329,7 +334,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       draft_department_name: [],
       priority: false,
       state: null,
-      state_name: "--",
+      state_name: null,
       support_department: [],
       support_department_name: [],
       staff: null,
@@ -341,12 +346,13 @@ export const useDxStore = defineStore("dxManagement", () => {
       four_q_progress: null,
       result: null,
       effect: null,
-      effect_name: "--",
+      effect_name: null,
       effect_comment: null,
       registration_date: null,
       update_date: null,
       support_update_date: null,
       effect_update_date: null,
+      year: thisYear,
       attached_file: [],
       comment: [],
     };
@@ -508,9 +514,30 @@ export const useDxStore = defineStore("dxManagement", () => {
       editDxWg.value.effect = null;
     }
   };
+
+  const dxWgYears = ref([])
+  const selectedDxWgYear = ref(null)
+  const getDxWgYears = (data) => {
+    dxWgYears.value = []
+    for (const item of data) {
+      if(!dxWgYears.value.includes(item.year)){
+        dxWgYears.value.push(item.year)
+      }
+    }
+    dxWgYears.value.sort((a,b) => b - a)
+    if(!selectedDxWgYear.value){
+      selectedDxWgYear.value = dxWgYears.value[0]
+    }
+  }
   const getDxWg = async () => {
+    dxWgYears.value = []
+    dxWgs.value = []
     await axios.get(dxWgBASE_URL).then((res) => {
+      getDxWgYears(res.data)
       for (const data of res.data) {
+        if(selectedDxWgYear.value != data.year && selectedDxWgYear.value != "全て"){
+          continue
+        }
         if (data.draft_department.length > 0) {
           data.draft_department_name = changeDepartmentIds(
             data.draft_department
@@ -536,12 +563,16 @@ export const useDxStore = defineStore("dxManagement", () => {
         if (data.effect) {
           data.effect_name = changeDxWgEffect(data.effect);
         }
+        if(!dxWgYears.value.includes(data.year)){
+          dxWgYears.value.push(data.year)
+        }
+        dxWgs.value.push(data);
       }
-      dxWgs.value = res.data;
     });
     searchDxWg();
     sortDxWg(false);
   };
+
   // 新しいDXをデータベースに格納
   const addDxWg = async () => {
     editDxWg.value.registration_date = date;
@@ -795,10 +826,7 @@ export const useDxStore = defineStore("dxManagement", () => {
                 isJudge = false;
               }
             }
-          } else if (
-            dxWgFilteringWord.value[key] &&
-            dxWgFilteringWord.value[key] != "--"
-          ) {
+          } else if (dxWgFilteringWord.value[key]) {
             if (!item[key]) {
               isJudge = false;
               continue;
@@ -907,6 +935,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       { header: "結果", key: "result" },
       { header: "効果", key: "effect_name" },
       { header: "効果コメント", key: "effect_comment" },
+      { header: "リセット理由", key: "comment" },
       { header: "更新日", key: "update_date" },
       { header: "更新日（対応）", key: "support_update_date" },
       { header: "更新日（効果）", key: "effect_update_date" },
@@ -914,6 +943,14 @@ export const useDxStore = defineStore("dxManagement", () => {
     ];
     // 行の定義
     for (let list of dxWgs.value) {
+      let comment;
+      for (let i = 0; i < list.comment.length; i++) {
+        if (comment) {
+          comment = `${comment}\n${i + 1}.${list.comment[i]}`;
+        } else {
+          comment = `${i + 1}.${list.comment[i]}`;
+        }
+      }
       worksheet.addRow({
         id: list.id,
         category_name: convertArrayToText(list.category_name),
@@ -935,6 +972,7 @@ export const useDxStore = defineStore("dxManagement", () => {
         result: list.result,
         effect_name: list.effect_name,
         effect_comment: list.effect_comment,
+        comment: comment,
         update_date: list.update_date,
         support_update_date: list.support_update_date,
         effect_update_date: list.effect_update_date,
@@ -2502,6 +2540,8 @@ export const useDxStore = defineStore("dxManagement", () => {
     sortDxWgValue,
     dxWgSequence,
     dxWgFilteringWord,
+    dxWgYears,
+    selectedDxWgYear,
     postCategory,
     getCategory,
     putCategory,

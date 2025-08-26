@@ -115,7 +115,7 @@ const nameCheck = () => {
     width="400"
     :style="{ fontSize: store.calculateFontSize() + 'rem' }"
   >
-    <v-card class="card">
+    <v-card class="card" border flat>
       <v-row>
         <v-col>
           <v-card-text v-if="store.isEditedDepartment">部署更新</v-card-text>

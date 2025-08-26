@@ -16,7 +16,7 @@ onBeforeMount(() => {
 <template>
   <v-row>
     <v-col lg="8" md="9" sm="10">
-      <v-card>
+      <v-card border flat>
         <v-card-item>
           <v-table>
             <tbody>
@@ -93,7 +93,7 @@ onBeforeMount(() => {
 
   <v-row>
     <v-col cols="12">
-      <v-card>
+      <v-card border flat>
         <v-card-item>
           <v-table>
             <tbody v-if="store.switchDx">

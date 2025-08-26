@@ -104,6 +104,6 @@ const showDetailDialog = () => {
       </v-card>
     </v-dialog>
 
-    <Comment type="dxWg" />
+    <Comment type="dxWg" v-if="store.dxWg.state == 10" />
   </v-container>
 </template>

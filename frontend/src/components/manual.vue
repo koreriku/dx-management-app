@@ -170,7 +170,7 @@ store.changeSwitchDx();
             class="mr-10 contentsBar"
             :style="{ 'max-height': contentsHeight + 'px' }"
           >
-            <v-card>
+            <v-card border flat>
               <v-card-title class="text-medium-emphasis">目次</v-card-title>
               <v-list v-model:opened="open">
                 <v-list-group value="dx">
@@ -289,7 +289,7 @@ store.changeSwitchDx();
 
           <div class="mb-16">
             <a class="text-h5 anchor" id="detail">詳細</a>
-            <v-card class="icon">
+            <v-card class="icon" border flat>
               <v-table>
                 <thead>
                   <tr>

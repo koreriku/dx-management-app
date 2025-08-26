@@ -391,7 +391,7 @@ const tableWidth = ref(3000);
     width="1100"
     :style="{ fontSize: store.calculateFontSize() + 'rem' }"
   >
-    <v-card class="no-box-shadow">
+    <v-card border flat>
       <v-card-text>
         <dxWgDetail />
       </v-card-text>

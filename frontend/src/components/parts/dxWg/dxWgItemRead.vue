@@ -25,11 +25,20 @@ let fileIndex = ref();
 </script>
 
 <template>
-  <v-card class="mb-5">
+  <v-card class="mb-5" border flat>
     <v-card-title>課題</v-card-title>
     <v-card-text>
       <v-row>
-        <v-col cols="12">
+        <v-col cols="6">
+          <v-list-item prepend-icon="mdi-alpha-y"
+            ><v-list-item-subtitle>年度</v-list-item-subtitle>
+            <v-list-item-title class="pre-wrap">{{
+              store.dxWg.year
+            }}</v-list-item-title></v-list-item
+          >
+          <v-divider inset></v-divider>
+        </v-col>
+        <v-col cols="6">
           <v-list-item prepend-icon="mdi-shape-plus-outline"
             ><v-list-item-subtitle>カテゴリ</v-list-item-subtitle>
             <v-list-item-title class="pre-wrap">{{
@@ -73,7 +82,7 @@ let fileIndex = ref();
     </v-card-text>
   </v-card>
 
-  <v-card class="mb-5">
+  <v-card class="mb-5" border flat>
     <v-card-title>対応</v-card-title>
     <v-card-text>
       <v-row>
@@ -189,7 +198,7 @@ let fileIndex = ref();
     </v-card-text>
   </v-card>
 
-  <v-card class="mb-5">
+  <v-card class="mb-5" border flat>
     <v-card-title>効果</v-card-title>
     <v-card-text>
       <v-row>
@@ -217,7 +226,7 @@ let fileIndex = ref();
     </v-card-text>
   </v-card>
 
-  <v-card class="mb-5">
+  <v-card class="mb-5" border flat>
     <v-card-title>その他</v-card-title>
     <v-card-text>
       <v-row>

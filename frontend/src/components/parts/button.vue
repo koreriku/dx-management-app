@@ -7,5 +7,5 @@ const props = defineProps({
 </script>
 
 <template>
-  <v-btn :color="props.color"><slot>ボタン</slot></v-btn>
+  <v-btn :color="props.color" variant="flat" border><slot>ボタン</slot></v-btn>
 </template>

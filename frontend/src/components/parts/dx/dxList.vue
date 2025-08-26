@@ -318,7 +318,7 @@ const windowWidth = window.innerWidth;
 
   <!-- 詳細画面表示 -->
   <v-dialog v-model="store.showDetailDialog" width="1100">
-    <v-card class="no-box-shadow">
+    <v-card border flat>
       <v-card-text>
         <dxDetail />
       </v-card-text>

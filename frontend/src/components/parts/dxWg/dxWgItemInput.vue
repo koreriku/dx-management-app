@@ -1,7 +1,8 @@
 <script setup>
-import { defineProps, onBeforeMount, computed } from "vue";
+import { defineProps, onBeforeMount, ref } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import categoryRegistration from "../categoryRegistration.vue";
+import Button from "../button.vue";
 
 const store = useDxStore();
 
@@ -15,15 +16,37 @@ onBeforeMount(() => {
   store.departmentsForInput = store.departmentsForInput.filter(
     (department) => department != "--"
   );
+  enableSelectYear()
 });
+
+const years = ref([]);
+const enableSelectYear = () => {
+  years.value = store.dxWgYears.concat();
+  const thisYear = new Date().getFullYear();
+  const nextYear = thisYear + 1;
+  if (!years.value.includes(thisYear)) {
+    years.value.unshift(thisYear);
+  }
+  if (!years.value.includes(nextYear)) {
+    years.value.unshift(nextYear);
+  }
+}
 </script>
 
 <template>
-  <v-card class="mb-2">
+  <v-card class="mb-2" border flat>
     <v-card-title>課題</v-card-title>
     <v-card-text>
       <v-row>
-        <v-col cols="10" xs="10" sm="10" md="11" lg="11" xl="11" xxl="11">
+        <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
+          <v-select
+            label="年度"
+            :items="years"
+            variant="outlined"
+            v-model="store.editDxWg.year"
+          ></v-select>
+        </v-col>
+        <v-col cols="10" xs="10" sm="10" md="5" lg="5" xl="5" xxl="5">
           <v-select
             label="カテゴリ"
             :items="store.dxWgCategories.map((item) => item.name)"
@@ -34,7 +57,7 @@ onBeforeMount(() => {
           ></v-select>
         </v-col>
         <v-col cols="2" xs="2" sm="2" md="1" lg="1" xl="1" xxl="1">
-          <v-btn
+          <Button
             icon
             variant="outlined"
             color="grey-darken-1"
@@ -43,8 +66,8 @@ onBeforeMount(() => {
             <v-icon>mdi-plus</v-icon>
             <v-tooltip activator="parent" location="bottom"
               >カテゴリー追加</v-tooltip
-            ></v-btn
-          >
+            >
+          </Button>
           <categoryRegistration />
         </v-col>
       </v-row>
@@ -88,7 +111,7 @@ onBeforeMount(() => {
     :disabled="props.isEdit && !store.isDxWgRegisterAuthority"
   ></v-checkbox>
 
-  <v-card class="mb-6">
+  <v-card class="mb-6" border flat>
     <v-card-title>対応</v-card-title>
     <v-card-text>
       <v-row>
@@ -188,7 +211,7 @@ onBeforeMount(() => {
     </v-card-text>
   </v-card>
 
-  <v-card class="mb-6">
+  <v-card class="mb-6" border flat>
     <v-card-title>効果（課題提案部署入力）</v-card-title>
     <v-card-text
       ><v-row>

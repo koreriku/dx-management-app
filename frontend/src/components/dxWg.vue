@@ -182,7 +182,21 @@ const judgeShowDxWgRegisterUnlockModal = () => {
         >
       </div>
 
-      <div style="width: 500px">
+      <div style="width: 600px" class="d-flex">
+      <v-select
+          v-model="store.selectedDxWgYear"
+          :items="['全て',...store.dxWgYears]"
+          density="compact"
+          variant="outlined"
+          label="年度"
+          class="mr-2"
+          style="max-width: 150px"
+          @update:model-value="
+            () => {
+              store.getDxWg();
+            }
+          "
+        ></v-select>
         <v-text-field
           label="キーワード検索"
           variant="outlined"
@@ -316,7 +330,7 @@ const judgeShowDxWgRegisterUnlockModal = () => {
       </v-card>
     </v-dialog>
 
-    <v-card>
+    <v-card border flat>
       <v-tabs v-model="showList" bg-color="grey-lighten-4">
         <v-tab value="true"
           ><v-icon class="custom-icon">mdi-format-list-bulleted</v-icon></v-tab

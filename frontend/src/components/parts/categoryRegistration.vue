@@ -15,12 +15,10 @@
         ></v-text-field>
 
         <div class="text-center mb-1">
-          <v-btn icon color="yellow" @click="saveCategory">
+          <Button icon color="yellow" @click="saveCategory">
             <v-icon>mdi-check</v-icon>
-            <v-tooltip activator="parent" location="bottom"
-              >登録</v-tooltip
-            ></v-btn
-          >
+            <v-tooltip activator="parent" location="bottom">登録</v-tooltip>
+          </Button>
         </div>
 
         <v-table>
@@ -82,6 +80,7 @@
 <script setup>
 import { ref, defineProps } from "vue";
 import { useDxStore } from "../../stores/dxManagement";
+import Button from "./button.vue";
 
 const store = useDxStore();
 

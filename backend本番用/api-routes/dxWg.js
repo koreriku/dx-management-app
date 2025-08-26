@@ -30,8 +30,8 @@ router.post("/", async (req, res) => {
               (id, category, draft_content, draft_business_sector , draft_department , priority , state , 
                 support_department , staff, support_content , deadline , one_q_progress , two_q_progress , three_q_progress , 
                 four_q_progress , result , effect , effect_comment , registration_date , update_date , support_update_date , effect_update_date ,
-                attached_file ,comment )
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
+                year, attached_file ,comment )
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
             `,
         values: [
           id,
@@ -56,6 +56,7 @@ router.post("/", async (req, res) => {
           data.update_date,
           data.support_update_date,
           data.effect_update_date,
+          data.year,
           data.attached_file,
           data.comment,
         ],
@@ -75,8 +76,8 @@ router.put("/", (req, res) => {
       SET (category, draft_content, draft_business_sector , draft_department , priority , state , 
         support_department , staff, support_content , deadline , one_q_progress , two_q_progress , three_q_progress , 
         four_q_progress , result , effect , effect_comment , registration_date , update_date , support_update_date , effect_update_date ,
-        attached_file ,comment )
-      = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+        year, attached_file ,comment )
+      = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
       WHERE id = ${data.id}`,
     values: [
       data.category,
@@ -100,6 +101,7 @@ router.put("/", (req, res) => {
       data.update_date,
       data.support_update_date,
       data.effect_update_date,
+      data.year,
       data.attached_file,
       data.comment,
     ],

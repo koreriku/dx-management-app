@@ -14,8 +14,8 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <v-card class="mb-2">
-    <v-card-title>課題</v-card-title>
+  <v-card class="mb-2" border flat>
+    <v-card-title class="ma-2">課題</v-card-title>
     <v-card-text>
       <v-row>
         <v-col cols="12">
@@ -66,8 +66,8 @@ onBeforeMount(() => {
     color="red"
   ></v-checkbox>
 
-  <v-card class="mb-6">
-    <v-card-title>対応</v-card-title>
+  <v-card class="mb-6" border flat>
+    <v-card-title class="ma-2">対応</v-card-title>
     <v-card-text>
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -157,7 +157,9 @@ onBeforeMount(() => {
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
           <v-select
             label="状況"
-            :items="store.dxWgStates.map((item) => item.state)"
+            :items="
+              [{ state: '' }, ...store.dxWgStates].map((item) => item.state)
+            "
             variant="outlined"
             v-model="store.dxWgFilteringWord.state_name"
           ></v-select>
@@ -166,14 +168,16 @@ onBeforeMount(() => {
     </v-card-text>
   </v-card>
 
-  <v-card class="mb-6">
-    <v-card-title>効果</v-card-title>
+  <v-card class="mb-6" border flat>
+    <v-card-title class="ma-2">効果</v-card-title>
     <v-card-text
       ><v-row>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
           <v-select
             label="効果（業務効率化に繋がったか）"
-            :items="store.dxWgEffects.map((item) => item.effect)"
+            :items="
+              [{ effect: '' }, ...store.dxWgEffects].map((item) => item.effect)
+            "
             variant="outlined"
             v-model="store.dxWgFilteringWord.effect_name"
           ></v-select>
@@ -188,8 +192,8 @@ onBeforeMount(() => {
       </v-row>
     </v-card-text>
   </v-card>
-  <v-card>
-    <v-card-title>その他</v-card-title>
+  <v-card border flat>
+    <v-card-title class="ma-2">その他</v-card-title>
     <v-card-item>
       <v-row>
         <v-col cols="12">

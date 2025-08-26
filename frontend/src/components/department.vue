@@ -258,7 +258,7 @@ const orderChangeModalHeight = window.innerHeight * 0.7;
       </div>
     </div>
   </div>
-  <v-card>
+  <v-card border flat>
     <v-card-item class="mb-n3">
       <v-table :height="tableHeight">
         <div
