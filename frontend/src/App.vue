@@ -3,6 +3,7 @@ import { ref, onBeforeMount } from "vue";
 import { useTheme } from "vuetify";
 import { useRouter, useRoute } from "vue-router";
 import { useDxStore } from "./stores/dxManagement.js";
+import snacbar from "./components/snacbar.vue";
 import Button from "./components/parts/button.vue";
 
 const store = useDxStore();
@@ -303,6 +304,8 @@ const setFontSize = () => {
       <div class="text-center">&copy;{{ store.year }} DX Hub</div></v-footer
     >
   </v-app>
+
+  <snacbar/>
 
   <v-dialog
     v-model="store.showUnlockModal"

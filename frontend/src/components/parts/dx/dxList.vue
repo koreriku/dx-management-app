@@ -1,11 +1,14 @@
 <script setup>
 import { ref, onBeforeMount, defineProps } from "vue";
+import { useRouter,useRoute } from "vue-router";
 import Button from "../button.vue";
 import sortToggle from "../sortToggle.vue";
 import dxDetail from "./dxDetail.vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 
 const store = useDxStore();
+const router = useRouter();
+const route = useRoute();
 
 const props = defineProps({
   tableHeight: Number,
@@ -37,6 +40,17 @@ onBeforeMount(async () => {
 
   if (store.insideDxLists.length === 0 || store.outsideDxLists.length === 0) {
     await store.getSortInsideDxLists();
+  }
+  if(route.query.id){
+    store.dxItem = store.showDxLists.find(item => item.id == route.query.id);
+    if(!store.dxItem){
+      await store.getDxWithId(route.query.id);
+    }
+    if(store.dxItem){
+      store.showDetailDialog = true;
+    }else{
+      store.displaySnackbar("該当する課題が見つかりません。","error");
+    }
   }
 });
 
@@ -247,6 +261,7 @@ const windowWidth = window.innerWidth;
           class="tr-data"
           @click="
             store.dxItem = item;
+            router.push({ path: '/dx', query: { id: item.id } });
             store.showDetailDialog = true;
           "
         >
@@ -282,6 +297,7 @@ const windowWidth = window.innerWidth;
           class="tr-data"
           @click="
             store.dxItem = item;
+            router.push({ path: '/dx', query: { id: item.id } });
             store.showDetailDialog = true;
           "
         >

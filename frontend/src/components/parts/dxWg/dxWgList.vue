@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onBeforeMount, defineProps } from "vue";
+import { useRouter,useRoute } from "vue-router";
 import Button from "../button.vue";
 import sortDxWgToggle from "../sortDxWgToggle.vue";
 import dxWgDetail from "./dxWgDetail.vue";
@@ -10,6 +11,8 @@ const store = useDxStore();
 const props = defineProps({
   tableHeight: Number,
 });
+const router = useRouter();
+const route = useRoute();
 
 const showSearchDialog = ref(false);
 
@@ -29,6 +32,17 @@ onBeforeMount(async () => {
   }
   if (store.dxWgs.length === 0) {
     await store.getDxWg();
+  }
+  if(route.query.id){
+    store.dxWg = store.dxWgs.find(item => item.id == route.query.id);
+    if(!store.dxWg){
+      await store.getDxWgWithId(route.query.id);
+    }
+    if(store.dxWg){
+      store.showDxWgDetailDialog = true;
+    }else{
+      store.displaySnackbar("該当する課題が見つかりません。","error");
+    }
   }
 });
 
@@ -309,6 +323,7 @@ const tableWidth = ref(3000);
           }"
           @click="
             store.dxWg = item;
+            router.push({ path: '/dxWg', query: { id: item.id } });
             store.showDxWgDetailDialog = true;
           "
         >

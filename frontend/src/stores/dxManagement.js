@@ -56,6 +56,25 @@ export const useDxStore = defineStore("dxManagement", () => {
     return text;
   };
 
+    // スナックバー
+  const snackbar = ref([]);
+
+  // スナックバーを表示
+  const displaySnackbar = (message, color, seconds = 5) => {
+    const milliseconds = seconds * 1000;
+    snackbar.value.push({
+      id: snackbar.value.length + 1,
+      isDisplayed: true,
+      color: color,
+      message: message,
+      time: milliseconds,
+    });
+    setTimeout(() => {
+      snackbar.value.shift();
+    }, milliseconds);
+  };
+
+
   // trueの時に社内DX表示、falseの時に社外DX表示
   const switchDx = ref(true);
   // テーマをインスタンス
@@ -529,16 +548,12 @@ export const useDxStore = defineStore("dxManagement", () => {
       selectedDxWgYear.value = dxWgYears.value[0]
     }
   }
-  const getDxWg = async () => {
-    dxWgYears.value = []
-    dxWgs.value = []
-    await axios.get(dxWgBASE_URL).then((res) => {
-      getDxWgYears(res.data)
-      for (const data of res.data) {
-        if(selectedDxWgYear.value != data.year && selectedDxWgYear.value != "全て"){
-          continue
-        }
-        if (data.draft_department.length > 0) {
+
+  const convertDxWg = (data) => {
+    if(!data){
+      return
+    }
+    if (data.draft_department.length > 0) {
           data.draft_department_name = changeDepartmentIds(
             data.draft_department
           );
@@ -563,9 +578,22 @@ export const useDxStore = defineStore("dxManagement", () => {
         if (data.effect) {
           data.effect_name = changeDxWgEffect(data.effect);
         }
-        if(!dxWgYears.value.includes(data.year)){
-          dxWgYears.value.push(data.year)
+  }
+  const getDxWgWithId = async (id) => {
+    await axios.get(`${dxWgBASE_URL}/id?id=${id}`).then((res) => {
+      dxWg.value = res.data[0];
+      convertDxWg(dxWg.value)
+    })};
+  const getDxWg = async () => {
+    dxWgYears.value = []
+    dxWgs.value = []
+    await axios.get(dxWgBASE_URL).then((res) => {
+      getDxWgYears(res.data)
+      for (const data of res.data) {
+        if(selectedDxWgYear.value != data.year && selectedDxWgYear.value != "全て"){
+          continue
         }
+        convertDxWg(data)
         dxWgs.value.push(data);
       }
     });
@@ -2048,6 +2076,28 @@ export const useDxStore = defineStore("dxManagement", () => {
   // 年度絞り込みの実施の有無
   const isSearchDate = ref(false);
 
+  const convertInsideDx = (data) => {
+    if(!data){
+      return
+    }
+    data.department = changeDepartment(data.department);
+    data.effect = changeEffect(data.effect);
+    data.state = changeState(data.state);
+    return data;
+  }
+  const convertOutsideDx = (data) => {
+    if(!data){
+      return
+    }
+    data.department = changeDepartment(data.department); 
+    data.industry = changeOutsideDxIndustry(data.industry);
+    data.state = changeOutsideDxState(data.state);  
+    for (let i = 0; i < data.technology.length; i++) {
+      data.technology[i] = changeOutsideDxTechnology(data.technology[i]);
+    }
+    return data;
+  }
+
   // 指定した条件で値をDBから取得
   const getSortInsideDxLists = async () => {
     let url = "";
@@ -2059,23 +2109,34 @@ export const useDxStore = defineStore("dxManagement", () => {
     isSearchDate.value = false;
     await axios.get(url).then((res) => {
       for (const data of res.data) {
-        data.department = changeDepartment(data.department);
         if (data.division) {
-          data.effect = changeEffect(data.effect);
-          data.state = changeState(data.state);
+          convertInsideDx(data);
           insideDxLists.value.push(data);
         } else {
-          data.industry = changeOutsideDxIndustry(data.industry);
-          data.state = changeOutsideDxState(data.state);
-          for (let i = 0; i < data.technology.length; i++) {
-            data.technology[i] = changeOutsideDxTechnology(data.technology[i]);
-          }
+          convertOutsideDx(data);
           outsideDxLists.value.push(data);
         }
       }
       search();
     });
   };
+
+  const getDxWithId = async (id) => {
+    await axios.get(`${dxBASE_URL}/id?id=${id}`).then((res) => {
+      dxItem.value = res.data[0];
+      if(!dxItem.value){
+        return
+      }
+      if (dxItem.value.division) {
+        switchDx.value = true;
+        convertInsideDx(dxItem.value);
+      }else{
+        switchDx.value = false;
+        convertOutsideDx(dxItem.value);
+      }
+      changeSwitchDx();
+      search();
+    })};
 
   // 集計 --------------------------------------------------
   // 集計用の状況一覧のオブジェクトを作成
@@ -2542,6 +2603,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     dxWgFilteringWord,
     dxWgYears,
     selectedDxWgYear,
+    snackbar,
     postCategory,
     getCategory,
     putCategory,
@@ -2603,5 +2665,8 @@ export const useDxStore = defineStore("dxManagement", () => {
     deleteDxWgComment,
     sortDxWg,
     tableWidthAdjustment,
+    getDxWgWithId,
+    displaySnackbar,
+    getDxWithId
   };
 });

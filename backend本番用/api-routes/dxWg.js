@@ -6,6 +6,18 @@ const router = express.Router();
 
 let query = {};
 
+router.get("/id", (req, res) => {
+  const id = req.query.id;
+  query = {
+    text: `select *
+    from dxwg 
+    where id = $1`,
+    values: [id],
+  };
+
+  throwQuery(res, query);
+});
+
 router.get("/", (req, res) => {
   query = {
     text: `select *

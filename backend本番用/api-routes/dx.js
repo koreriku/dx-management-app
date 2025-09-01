@@ -24,6 +24,18 @@ router.get("/", (req, res) => {
   throwQuery(res, query);
 });
 
+router.get("/id", (req, res) => {
+  const id = req.query.id;
+  query = {
+    text: `select *
+    from dxlists 
+    where id = $1`,
+    values: [id],
+  };
+
+  throwQuery(res, query);
+});
+
 router.post("/", (req, res) => {
   const data = req.body;
   query = {
