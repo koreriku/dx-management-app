@@ -1,5 +1,5 @@
 import express from "express";
-import { throwQuery, pool } from "../psqlPool.js";
+import { throwQuery, throwQueryNoRes, pool } from "../psqlPool.js";
 
 const router = express.Router();
 
@@ -41,7 +41,12 @@ router.put("/multi", async (req, res) => {
       `,
       values: [item.id, item.new_id, item.name],
     };
-    await throwQuery(res, query);
+    await throwQueryNoRes(res, query);
+    if (res.headersSent) {
+      // いずれかの更新でエラーが発生し、throwQueryNoRes内で既に500レスポンス済みのため、
+      // ループを打ち切り末尾のSELECTによる二重レスポンスを防ぐ
+      return;
+    }
   }
   query = {
     text: `SELECT * FROM dxwg_category ORDER BY sort_key`,

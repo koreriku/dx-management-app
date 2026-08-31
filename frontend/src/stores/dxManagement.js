@@ -5,6 +5,7 @@ import axios from "axios";
 import ExcelJS from "exceljs";
 import { useTheme } from "vuetify";
 import { useRouter } from "vue-router";
+import DOMPurify from "dompurify";
 
 axios.create({
   baseURL: "http://localhost:8000",
@@ -982,7 +983,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       worksheet.addRow({
         id: list.id,
         category_name: convertArrayToText(list.category_name),
-        draft_content: list.draft_content,
+        draft_content: stripHtml(list.draft_content),
         draft_business_sector_name: list.draft_business_sector,
         draft_department_name: convertArrayToText(list.draft_department_name),
         priority: list.priority,
@@ -991,13 +992,13 @@ export const useDxStore = defineStore("dxManagement", () => {
           list.support_department_name
         ),
         staff: list.staff,
-        support_content: list.support_content,
+        support_content: stripHtml(list.support_content),
         deadline: list.deadline,
-        one_q_progress: list.one_q_progress,
-        two_q_progress: list.two_q_progress,
-        three_q_progress: list.three_q_progress,
-        four_q_progress: list.four_q_progress,
-        result: list.result,
+        one_q_progress: stripHtml(list.one_q_progress),
+        two_q_progress: stripHtml(list.two_q_progress),
+        three_q_progress: stripHtml(list.three_q_progress),
+        four_q_progress: stripHtml(list.four_q_progress),
+        result: stripHtml(list.result),
         effect_name: list.effect_name,
         effect_comment: list.effect_comment,
         comment: comment,
@@ -1811,6 +1812,18 @@ export const useDxStore = defineStore("dxManagement", () => {
     await axios.put(dxBASE_URL + "/changeComment", dxItem.value);
   };
 
+  // リッチテキスト(HTML)からタグを除去してプレーンテキスト化
+  const stripHtml = (html) => {
+    if (!html) return "";
+    const withBreaks = html
+      .replace(/<\/(p|div|li|h[1-6]|blockquote)>/gi, "$&\n")
+      .replace(/<br\s*\/?>/gi, "\n");
+    return DOMPurify.sanitize(withBreaks, {
+      ALLOWED_TAGS: [],
+      ALLOWED_ATTR: [],
+    }).trim();
+  };
+
   // エクセル化--------------------------------------------
   const createExcel = async () => {
     let lists = [];
@@ -1830,7 +1843,7 @@ export const useDxStore = defineStore("dxManagement", () => {
         { header: "担当", key: "staff" },
         { header: "業務", key: "work" },
         { header: "支援ツール", key: "tool" },
-        { header: "期待される効果", key: "expected_effect" },
+        { header: "内容・結果", key: "expected_effect" },
         { header: "効果", key: "effect" },
         { header: "状況", key: "state" },
         { header: "登録日", key: "date" },
@@ -1843,7 +1856,7 @@ export const useDxStore = defineStore("dxManagement", () => {
             staff: list.staff,
             work: list.work,
             tool: list.support_tool,
-            expected_effect: list.expected_effect,
+            expected_effect: stripHtml(list.expected_effect),
             effect: changeEffect(list.effect),
             state: changeState(list.state),
             date: list.registration_date,
@@ -1875,13 +1888,13 @@ export const useDxStore = defineStore("dxManagement", () => {
             changer: list.changer,
             product: list.product,
             technology: showOutsideDxTechnology(list.technology),
-            technical_details: list.technical_details,
+            technical_details: stripHtml(list.technical_details),
             industry: changeOutsideDxIndustry(list.industry),
             customer: list.customer,
             cooperation_destination: list.cooperation_destination,
-            sales_strategy: list.sales_strategy,
+            sales_strategy: stripHtml(list.sales_strategy),
             state: changeOutsideDxState(list.state),
-            note: list.note,
+            note: stripHtml(list.note),
             date: list.registration_date,
           });
         }
@@ -1922,7 +1935,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     担当: "staff",
     業務: "work",
     支援ツール: "support_tool",
-    期待される効果: "expected_effect",
+    内容・結果: "expected_effect",
     効果: "effect",
     状況: "state",
     登録日: "registration_date",
@@ -2006,9 +2019,13 @@ export const useDxStore = defineStore("dxManagement", () => {
               }
               // 完全一致の時
             } else {
+              // リッチテキスト化された項目はHTMLタグを除去してから比較する
               if (
-                list[selectedColumnList[filteringTargetColumn.value]] ===
-                filteringWord.value
+                stripHtml(
+                  String(
+                    list[selectedColumnList[filteringTargetColumn.value]] ?? ""
+                  )
+                ) === filteringWord.value
               ) {
                 showDxLists.value.push(list);
               }
@@ -2054,7 +2071,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     担当: "staff",
     業務: "work",
     支援ツール: "support_tool",
-    期待される効果: "expected_effect",
+    内容・結果: "expected_effect",
     効果: "effect",
     状況: "state",
     業界: "industry",
@@ -2650,6 +2667,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     getOutsideDxState,
     getOutsideDxTechnology,
     showOutsideDxTechnology,
+    stripHtml,
     changeThemeColor,
     changeSwitchDx,
     createDxWgExcel,

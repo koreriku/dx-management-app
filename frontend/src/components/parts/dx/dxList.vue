@@ -66,9 +66,11 @@ const sort = () => {
 let showAllWord = ref(false);
 const omittedText = (text, max_length) => {
   if (!showAllWord.value) {
-    return String(text).replace(/\r?\n/g, "").length > max_length
-      ? String(text).replace(/\r?\n/g, "").slice(0, max_length) + "…"
-      : String(text).replace(/\r?\n/g, "");
+    // 改行は削除ではなくスペースに置き換え、段落同士が連結しないようにする
+    const oneLineText = String(text).replace(/\r?\n/g, " ");
+    return oneLineText.length > max_length
+      ? oneLineText.slice(0, max_length) + "…"
+      : oneLineText;
   } else {
     return text;
   }
@@ -122,10 +124,10 @@ const windowWidth = window.innerWidth;
             <div class="d-flex justify-space-between">
               <span
                 @click="
-                  store.sortValue = '期待される効果';
+                  store.sortValue = '内容・結果';
                   sort();
                 "
-                >期待される効果<sortToggle column="期待される効果"
+                >内容・結果<sortToggle column="内容・結果"
               /></span>
               <v-badge
                 :color="showAllWord ? 'red' : 'grey-lighten-2'"
@@ -278,7 +280,12 @@ const windowWidth = window.innerWidth;
             {{ omittedText(item.support_tool, 25) }}
           </td>
           <td class="text-left wrap py-2">
-            {{ omittedText(item.expected_effect, windowWidth * 0.03) }}
+            {{
+              omittedText(
+                store.stripHtml(item.expected_effect),
+                windowWidth * 0.03
+              )
+            }}
           </td>
           <td class="text-left">
             {{ item.effect }}
@@ -316,7 +323,7 @@ const windowWidth = window.innerWidth;
             }}
           </td>
           <td class="text-left wrap py-2">
-            {{ omittedText(item.technical_details, 54) }}
+            {{ omittedText(store.stripHtml(item.technical_details), 54) }}
           </td>
           <td class="text-left">
             {{ item.state }}

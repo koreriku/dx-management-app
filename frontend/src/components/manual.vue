@@ -301,10 +301,10 @@ store.changeSwitchDx();
                       <div class="d-flex justify-space-between">
                         <span
                           @click="
-                            store.sortValue = '期待される効果';
+                            store.sortValue = '内容・結果';
                             sort();
                           "
-                          >期待される効果<sortToggle column="期待される効果"
+                          >内容・結果<sortToggle column="内容・結果"
                         /></span>
                         <v-badge
                           :color="showAllWord ? 'red' : 'grey-lighten-2'"
@@ -390,7 +390,7 @@ store.changeSwitchDx();
             ></v-badge>
             <p>テーブルの行が大体二行に収まるように表示されていますが、</p>
             <p>
-              期待される効果の欄に表示されている全表示をクリックすると、全ての文字が表示されます。
+              内容・結果の欄に表示されている全表示をクリックすると、全ての文字が表示されます。
             </p>
           </div>
 

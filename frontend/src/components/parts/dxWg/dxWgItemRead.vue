@@ -1,10 +1,31 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import Button from "../button.vue";
 import DeleteDialog from "../deleteDialog.vue";
+import DOMPurify from "dompurify";
 
 const store = useDxStore();
+
+const sanitizedDraftContent = computed(() =>
+  DOMPurify.sanitize(store.dxWg.draft_content ?? "")
+);
+const sanitizedSupportContent = computed(() =>
+  DOMPurify.sanitize(store.dxWg.support_content ?? "")
+);
+const sanitizedOneQProgress = computed(() =>
+  DOMPurify.sanitize(store.dxWg.one_q_progress ?? "")
+);
+const sanitizedTwoQProgress = computed(() =>
+  DOMPurify.sanitize(store.dxWg.two_q_progress ?? "")
+);
+const sanitizedThreeQProgress = computed(() =>
+  DOMPurify.sanitize(store.dxWg.three_q_progress ?? "")
+);
+const sanitizedFourQProgress = computed(() =>
+  DOMPurify.sanitize(store.dxWg.four_q_progress ?? "")
+);
+const sanitizedResult = computed(() => DOMPurify.sanitize(store.dxWg.result ?? ""));
 
 const toObject = (object) => {
   let unescapedFile = null;
@@ -72,10 +93,11 @@ let fileIndex = ref();
         <v-col cols="12">
           <v-list-item prepend-icon="mdi-text-box-outline"
             ><v-list-item-subtitle>内容</v-list-item-subtitle>
-            <v-list-item-title class="pre-wrap">{{
-              store.dxWg.draft_content
-            }}</v-list-item-title></v-list-item
-          >
+            <v-list-item-title class="pre-wrap"
+              ><div class="ql-snow">
+                <div class="ql-editor" v-html="sanitizedDraftContent"></div>
+              </div></v-list-item-title
+          ></v-list-item>
           <v-divider inset></v-divider>
         </v-col>
       </v-row>
@@ -110,10 +132,11 @@ let fileIndex = ref();
           <v-col cols="12">
             <v-list-item prepend-icon="mdi-text-box-outline"
               ><v-list-item-subtitle>内容</v-list-item-subtitle>
-              <v-list-item-title class="pre-wrap">{{
-                store.dxWg.support_content
-              }}</v-list-item-title></v-list-item
-            >
+              <v-list-item-title class="pre-wrap"
+                ><div class="ql-snow">
+                  <div class="ql-editor" v-html="sanitizedSupportContent"></div>
+                </div></v-list-item-title
+            ></v-list-item>
             <v-divider inset></v-divider>
           </v-col>
         </v-row>
@@ -123,10 +146,11 @@ let fileIndex = ref();
           <v-col cols="12">
             <v-list-item
               ><v-list-item-subtitle>1Q</v-list-item-subtitle>
-              <v-list-item-title class="pre-wrap">{{
-                store.dxWg.one_q_progress
-              }}</v-list-item-title></v-list-item
-            >
+              <v-list-item-title class="pre-wrap"
+                ><div class="ql-snow">
+                  <div class="ql-editor" v-html="sanitizedOneQProgress"></div>
+                </div></v-list-item-title
+            ></v-list-item>
             <v-divider></v-divider>
           </v-col>
         </v-row>
@@ -134,10 +158,11 @@ let fileIndex = ref();
           <v-col cols="12">
             <v-list-item
               ><v-list-item-subtitle>2Q</v-list-item-subtitle>
-              <v-list-item-title class="pre-wrap">{{
-                store.dxWg.two_q_progress
-              }}</v-list-item-title></v-list-item
-            >
+              <v-list-item-title class="pre-wrap"
+                ><div class="ql-snow">
+                  <div class="ql-editor" v-html="sanitizedTwoQProgress"></div>
+                </div></v-list-item-title
+            ></v-list-item>
             <v-divider></v-divider>
           </v-col>
         </v-row>
@@ -145,10 +170,11 @@ let fileIndex = ref();
           <v-col cols="12">
             <v-list-item
               ><v-list-item-subtitle>3Q</v-list-item-subtitle>
-              <v-list-item-title class="pre-wrap">{{
-                store.dxWg.three_q_progress
-              }}</v-list-item-title></v-list-item
-            >
+              <v-list-item-title class="pre-wrap"
+                ><div class="ql-snow">
+                  <div class="ql-editor" v-html="sanitizedThreeQProgress"></div>
+                </div></v-list-item-title
+            ></v-list-item>
             <v-divider></v-divider>
           </v-col>
         </v-row>
@@ -156,10 +182,11 @@ let fileIndex = ref();
           <v-col cols="12">
             <v-list-item
               ><v-list-item-subtitle>4Q</v-list-item-subtitle>
-              <v-list-item-title class="pre-wrap">{{
-                store.dxWg.four_q_progress
-              }}</v-list-item-title></v-list-item
-            >
+              <v-list-item-title class="pre-wrap"
+                ><div class="ql-snow">
+                  <div class="ql-editor" v-html="sanitizedFourQProgress"></div>
+                </div></v-list-item-title
+            ></v-list-item>
             <v-divider></v-divider>
           </v-col>
         </v-row>
@@ -167,10 +194,11 @@ let fileIndex = ref();
           <v-col cols="12">
             <v-list-item
               ><v-list-item-subtitle>結果</v-list-item-subtitle>
-              <v-list-item-title class="pre-wrap">{{
-                store.dxWg.result
-              }}</v-list-item-title></v-list-item
-            >
+              <v-list-item-title class="pre-wrap"
+                ><div class="ql-snow">
+                  <div class="ql-editor" v-html="sanitizedResult"></div>
+                </div></v-list-item-title
+            ></v-list-item>
             <v-divider></v-divider>
           </v-col>
         </v-row>
@@ -296,5 +324,11 @@ td {
 .pre-wrap {
   white-space: pre-wrap;
   line-height: 1.6rem;
+  overflow: visible;
+}
+:deep(.ql-editor) {
+  height: auto;
+  overflow: visible;
+  padding: 0;
 }
 </style>
