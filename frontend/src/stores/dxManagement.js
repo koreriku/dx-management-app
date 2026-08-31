@@ -1816,7 +1816,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   const stripHtml = (html) => {
     if (!html) return "";
     const withBreaks = html
-      .replace(/<\/(p|div|li|h[1-6])>/gi, "$&\n")
+      .replace(/<\/(p|div|li|h[1-6]|blockquote)>/gi, "$&\n")
       .replace(/<br\s*\/?>/gi, "\n");
     return DOMPurify.sanitize(withBreaks, {
       ALLOWED_TAGS: [],
@@ -2019,9 +2019,13 @@ export const useDxStore = defineStore("dxManagement", () => {
               }
               // 完全一致の時
             } else {
+              // リッチテキスト化された項目はHTMLタグを除去してから比較する
               if (
-                list[selectedColumnList[filteringTargetColumn.value]] ===
-                filteringWord.value
+                stripHtml(
+                  String(
+                    list[selectedColumnList[filteringTargetColumn.value]] ?? ""
+                  )
+                ) === filteringWord.value
               ) {
                 showDxLists.value.push(list);
               }

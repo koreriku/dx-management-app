@@ -66,9 +66,11 @@ const sort = () => {
 let showAllWord = ref(false);
 const omittedText = (text, max_length) => {
   if (!showAllWord.value) {
-    return String(text).replace(/\r?\n/g, "").length > max_length
-      ? String(text).replace(/\r?\n/g, "").slice(0, max_length) + "…"
-      : String(text).replace(/\r?\n/g, "");
+    // 改行は削除ではなくスペースに置き換え、段落同士が連結しないようにする
+    const oneLineText = String(text).replace(/\r?\n/g, " ");
+    return oneLineText.length > max_length
+      ? oneLineText.slice(0, max_length) + "…"
+      : oneLineText;
   } else {
     return text;
   }
