@@ -1,5 +1,5 @@
 import express from "express";
-import { throwQuery, pool } from "../psqlPool.js";
+import { throwQuery, throwQueryNoRes, pool } from "../psqlPool.js";
 
 const router = express.Router();
 
@@ -41,7 +41,7 @@ router.put("/multi", async (req, res) => {
       `,
       values: [item.id, item.new_id, item.name],
     };
-    await throwQuery(res, query);
+    await throwQueryNoRes(res, query);
   }
   query = {
     text: `SELECT * FROM dxwg_category ORDER BY sort_key`,

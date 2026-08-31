@@ -1,10 +1,22 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import Button from "../button.vue";
 import DeleteDialog from "../deleteDialog.vue";
+import DOMPurify from "dompurify";
 
 const store = useDxStore();
+
+const sanitizedExpectedEffect = computed(() =>
+  DOMPurify.sanitize(store.dxItem.expected_effect ?? "")
+);
+const sanitizedTechnicalDetails = computed(() =>
+  DOMPurify.sanitize(store.dxItem.technical_details ?? "")
+);
+const sanitizedSalesStrategy = computed(() =>
+  DOMPurify.sanitize(store.dxItem.sales_strategy ?? "")
+);
+const sanitizedNote = computed(() => DOMPurify.sanitize(store.dxItem.note ?? ""));
 
 const toObject = (object) => {
   let unescapedFile = null;
@@ -26,43 +38,31 @@ let fileIndex = ref();
 
 <template>
   <v-row>
-    <v-col lg="8" md="9" sm="10">
+    <v-col cols="12">
       <v-card border flat>
         <v-card-item>
-          <v-table>
-            <tbody>
-              <tr>
-                <th class="text-left" width="30%">登録日</th>
-                <td class="text-left">
-                  {{ store.dxItem.registration_date }}
-                </td>
-              </tr>
-              <tr>
-                <th>更新日</th>
-                <td class="text-left">
-                  {{ store.dxItem.update_date }}
-                </td>
-              </tr>
-              <tr>
-                <th>部門</th>
-                <td class="text-left">
-                  {{ store.dxItem.department }}
-                </td>
-              </tr>
-              <tr v-if="store.switchDx">
-                <th>担当者</th>
-                <td class="text-left">
-                  {{ store.dxItem.staff }}
-                </td>
-              </tr>
-              <tr>
-                <th>更新者</th>
-                <td class="text-left">
-                  {{ store.dxItem.changer }}
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+          <v-row>
+            <v-col cols="12" sm="6" md="2">
+              <div class="text-caption text-medium-emphasis mb-1">登録日</div>
+              <div>{{ store.dxItem.registration_date }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="2">
+              <div class="text-caption text-medium-emphasis mb-1">更新日</div>
+              <div>{{ store.dxItem.update_date }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
+              <div class="text-caption text-medium-emphasis mb-1">部門</div>
+              <div>{{ store.dxItem.department }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="2" v-if="store.switchDx">
+              <div class="text-caption text-medium-emphasis mb-1">担当者</div>
+              <div>{{ store.dxItem.staff }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="2">
+              <div class="text-caption text-medium-emphasis mb-1">更新者</div>
+              <div>{{ store.dxItem.changer }}</div>
+            </v-col>
+          </v-row>
         </v-card-item>
       </v-card>
     </v-col>
@@ -87,9 +87,11 @@ let fileIndex = ref();
                 </td>
               </tr>
               <tr>
-                <th>期待される効果</th>
-                <td class="text-left py-3">
-                  {{ store.dxItem.expected_effect }}
+                <th>内容・結果</th>
+                <td class="text-left py-3 rich-text-cell">
+                  <div class="ql-snow">
+                    <div class="ql-editor" v-html="sanitizedExpectedEffect"></div>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -122,8 +124,8 @@ let fileIndex = ref();
                         >{{ toObject(file).name.replace(/^(\d+)_/, "") }}</a
                       >
                       <Button
-                        variant="flat"
-                        class="text-disabled"
+                        variant="text"
+                        class="text-disabled ml-2"
                         @click="
                           store.showDeleteDialog = true;
                           fileName = toObject(file).name;
@@ -152,8 +154,10 @@ let fileIndex = ref();
               </tr>
               <tr>
                 <th>技術詳細</th>
-                <td class="text-left">
-                  {{ store.dxItem.technical_details }}
+                <td class="text-left py-3 rich-text-cell">
+                  <div class="ql-snow">
+                    <div class="ql-editor" v-html="sanitizedTechnicalDetails"></div>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -176,8 +180,10 @@ let fileIndex = ref();
               </tr>
               <tr>
                 <th>販売戦略</th>
-                <td class="text-left">
-                  {{ store.dxItem.sales_strategy }}
+                <td class="text-left py-3 rich-text-cell">
+                  <div class="ql-snow">
+                    <div class="ql-editor" v-html="sanitizedSalesStrategy"></div>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -188,8 +194,10 @@ let fileIndex = ref();
               </tr>
               <tr>
                 <th>備考</th>
-                <td class="text-left">
-                  {{ store.dxItem.note }}
+                <td class="text-left py-3 rich-text-cell">
+                  <div class="ql-snow">
+                    <div class="ql-editor" v-html="sanitizedNote"></div>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -210,8 +218,8 @@ let fileIndex = ref();
                         >{{ toObject(file).name.replace(/^(\d+)_/, "") }}</a
                       >
                       <Button
-                        variant="flat"
-                        class="text-disabled"
+                        variant="text"
+                        class="text-disabled ml-2"
                         @click="
                           store.showDeleteDialog = true;
                           fileName = toObject(file).name;
@@ -239,5 +247,13 @@ tr {
 }
 td {
   line-height: 1.8rem;
+}
+:deep(.rich-text-cell) {
+  height: auto !important;
+}
+:deep(.ql-editor) {
+  height: auto;
+  overflow: visible;
+  padding: 0;
 }
 </style>

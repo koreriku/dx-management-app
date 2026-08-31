@@ -337,7 +337,12 @@ const tableWidth = ref(3000);
             {{ omittedText(store.convertArrayToText(item.category_name), 15) }}
           </td>
           <td class="text-left py-2">
-            {{ omittedText(item.draft_content, windowWidth * 0.025) }}
+            {{
+              omittedText(
+                store.stripHtml(item.draft_content),
+                windowWidth * 0.025
+              )
+            }}
           </td>
           <td class="text-left py-2">
             {{ item.registration_date }}
@@ -366,22 +371,49 @@ const tableWidth = ref(3000);
             {{ omittedText(item.staff, 10) }}
           </td>
           <td class="text-left">
-            {{ omittedText(item.support_content, windowWidth * 0.025) }}
+            {{
+              omittedText(
+                store.stripHtml(item.support_content),
+                windowWidth * 0.025
+              )
+            }}
           </td>
           <td v-if="showQuarter" class="text-left">
-            {{ omittedText(item.one_q_progress, windowWidth * 0.025) }}
+            {{
+              omittedText(
+                store.stripHtml(item.one_q_progress),
+                windowWidth * 0.025
+              )
+            }}
           </td>
           <td v-if="showQuarter" class="text-left">
-            {{ omittedText(item.two_q_progress, windowWidth * 0.025) }}
+            {{
+              omittedText(
+                store.stripHtml(item.two_q_progress),
+                windowWidth * 0.025
+              )
+            }}
           </td>
           <td v-if="showQuarter" class="text-left">
-            {{ omittedText(item.three_q_progress, windowWidth * 0.025) }}
+            {{
+              omittedText(
+                store.stripHtml(item.three_q_progress),
+                windowWidth * 0.025
+              )
+            }}
           </td>
           <td v-if="showQuarter" class="text-left">
-            {{ omittedText(item.four_q_progress, windowWidth * 0.025) }}
+            {{
+              omittedText(
+                store.stripHtml(item.four_q_progress),
+                windowWidth * 0.025
+              )
+            }}
           </td>
           <td v-if="showQuarter" class="text-left">
-            {{ omittedText(item.result, windowWidth * 0.025) }}
+            {{
+              omittedText(store.stripHtml(item.result), windowWidth * 0.025)
+            }}
           </td>
           <td class="text-left">
             {{ item.effect_name }}

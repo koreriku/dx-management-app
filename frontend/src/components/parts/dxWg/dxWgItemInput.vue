@@ -3,8 +3,18 @@ import { defineProps, onBeforeMount, ref } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import categoryRegistration from "../categoryRegistration.vue";
 import Button from "../button.vue";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
 const store = useDxStore();
+
+const richTextToolbar = [
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  ["bold", "italic", "underline", "strike", { align: [] }, "blockquote"],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ color: [] }, { background: [] }],
+  ["link", "image"],
+];
 
 const props = defineProps({
   fileNames: String,
@@ -93,12 +103,15 @@ const enableSelectYear = () => {
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-textarea
-            label="内容"
-            variant="outlined"
-            v-model="store.editDxWg.draft_content"
-            :disabled="props.isEdit && !store.isDxWgRegisterAuthority"
-          ></v-textarea>
+          <div class="text-caption text-medium-emphasis mb-1">内容</div>
+          <QuillEditor
+            v-model:content="store.editDxWg.draft_content"
+            content-type="html"
+            theme="snow"
+            :toolbar="richTextToolbar"
+            :enable="!(props.isEdit && !store.isDxWgRegisterAuthority)"
+            class="mb-2"
+          />
         </v-col>
       </v-row>
     </v-card-text>
@@ -136,58 +149,76 @@ const enableSelectYear = () => {
       <div v-if="!store.editDxWg.priority">
         <v-row>
           <v-col cols="12">
-            <v-textarea
-              label="内容"
-              variant="outlined"
-              v-model="store.editDxWg.support_content"
-            ></v-textarea>
+            <div class="text-caption text-medium-emphasis mb-1">内容</div>
+            <QuillEditor
+              v-model:content="store.editDxWg.support_content"
+              content-type="html"
+              theme="snow"
+              :toolbar="richTextToolbar"
+              class="mb-2"
+            />
           </v-col>
         </v-row>
       </div>
       <div v-else>
         <v-row>
           <v-col cols="12">
-            <v-textarea
-              label="1Q"
-              variant="outlined"
-              v-model="store.editDxWg.one_q_progress"
-            ></v-textarea>
+            <div class="text-caption text-medium-emphasis mb-1">1Q</div>
+            <QuillEditor
+              v-model:content="store.editDxWg.one_q_progress"
+              content-type="html"
+              theme="snow"
+              :toolbar="richTextToolbar"
+              class="mb-2"
+            />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-textarea
-              label="2Q"
-              variant="outlined"
-              v-model="store.editDxWg.two_q_progress"
-            ></v-textarea>
+            <div class="text-caption text-medium-emphasis mb-1">2Q</div>
+            <QuillEditor
+              v-model:content="store.editDxWg.two_q_progress"
+              content-type="html"
+              theme="snow"
+              :toolbar="richTextToolbar"
+              class="mb-2"
+            />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-textarea
-              label="3Q"
-              variant="outlined"
-              v-model="store.editDxWg.three_q_progress"
-            ></v-textarea>
+            <div class="text-caption text-medium-emphasis mb-1">3Q</div>
+            <QuillEditor
+              v-model:content="store.editDxWg.three_q_progress"
+              content-type="html"
+              theme="snow"
+              :toolbar="richTextToolbar"
+              class="mb-2"
+            />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-textarea
-              label="4Q"
-              variant="outlined"
-              v-model="store.editDxWg.four_q_progress"
-            ></v-textarea>
+            <div class="text-caption text-medium-emphasis mb-1">4Q</div>
+            <QuillEditor
+              v-model:content="store.editDxWg.four_q_progress"
+              content-type="html"
+              theme="snow"
+              :toolbar="richTextToolbar"
+              class="mb-2"
+            />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-textarea
-              label="結果"
-              variant="outlined"
-              v-model="store.editDxWg.result"
-            ></v-textarea>
+            <div class="text-caption text-medium-emphasis mb-1">結果</div>
+            <QuillEditor
+              v-model:content="store.editDxWg.result"
+              content-type="html"
+              theme="snow"
+              :toolbar="richTextToolbar"
+              class="mb-2"
+            />
           </v-col>
         </v-row>
       </div>
@@ -234,3 +265,15 @@ const enableSelectYear = () => {
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped>
+:deep(.ql-toolbar) {
+  margin-top: 8px;
+}
+:deep(.ql-container) {
+  height: auto !important;
+}
+:deep(.ql-editor) {
+  min-height: 150px;
+}
+</style>

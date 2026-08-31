@@ -1,8 +1,18 @@
 <script setup>
 import { defineProps, onBeforeMount } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
 const store = useDxStore();
+
+const richTextToolbar = [
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  ["bold", "italic", "underline", "strike", { align: [] }, "blockquote"],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ color: [] }, { background: [] }],
+  ["link", "image"],
+];
 
 const props = defineProps({
   fileNames: String,
@@ -15,77 +25,39 @@ onBeforeMount(() => {
 
 <template>
   <v-row>
-    <v-col lg="8" md="9" sm="10">
+    <v-col cols="12">
       <v-card border flat>
         <v-card-item>
-          <v-table>
-            <tbody>
-              <tr>
-                <th class="text-left" width="20%">登録日</th>
-                <td class="text-left">
-                  <v-text-field
-                    type="date"
-                    variant="outlined"
-                    density="compact"
-                    single-line
-                    hide-details
-                    disabled
-                    v-model="store.editDxItem.registration_date"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>更新日</th>
-                <td class="text-left">
-                  <v-text-field
-                    type="date"
-                    variant="outlined"
-                    density="compact"
-                    single-line
-                    hide-details
-                    disabled
-                    v-model="store.editDxItem.update_date"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>部門</th>
-                <td class="text-left">
-                  <v-select
-                    :items="store.departmentsForInput"
-                    density="compact"
-                    variant="outlined"
-                    hide-details
-                    v-model="store.dxItem.department"
-                  ></v-select>
-                </td>
-              </tr>
-              <tr v-if="store.switchDx">
-                <th>担当者</th>
-                <td class="text-left">
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    single-line
-                    hide-details
-                    v-model="store.dxItem.staff"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>更新者</th>
-                <td class="text-left">
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    single-line
-                    hide-details
-                    v-model="store.dxItem.changer"
-                  ></v-text-field>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+          <v-row>
+            <v-col cols="12" sm="6" md="4">
+              <div class="text-caption text-medium-emphasis mb-1">部門</div>
+              <v-select
+                :items="store.departmentsForInput"
+                variant="outlined"
+                density="compact"
+                hide-details
+                v-model="store.dxItem.department"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" sm="6" md="4" v-if="store.switchDx">
+              <div class="text-caption text-medium-emphasis mb-1">担当者</div>
+              <v-text-field
+                variant="outlined"
+                density="compact"
+                hide-details
+                v-model="store.dxItem.staff"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
+              <div class="text-caption text-medium-emphasis mb-1">更新者</div>
+              <v-text-field
+                variant="outlined"
+                density="compact"
+                hide-details
+                v-model="store.dxItem.changer"
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-item>
       </v-card>
     </v-col>
@@ -120,14 +92,15 @@ onBeforeMount(() => {
                 </td>
               </tr>
               <tr>
-                <th>期待される効果</th>
-                <td class="text-left">
-                  <v-textarea
-                    variant="outlined"
-                    hide-details
-                    class="my-2"
-                    v-model="store.dxItem.expected_effect"
-                  ></v-textarea>
+                <th>内容・結果</th>
+                <td class="text-left rich-text-cell">
+                  <QuillEditor
+                    v-model:content="store.dxItem.expected_effect"
+                    content-type="html"
+                    theme="snow"
+                    :toolbar="richTextToolbar"
+                    class="mb-2"
+                  />
                 </td>
               </tr>
               <tr>
@@ -202,13 +175,14 @@ onBeforeMount(() => {
               </tr>
               <tr>
                 <th>技術詳細</th>
-                <td class="text-left">
-                  <v-textarea
-                    variant="outlined"
-                    hide-details
-                    class="my-2"
-                    v-model="store.dxItem.technical_details"
-                  ></v-textarea>
+                <td class="text-left rich-text-cell">
+                  <QuillEditor
+                    v-model:content="store.dxItem.technical_details"
+                    content-type="html"
+                    theme="snow"
+                    :toolbar="richTextToolbar"
+                    class="mb-2"
+                  />
                 </td>
               </tr>
               <tr>
@@ -249,13 +223,14 @@ onBeforeMount(() => {
               </tr>
               <tr>
                 <th>販売戦略</th>
-                <td class="text-left">
-                  <v-textarea
-                    variant="outlined"
-                    hide-details
-                    class="my-2"
-                    v-model="store.dxItem.sales_strategy"
-                  ></v-textarea>
+                <td class="text-left rich-text-cell">
+                  <QuillEditor
+                    v-model:content="store.dxItem.sales_strategy"
+                    content-type="html"
+                    theme="snow"
+                    :toolbar="richTextToolbar"
+                    class="mb-2"
+                  />
                 </td>
               </tr>
               <tr>
@@ -272,13 +247,14 @@ onBeforeMount(() => {
               </tr>
               <tr>
                 <th>備考</th>
-                <td class="text-left">
-                  <v-textarea
-                    variant="outlined"
-                    hide-details
-                    class="my-2"
-                    v-model="store.dxItem.note"
-                  ></v-textarea>
+                <td class="text-left rich-text-cell">
+                  <QuillEditor
+                    v-model:content="store.dxItem.note"
+                    content-type="html"
+                    theme="snow"
+                    :toolbar="richTextToolbar"
+                    class="mb-2"
+                  />
                 </td>
               </tr>
               <tr>
@@ -306,3 +282,15 @@ onBeforeMount(() => {
     </v-col>
   </v-row>
 </template>
+
+<style scoped>
+:deep(.rich-text-cell) {
+  height: auto !important;
+}
+:deep(.ql-toolbar) {
+  margin-top: 8px;
+}
+:deep(.ql-editor) {
+  min-height: 150px;
+}
+</style>

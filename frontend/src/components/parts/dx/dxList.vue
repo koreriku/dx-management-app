@@ -122,10 +122,10 @@ const windowWidth = window.innerWidth;
             <div class="d-flex justify-space-between">
               <span
                 @click="
-                  store.sortValue = '期待される効果';
+                  store.sortValue = '内容・結果';
                   sort();
                 "
-                >期待される効果<sortToggle column="期待される効果"
+                >内容・結果<sortToggle column="内容・結果"
               /></span>
               <v-badge
                 :color="showAllWord ? 'red' : 'grey-lighten-2'"
@@ -278,7 +278,12 @@ const windowWidth = window.innerWidth;
             {{ omittedText(item.support_tool, 25) }}
           </td>
           <td class="text-left wrap py-2">
-            {{ omittedText(item.expected_effect, windowWidth * 0.03) }}
+            {{
+              omittedText(
+                store.stripHtml(item.expected_effect),
+                windowWidth * 0.03
+              )
+            }}
           </td>
           <td class="text-left">
             {{ item.effect }}
@@ -316,7 +321,7 @@ const windowWidth = window.innerWidth;
             }}
           </td>
           <td class="text-left wrap py-2">
-            {{ omittedText(item.technical_details, 54) }}
+            {{ omittedText(store.stripHtml(item.technical_details), 54) }}
           </td>
           <td class="text-left">
             {{ item.state }}
