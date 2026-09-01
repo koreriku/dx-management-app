@@ -49,7 +49,6 @@ if (store.switchDx) {
           color="yellow"
           @click="store.showRegisterDialog = true"
           class="mr-3"
-          v-if="showList === 'true'"
           icon
           ><v-icon>mdi-plus</v-icon>
           <v-tooltip activator="parent" location="bottom">新規登録</v-tooltip>
@@ -58,47 +57,45 @@ if (store.switchDx) {
           color="primary"
           @click="detailedSearchDialog = true"
           class="mr-3"
-          v-if="showList === 'true'"
           icon
           ><v-icon>mdi-magnify</v-icon>
           <v-tooltip activator="parent" location="bottom">詳細検索</v-tooltip>
         </Button>
-        <div v-if="showList === 'false'">
-          <Button
-            color="gray"
-            @click="switchFigure = !switchFigure"
-            class="mr-3 mb-2"
-            v-show="!switchFigure"
-            icon
-            ><v-icon>mdi-table</v-icon>
-            <v-tooltip activator="parent" location="bottom"
-              >表</v-tooltip
-            ></Button
-          >
+        <Button
+        color="green"
+        @click="store.createExcel"
+        class="mr-3 mb-2"
+        icon
+        >
+        <v-icon>mdi-microsoft-excel</v-icon>
+        
+        <v-tooltip activator="parent" location="bottom"
+        >エクセル出力</v-tooltip
+        >
+      </Button>
+      <div v-if="showList === 'false'">
+        <Button
+          color="gray"
+          @click="switchFigure = !switchFigure"
+          class="mr-3 mb-2"
+          v-show="!switchFigure"
+          icon
+          ><v-icon>mdi-table</v-icon>
+          <v-tooltip activator="parent" location="bottom"
+            >表</v-tooltip
+          ></Button
+        >
 
-          <Button
-            color="primary"
-            @click="showGraphDialog = !showGraphDialog"
-            class="mr-3 mb-2"
-            icon
-          >
-            <v-icon>mdi-chart-bar</v-icon>
-            <v-tooltip activator="parent" location="bottom">グラフ</v-tooltip>
-          </Button>
-
-          <Button
-            color="green"
-            @click="store.createExcel"
-            class="mr-3 mb-2"
-            icon
-          >
-            <v-icon>mdi-microsoft-excel</v-icon>
-
-            <v-tooltip activator="parent" location="bottom"
-              >エクセル出力</v-tooltip
-            >
-          </Button>
-        </div>
+        <Button
+          color="primary"
+          @click="showGraphDialog = !showGraphDialog"
+          class="mr-3 mb-2"
+          icon
+        >
+          <v-icon>mdi-chart-bar</v-icon>
+          <v-tooltip activator="parent" location="bottom">グラフ</v-tooltip>
+        </Button>
+      </div>
         <Button
           color="grey"
           class="mr-3 mb-2"

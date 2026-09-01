@@ -135,6 +135,13 @@ export const useDxStore = defineStore("dxManagement", () => {
   // DXWGの新規登録パスワード入力モーダルの開閉
   const showDxWgRegisterUnlockModal = ref(false);
 
+  // いいねを押した社員番号（ログイン機構がないため簡易識別として使用）
+  const employeeNumber = ref(localStorage.getItem("employeeNumber") || "");
+  const setEmployeeNumber = (value) => {
+    employeeNumber.value = value.trim();
+    localStorage.setItem("employeeNumber", employeeNumber.value);
+  };
+
   // バックエンドのURL -----------------------------------------
   // DX
   const dxBASE_URL = "http://localhost:8000/dx";
@@ -936,6 +943,23 @@ export const useDxStore = defineStore("dxManagement", () => {
       return;
     }
     await axios.put(dxWgBASE_URL + "/changeComment", dxWg.value);
+  };
+
+  // いいねを切り替え
+  const toggleDxWgLike = async () => {
+    if (!dxWg.value.likes) {
+      dxWg.value.likes = [];
+    }
+    const index = dxWg.value.likes.indexOf(employeeNumber.value);
+    if (index === -1) {
+      dxWg.value.likes.push(employeeNumber.value);
+    } else {
+      dxWg.value.likes.splice(index, 1);
+    }
+    if (!dxWg.value.id) {
+      return;
+    }
+    await axios.put(dxWgBASE_URL + "/changeLikes", dxWg.value);
   };
 
   // DxWgExcel出力
@@ -1812,6 +1836,23 @@ export const useDxStore = defineStore("dxManagement", () => {
     await axios.put(dxBASE_URL + "/changeComment", dxItem.value);
   };
 
+  // いいねを切り替え
+  const toggleLike = async () => {
+    if (!dxItem.value.likes) {
+      dxItem.value.likes = [];
+    }
+    const index = dxItem.value.likes.indexOf(employeeNumber.value);
+    if (index === -1) {
+      dxItem.value.likes.push(employeeNumber.value);
+    } else {
+      dxItem.value.likes.splice(index, 1);
+    }
+    if (!dxItem.value.id) {
+      return;
+    }
+    await axios.put(dxBASE_URL + "/changeLikes", dxItem.value);
+  };
+
   // リッチテキスト(HTML)からタグを除去してプレーンテキスト化
   const stripHtml = (html) => {
     if (!html) return "";
@@ -2638,6 +2679,9 @@ export const useDxStore = defineStore("dxManagement", () => {
     deleteInsideDxList,
     addComment,
     deleteComment,
+    toggleLike,
+    employeeNumber,
+    setEmployeeNumber,
     deleteFile,
     search,
     resetSearchValue,
@@ -2681,6 +2725,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     dxWgHomeUseGraph,
     addDxWgComment,
     deleteDxWgComment,
+    toggleDxWgLike,
     sortDxWg,
     tableWidthAdjustment,
     getDxWgWithId,

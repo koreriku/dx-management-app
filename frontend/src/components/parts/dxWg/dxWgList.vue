@@ -110,6 +110,7 @@ const tableWidth = ref(3000);
           </th>
           <th v-if="showQuarter" colspan="5">優先課題の進捗</th>
           <th colspan="2">効果</th>
+          <th></th>
           <th colspan="2">更新日</th>
         </tr>
         <tr>
@@ -292,6 +293,7 @@ const tableWidth = ref(3000);
           >
             コメント<sortDxWgToggle column="effect_comment" />
           </th>
+          <th class="a">いいね数</th>
           <th
             class="a"
             @click="
@@ -422,6 +424,9 @@ const tableWidth = ref(3000);
           </td>
           <td class="text-left">
             {{ omittedText(item.effect_comment, 12) }}
+          </td>
+          <td class="text-left">
+            {{ item.likes ? item.likes.length : 0 }}
           </td>
           <td class="text-left">
             {{ item.support_update_date }}

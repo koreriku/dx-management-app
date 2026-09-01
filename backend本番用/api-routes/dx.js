@@ -153,6 +153,15 @@ router.put("/changeComment", (req, res) => {
   throwQuery(res, query);
 });
 
+router.put("/changeLikes", (req, res) => {
+  const data = req.body;
+  query = {
+    text: `UPDATE dxlists SET likes = $1 WHERE id = $2`,
+    values: [data.likes, data.id],
+  };
+  throwQuery(res, query);
+});
+
 function isJSON(str) {
   try {
     JSON.parse(str);

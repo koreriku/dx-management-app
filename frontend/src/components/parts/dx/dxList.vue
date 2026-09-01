@@ -156,6 +156,7 @@ const windowWidth = window.innerWidth;
           >
             状況<sortToggle column="状況" />
           </th>
+          <th class="b">いいね数</th>
           <th
             class="c"
             @click="
@@ -243,6 +244,7 @@ const windowWidth = window.innerWidth;
           >
             顧客<sortToggle column="顧客" />
           </th>
+          <th class="b">いいね数</th>
           <th
             class="c"
             @click="
@@ -294,6 +296,9 @@ const windowWidth = window.innerWidth;
             {{ item.state }}
           </td>
           <td class="text-left">
+            {{ item.likes ? item.likes.length : 0 }}
+          </td>
+          <td class="text-left">
             {{ item.registration_date }}
           </td>
         </tr>
@@ -330,6 +335,9 @@ const windowWidth = window.innerWidth;
           </td>
           <td class="text-left">
             {{ item.customer }}
+          </td>
+          <td class="text-left">
+            {{ item.likes ? item.likes.length : 0 }}
           </td>
           <td class="text-left">
             {{ item.registration_date }}

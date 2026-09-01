@@ -137,6 +137,18 @@ const judgeShowDxWgRegisterUnlockModal = () => {
             </div>
           </v-card>
         </v-menu>
+        <Button
+          color="green"
+          @click="store.createDxWgExcel"
+          class="mr-3 mb-2"
+          icon
+        >
+          <v-icon>mdi-microsoft-excel</v-icon>
+
+          <v-tooltip activator="parent" location="bottom"
+            >エクセル出力</v-tooltip
+          >
+        </Button>
 
         <div v-if="showList === 'false'">
           <Button
@@ -149,18 +161,6 @@ const judgeShowDxWgRegisterUnlockModal = () => {
             <v-tooltip activator="parent" location="bottom">グラフ</v-tooltip>
           </Button>
 
-          <Button
-            color="green"
-            @click="store.createDxWgExcel"
-            class="mr-3 mb-2"
-            icon
-          >
-            <v-icon>mdi-microsoft-excel</v-icon>
-
-            <v-tooltip activator="parent" location="bottom"
-              >エクセル出力</v-tooltip
-            >
-          </Button>
         </div>
         <Button
           color="grey"

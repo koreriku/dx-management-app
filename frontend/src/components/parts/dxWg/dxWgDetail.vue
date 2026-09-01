@@ -3,6 +3,7 @@ import Button from "../button.vue";
 import dxWgItemRead from "./dxWgItemRead.vue";
 import dxWgEdit from "./dxWgEdit.vue";
 import Comment from "../comment.vue";
+import Like from "../like.vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import { ref, watch } from "vue";
 
@@ -104,6 +105,7 @@ const showDetailDialog = () => {
       </v-card>
     </v-dialog>
 
+    <Like type="dxWg" />
     <Comment type="dxWg" v-if="store.dxWg.state == 10" />
   </v-container>
 </template>

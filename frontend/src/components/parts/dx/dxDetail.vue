@@ -3,6 +3,7 @@ import Button from "../button.vue";
 import dxItemRead from "./dxItemRead.vue";
 import dxEdit from "./dxEdit.vue";
 import Comment from "../comment.vue";
+import Like from "../like.vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import { ref, watch } from "vue";
 
@@ -98,6 +99,7 @@ const deleteInsideDxList = async () => {
       </v-card>
     </v-dialog>
 
+    <Like type="dx" />
     <Comment type="dx" />
   </v-container>
 </template>
