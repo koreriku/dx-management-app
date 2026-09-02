@@ -38,6 +38,10 @@ onBeforeMount(async () => {
     await store.getOutsideDxTechnology();
   }
 
+  if (store.dxCategories.length === 0) {
+    await store.getDxCategory();
+  }
+
   if (store.insideDxLists.length === 0 || store.outsideDxLists.length === 0) {
     await store.getSortInsideDxLists();
   }
@@ -105,11 +109,11 @@ const windowWidth = window.innerWidth;
           <th
             class="a"
             @click="
-              store.sortValue = '業務';
+              store.sortValue = 'タイトル・業務';
               sort();
             "
           >
-            業務<sortToggle column="業務" />
+            タイトル・業務<sortToggle column="タイトル・業務" />
           </th>
           <th
             class="a"

@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
   const data = req.body;
   query = {
     text: `
-    INSERT INTO dxwg_category (name, sort_key)
+    INSERT INTO dx_category (name, sort_key)
     VALUES ($1, $2);
   `,
     values: [data.name, data.sort_key],
@@ -21,9 +21,9 @@ router.put("/", async (req, res) => {
   const data = req.body;
   query = {
     text: `
-      UPDATE dxwg_category
+      UPDATE dx_category
       SET name = $2
-      WHERE id = $1;  
+      WHERE id = $1;
       `,
     values: [data.id, data.name],
   };
@@ -35,7 +35,7 @@ router.put("/multi", async (req, res) => {
   for (const item of items) {
     query = {
       text: `
-      UPDATE dxwg_category
+      UPDATE dx_category
       SET sort_key = $2 ,name = $3
       WHERE id = $1
       `,
@@ -49,14 +49,14 @@ router.put("/multi", async (req, res) => {
     }
   }
   query = {
-    text: `SELECT * FROM dxwg_category ORDER BY sort_key`,
+    text: `SELECT * FROM dx_category ORDER BY sort_key`,
   };
   await throwQuery(res, query);
 });
 
 router.get("/", async (req, res) => {
   query = {
-    text: `SELECT * FROM dxwg_category ORDER BY sort_key`,
+    text: `SELECT * FROM dx_category ORDER BY sort_key`,
   };
   await throwQuery(res, query);
 });
@@ -65,7 +65,7 @@ router.delete("/", async (req, res) => {
   const id = req.query.id;
   try {
     const usage = await pool.query(
-      `SELECT COUNT(*) FROM dxwg WHERE category IS NOT NULL AND $1 = ANY(category)`,
+      `SELECT COUNT(*) FROM dxlists WHERE category IS NOT NULL AND $1 = ANY(category)`,
       [id]
     );
     if (Number(usage.rows[0].count) > 0) {
@@ -78,7 +78,7 @@ router.delete("/", async (req, res) => {
     return;
   }
   query = {
-    text: `DELETE FROM dxwg_category WHERE id = $1`,
+    text: `DELETE FROM dx_category WHERE id = $1`,
     values: [id],
   };
   await throwQuery(res, query);

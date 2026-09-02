@@ -1,9 +1,10 @@
 <script setup>
-import { onBeforeMount } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import Button from "../button.vue";
 import dxTitle from "./dxTitle.vue";
 import dxItemInput from "./dxItemInput.vue";
+import employeeNumberDialog from "../employeeNumberDialog.vue";
 
 const store = useDxStore();
 
@@ -14,7 +15,17 @@ onBeforeMount(async () => {
   store.editDxItem.update_date = store.date;
 });
 
+const showEmployeeNumberDialog = ref(false);
+
 const addInsideDxList = async () => {
+  if (!store.employeeNumber) {
+    showEmployeeNumberDialog.value = true;
+    return;
+  }
+  await registerInsideDxList();
+};
+
+const registerInsideDxList = async () => {
   await store.addInsideDxList();
   await store.getSortInsideDxLists();
   store.showRegisterDialog = false;
@@ -46,5 +57,10 @@ const addInsideDxList = async () => {
         >
       </v-col>
     </v-row>
+
+    <employeeNumberDialog
+      v-model="showEmployeeNumberDialog"
+      @submit="registerInsideDxList"
+    />
   </v-container>
 </template>

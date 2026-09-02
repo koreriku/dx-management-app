@@ -295,7 +295,7 @@ store.changeSwitchDx();
                   <tr>
                     <th class="a">部門</th>
                     <th>担当</th>
-                    <th>業務</th>
+                    <th>タイトル・業務</th>
                     <th>支援ツール</th>
                     <th class="e">
                       <div class="d-flex justify-space-between">

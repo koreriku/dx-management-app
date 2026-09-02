@@ -40,7 +40,47 @@ let fileIndex = ref();
   <v-row>
     <v-col cols="12">
       <v-card border flat>
-        <v-card-item>
+        <v-card-item v-if="store.switchDx">
+          <v-row>
+            <v-col cols="12" sm="6" md="3">
+              <div class="text-caption text-medium-emphasis mb-1">登録日</div>
+              <div>{{ store.dxItem.registration_date }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+              <div class="text-caption text-medium-emphasis mb-1">更新日</div>
+              <div>{{ store.dxItem.update_date }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+              <div class="text-caption text-medium-emphasis mb-1">部門</div>
+              <div>{{ store.dxItem.department }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+              <div class="text-caption text-medium-emphasis mb-1">
+                カテゴリー
+              </div>
+              <div>
+                <v-chip
+                  v-for="cat in store.dxItem.category_name"
+                  :key="cat"
+                  size="small"
+                  class="mr-1 mb-1"
+                  >{{ cat }}</v-chip
+                >
+              </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" sm="6" md="6">
+              <div class="text-caption text-medium-emphasis mb-1">担当者</div>
+              <div>{{ store.dxItem.staff }}</div>
+            </v-col>
+            <v-col cols="12" sm="6" md="6">
+              <div class="text-caption text-medium-emphasis mb-1">更新者</div>
+              <div>{{ store.dxItem.changer }}</div>
+            </v-col>
+          </v-row>
+        </v-card-item>
+        <v-card-item v-else>
           <v-row>
             <v-col cols="12" sm="6" md="2">
               <div class="text-caption text-medium-emphasis mb-1">登録日</div>
@@ -53,10 +93,6 @@ let fileIndex = ref();
             <v-col cols="12" sm="6" md="4">
               <div class="text-caption text-medium-emphasis mb-1">部門</div>
               <div>{{ store.dxItem.department }}</div>
-            </v-col>
-            <v-col cols="12" sm="6" md="2" v-if="store.switchDx">
-              <div class="text-caption text-medium-emphasis mb-1">担当者</div>
-              <div>{{ store.dxItem.staff }}</div>
             </v-col>
             <v-col cols="12" sm="6" md="2">
               <div class="text-caption text-medium-emphasis mb-1">更新者</div>
@@ -75,7 +111,7 @@ let fileIndex = ref();
           <v-table>
             <tbody v-if="store.switchDx">
               <tr>
-                <th width="20%">業務</th>
+                <th width="20%">タイトル・業務</th>
                 <td class="text-left">
                   {{ store.dxItem.work }}
                 </td>
@@ -124,6 +160,7 @@ let fileIndex = ref();
                         >{{ toObject(file).name.replace(/^(\d+)_/, "") }}</a
                       >
                       <Button
+                        v-if="store.canDelete(toObject(file).employee_no)"
                         variant="text"
                         class="text-disabled ml-2"
                         @click="
@@ -132,6 +169,17 @@ let fileIndex = ref();
                           fileIndex = Number(index);
                         "
                         >削除</Button
+                      >
+                      <Button
+                        v-else
+                        icon
+                        variant="text"
+                        class="text-disabled ml-2"
+                        @click="store.showDeleteAuthorityUnlockModal = true"
+                        ><v-icon size="small">mdi-lock</v-icon>
+                        <v-tooltip activator="parent" location="bottom"
+                          >削除するにはパスワードが必要です</v-tooltip
+                        ></Button
                       >
                     </p>
                   </div>
@@ -218,6 +266,7 @@ let fileIndex = ref();
                         >{{ toObject(file).name.replace(/^(\d+)_/, "") }}</a
                       >
                       <Button
+                        v-if="store.canDelete(toObject(file).employee_no)"
                         variant="text"
                         class="text-disabled ml-2"
                         @click="
@@ -226,6 +275,17 @@ let fileIndex = ref();
                           fileIndex = Number(index);
                         "
                         >削除</Button
+                      >
+                      <Button
+                        v-else
+                        icon
+                        variant="text"
+                        class="text-disabled ml-2"
+                        @click="store.showDeleteAuthorityUnlockModal = true"
+                        ><v-icon size="small">mdi-lock</v-icon>
+                        <v-tooltip activator="parent" location="bottom"
+                          >削除するにはパスワードが必要です</v-tooltip
+                        ></Button
                       >
                     </p>
                   </div>

@@ -41,10 +41,10 @@ router.post("/", (req, res) => {
   query = {
     text: `
           INSERT INTO dxlists
-          (registration_date, update_date, changer, department, work, support_tool, 
-           state, staff, expected_effect, effect, product, industry, technology, 
-           technical_details, customer, cooperation_destination, sales_strategy, note, attached_file, comment, division)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+          (registration_date, update_date, changer, department, work, support_tool,
+           state, staff, expected_effect, effect, product, industry, technology,
+           technical_details, customer, cooperation_destination, sales_strategy, note, attached_file, comment, division, category, employee_no)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
         `,
     values: [
       data.registration_date,
@@ -68,6 +68,8 @@ router.post("/", (req, res) => {
       data.attached_file,
       data.comment,
       data.division,
+      data.category,
+      data.employee_no,
     ],
   };
   throwQuery(res, query);
@@ -81,11 +83,11 @@ router.put("/", (req, res) => {
   const data = req.body;
   if (data.attached_file[0]) {
     query = {
-      text: `UPDATE dxlists 
+      text: `UPDATE dxlists
       SET (registration_date, update_date, changer, department, work, support_tool, state,
-         staff, expected_effect, effect,product, industry, technology, technical_details, customer, 
-         cooperation_destination, sales_strategy, note, attached_file, comment)
-      = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+         staff, expected_effect, effect,product, industry, technology, technical_details, customer,
+         cooperation_destination, sales_strategy, note, attached_file, comment, category)
+      = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
       WHERE id = ${data.id}`,
       values: [
         data.registration_date,
@@ -108,15 +110,16 @@ router.put("/", (req, res) => {
         data.note,
         data.attached_file,
         data.comment,
+        data.category,
       ],
     };
   } else {
     query = {
-      text: `UPDATE dxlists 
+      text: `UPDATE dxlists
       SET (registration_date, update_date, changer, department, work, support_tool, state,
-        staff, expected_effect, effect,product, industry, technology, technical_details, customer, 
-        cooperation_destination, sales_strategy, note, comment)
-     = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+        staff, expected_effect, effect,product, industry, technology, technical_details, customer,
+        cooperation_destination, sales_strategy, note, comment, category)
+     = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
       WHERE id = ${data.id}`,
       values: [
         data.registration_date,
@@ -138,6 +141,7 @@ router.put("/", (req, res) => {
         data.sales_strategy,
         data.note,
         data.comment,
+        data.category,
       ],
     };
   }

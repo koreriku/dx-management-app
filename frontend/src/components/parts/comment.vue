@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps } from "vue";
 import Button from "./button.vue";
+import employeeNumberDialog from "./employeeNumberDialog.vue";
 import { useDxStore } from "../../stores/dxManagement";
 
 const props = defineProps({
@@ -8,14 +9,23 @@ const props = defineProps({
 });
 const store = useDxStore();
 const comment = ref("");
+const showEmployeeNumberDialog = ref(false);
 
-const addComment = () => {
+const submitComment = () => {
   if (props.type == "dx") {
     store.addComment(comment.value);
   } else if (props.type == "dxWg") {
     store.addDxWgComment(comment.value);
   }
   comment.value = "";
+};
+
+const addComment = () => {
+  if (!store.employeeNumber) {
+    showEmployeeNumberDialog.value = true;
+    return;
+  }
+  submitComment();
 };
 </script>
 
@@ -56,12 +66,24 @@ const addComment = () => {
               v-for="(comment, index) in store.dxItem.comment"
             >
               <div class="d-flex justify-space-between">
-                <span class="pre">{{ comment }}</span>
+                <span class="pre">{{ store.parseComment(comment).text }}</span>
                 <Button
+                  v-if="store.canDelete(store.parseComment(comment).employee_no)"
                   @click="store.deleteComment(index)"
                   variant="text"
                   class="text-disabled d-inline text-right mt-auto"
                   >削除</Button
+                >
+                <Button
+                  v-else
+                  icon
+                  variant="text"
+                  class="text-disabled d-inline text-right mt-auto"
+                  @click="store.showDeleteAuthorityUnlockModal = true"
+                  ><v-icon size="small">mdi-lock</v-icon>
+                  <v-tooltip activator="parent" location="bottom"
+                    >削除するにはパスワードが必要です</v-tooltip
+                  ></Button
                 >
               </div>
               <v-divider></v-divider>
@@ -71,12 +93,24 @@ const addComment = () => {
               v-for="(comment, index) in store.dxWg.comment"
             >
               <div class="d-flex justify-space-between">
-                <span class="pre">{{ comment }}</span>
+                <span class="pre">{{ store.parseComment(comment).text }}</span>
                 <Button
+                  v-if="store.canDelete(store.parseComment(comment).employee_no)"
                   @click="store.deleteDxWgComment(index)"
                   variant="text"
                   class="text-disabled d-inline text-right mt-auto"
                   >削除</Button
+                >
+                <Button
+                  v-else
+                  icon
+                  variant="text"
+                  class="text-disabled d-inline text-right mt-auto"
+                  @click="store.showDeleteAuthorityUnlockModal = true"
+                  ><v-icon size="small">mdi-lock</v-icon>
+                  <v-tooltip activator="parent" location="bottom"
+                    >削除するにはパスワードが必要です</v-tooltip
+                  ></Button
                 >
               </div>
               <v-divider></v-divider>
@@ -86,6 +120,11 @@ const addComment = () => {
       </v-card>
     </v-col>
   </v-row>
+
+  <employeeNumberDialog
+    v-model="showEmployeeNumberDialog"
+    @submit="submitComment"
+  />
 </template>
 
 <style scoped>
