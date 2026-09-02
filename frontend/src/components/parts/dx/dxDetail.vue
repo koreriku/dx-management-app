@@ -59,10 +59,24 @@ const deleteInsideDxList = async () => {
           ></Button
         >
 
-        <Button color="red" @click="showDelete = true" icon
+        <Button
+          v-if="store.canDelete(store.dxItem.employee_no)"
+          color="red"
+          @click="showDelete = true"
+          icon
           ><v-icon>mdi-delete</v-icon>
           <v-tooltip activator="parent" location="bottom"
             >削除</v-tooltip
+          ></Button
+        >
+        <Button
+          v-else
+          color="red"
+          @click="store.showDeleteAuthorityUnlockModal = true"
+          icon
+          ><v-icon>mdi-lock</v-icon>
+          <v-tooltip activator="parent" location="bottom"
+            >削除するにはパスワードが必要です</v-tooltip
           ></Button
         >
       </div>

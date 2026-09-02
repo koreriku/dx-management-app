@@ -358,6 +358,58 @@ const setFontSize = () => {
       </div>
     </v-card>
   </v-dialog>
+
+  <v-dialog
+    v-model="store.showDeleteAuthorityUnlockModal"
+    width="400"
+    :style="{ fontSize: store.calculateFontSize() * 0.95 + 'rem' }"
+    style="line-height: 2rem"
+  >
+    <v-card class="card">
+      <v-row>
+        <v-col>
+          <v-card-text class="text-medium-emphasis"
+            >削除権限解除</v-card-text
+          >
+        </v-col>
+        <v-col>
+          <div class="mt-2 me-2" align="end">
+            <Button
+              color="gray"
+              class="mr-3"
+              @click="store.showDeleteAuthorityUnlockModal = false"
+              icon
+              ><v-icon>mdi-arrow-u-left-bottom</v-icon>
+              <v-tooltip activator="parent" location="bottom"
+                >戻る</v-tooltip
+              ></Button
+            >
+          </div>
+        </v-col>
+      </v-row>
+      <v-card-item>
+        <v-text-field
+          type="password"
+          variant="outlined"
+          label="パスワード"
+          class="mt-2"
+          @keyup.enter="store.unlockDeleteAuthority"
+          v-model="store.password"
+        ></v-text-field>
+      </v-card-item>
+      <div v-if="store.message" class="message">{{ store.message }}</div>
+      <div class="mb-4" style="align-self: center">
+        <Button
+          type="submit"
+          color="yellow"
+          @click="store.unlockDeleteAuthority"
+          icon
+          ><v-icon>mdi-check</v-icon>
+          <v-tooltip activator="parent" location="bottom">OK</v-tooltip></Button
+        >
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>

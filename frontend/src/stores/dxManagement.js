@@ -142,6 +142,52 @@ export const useDxStore = defineStore("dxManagement", () => {
     localStorage.setItem("employeeNumber", employeeNumber.value);
   };
 
+  // コメント・データ・添付ファイルの削除権限解除パスワード入力モーダルの開閉
+  const showDeleteAuthorityUnlockModal = ref(false);
+  // 本人以外のコメント・データ・添付ファイルの削除が行えるかどうか（ページを開いている間有効）
+  const isDeleteAuthority = ref(false);
+  // 削除権限を解除
+  const unlockDeleteAuthority = () => {
+    axios.get("/json/administratorInfo.json").then((res) => {
+      if (res.data.password === password.value) {
+        message.value = "";
+        password.value = "";
+        isDeleteAuthority.value = true;
+        showDeleteAuthorityUnlockModal.value = false;
+      } else {
+        message.value = "パスワードが違います。";
+      }
+    });
+  };
+  // 指定した社員番号のコメント・データ・添付ファイルを削除できるか判定
+  // （本人 または 削除権限解除済みの場合に削除可能）
+  const canDelete = (itemEmployeeNo) => {
+    if (isDeleteAuthority.value) {
+      return true;
+    }
+    if (!itemEmployeeNo) {
+      return false;
+    }
+    return itemEmployeeNo === employeeNumber.value;
+  };
+  // コメント（JSON文字列 or 旧形式のプレーンテキスト）をパースして{ text, employee_no }の形に変換
+  const parseComment = (raw) => {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object" && "text" in parsed) {
+        return parsed;
+      }
+    } catch (e) {
+      // 旧形式（プレーンテキスト）のコメントはそのまま扱う
+    }
+    return { text: raw, employee_no: null };
+  };
+
+  // 社内DXのカテゴリー追加・編集パスワード入力モーダルの開閉
+  const showDxCategoryUnlockModal = ref(false);
+  // 社内DXのカテゴリー追加・編集画面を開けるかどうか
+  const isDxCategoryRegisterAuthority = ref(false);
+
   // バックエンドのURL -----------------------------------------
   // DX
   const dxBASE_URL = "http://localhost:8000/dx";
@@ -151,6 +197,8 @@ export const useDxStore = defineStore("dxManagement", () => {
   const dxWgBASE_URL = "http://localhost:8000/dxWg";
   // dxWgカテゴリー
   const dxWgCategoryBASE_URL = "http://localhost:8000/dxWgCategory";
+  // 社内DXカテゴリー
+  const dxCategoryBASE_URL = "http://localhost:8000/dxCategory";
   // Dx系の変数 -----------------------------------------
   // 単一の社内DXを格納
   const dxItem = ref({});
@@ -318,6 +366,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       year: thisYear,
       attached_file: [],
       comment: [],
+      employee_no: null,
     };
     editDxWg.value = {
       id: null,
@@ -350,6 +399,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       year: thisYear,
       attached_file: [],
       comment: [],
+      employee_no: null,
     };
     dxWgFilteringWord.value = {
       id: null,
@@ -420,6 +470,24 @@ export const useDxStore = defineStore("dxManagement", () => {
     });
   };
 
+  // カテゴリー削除確認ダイアログの開閉
+  const isDeleteCategoryDialog = ref(false);
+  // 削除対象のカテゴリー
+  const categoryToDelete = ref({});
+
+  const deleteCategory = async (category) => {
+    try {
+      await axios.delete(dxWgCategoryBASE_URL, { params: { id: category.id } });
+      await getCategory();
+    } catch (e) {
+      if (e.response && e.response.status === 409) {
+        displaySnackbar(e.response.data, "error");
+      } else {
+        displaySnackbar("カテゴリーの削除に失敗しました。", "error");
+      }
+    }
+  };
+
   const selectedItem = ref({});
   const puttedItem = ref({});
 
@@ -469,6 +537,165 @@ export const useDxStore = defineStore("dxManagement", () => {
     return usedItems;
   };
 
+  // 社内DXカテゴリーの関数 -----------------------------------------------------
+  const isDxCategoryRegistrationDialog = ref(false);
+
+  const newDxCategory = ref({
+    id: 0,
+    name: "",
+    sort_key: 0,
+  });
+  const dxCategories = ref([]);
+
+  const postDxCategory = async () => {
+    newDxCategory.value.sort_key = dxCategories.value.length + 1;
+    await axios.post(dxCategoryBASE_URL, newDxCategory.value);
+    await getDxCategory();
+  };
+
+  const getDxCategory = async () => {
+    await axios.get(dxCategoryBASE_URL).then((res) => {
+      dxCategories.value = res.data;
+    });
+  };
+  const putDxCategory = async (category) => {
+    await axios.put(dxCategoryBASE_URL, category);
+  };
+
+  const sortDxCategory = async () => {
+    const usedCategory = sortDxCategoryItems(dxCategories.value);
+
+    if (usedCategory) await putMultiDxCategory(usedCategory);
+  };
+
+  const putMultiDxCategory = async (items) => {
+    await axios.put(dxCategoryBASE_URL + "/multi", items).then((res) => {
+      dxCategories.value = res.data;
+    });
+  };
+
+  // 社内DXカテゴリー削除確認ダイアログの開閉
+  const isDeleteDxCategoryDialog = ref(false);
+  // 削除対象の社内DXカテゴリー
+  const dxCategoryToDelete = ref({});
+
+  const deleteDxCategory = async (category) => {
+    try {
+      await axios.delete(dxCategoryBASE_URL, { params: { id: category.id } });
+      await getDxCategory();
+    } catch (e) {
+      if (e.response && e.response.status === 409) {
+        displaySnackbar(e.response.data, "error");
+      } else {
+        displaySnackbar("カテゴリーの削除に失敗しました。", "error");
+      }
+    }
+  };
+
+  const selectedDxCategoryItem = ref({});
+  const puttedDxCategoryItem = ref({});
+
+  const sortDxCategoryItems = (targets) => {
+    if (
+      selectedDxCategoryItem.value.sort_key ==
+      puttedDxCategoryItem.value.sort_key
+    ) {
+      return;
+    }
+
+    const usedItems = [];
+
+    if (
+      selectedDxCategoryItem.value.sort_key >
+      puttedDxCategoryItem.value.sort_key
+    ) {
+      for (const target of targets) {
+        if (
+          target.sort_key <= selectedDxCategoryItem.value.sort_key &&
+          target.sort_key >= puttedDxCategoryItem.value.sort_key
+        ) {
+          usedItems.push(target);
+        }
+      }
+      for (const [index, item] of Object.entries(usedItems)) {
+        if (usedItems.length - 1 == Number(index)) {
+          item.new_id = usedItems[0].sort_key;
+          break;
+        }
+        item.new_id = usedItems[Number(index) + 1].sort_key;
+      }
+      usedItems.unshift(usedItems.pop());
+    } else {
+      for (const target of targets) {
+        if (
+          target.sort_key >= selectedDxCategoryItem.value.sort_key &&
+          target.sort_key <= puttedDxCategoryItem.value.sort_key
+        ) {
+          usedItems.push(target);
+        }
+      }
+
+      for (const [index, item] of Object.entries(usedItems)) {
+        if (usedItems.length - 1 == Number(index)) {
+          usedItems[0].new_id = item.sort_key;
+          break;
+        }
+        usedItems[Number(index) + 1].new_id = item.sort_key;
+      }
+      usedItems.push(usedItems.shift());
+    }
+    return usedItems;
+  };
+
+  const changeDxCategoryNames = (itemNames) => {
+    let ids = [];
+    for (const itemName of itemNames) {
+      for (const category of dxCategories.value) {
+        if (category.name == itemName) {
+          ids.push(category.id);
+          break;
+        }
+      }
+    }
+    return ids;
+  };
+  const changeDxCategoryIds = (itemIds) => {
+    let names = [];
+    for (const itemId of itemIds) {
+      for (const category of dxCategories.value) {
+        if (category.id == itemId) {
+          names.push(category.name);
+          break;
+        }
+      }
+    }
+    return names;
+  };
+
+  // 社内DXのカテゴリー追加・編集パスワードが正しいか確認
+  const unlockDxCategoryRegisterAuthority = () => {
+    axios.get("/json/administratorInfo.json").then((res) => {
+      if (res.data.password === password.value) {
+        message.value = "";
+        password.value = "";
+        isDxCategoryRegisterAuthority.value = true;
+        showDxCategoryUnlockModal.value = false;
+        isDxCategoryRegistrationDialog.value = true;
+      } else {
+        message.value = "パスワードが違います。";
+      }
+    });
+  };
+
+  // 社内DXのカテゴリー追加・編集ボタン押下時の判定
+  const judgeShowDxCategoryRegistrationDialog = () => {
+    if (isDxCategoryRegisterAuthority.value) {
+      isDxCategoryRegistrationDialog.value = true;
+    } else {
+      showDxCategoryUnlockModal.value = true;
+    }
+  };
+
   const changeThemeColorForDxWg = () => {
     let light = theme.themes.value.light.colors;
     let dark = theme.themes.value.dark.colors;
@@ -479,7 +706,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
 
   const unlockDxWgRegisterAuthority = () => {
-    axios.get("/json/dxWgAdministratorInfo.json").then((res) => {
+    axios.get("/json/administratorInfo.json").then((res) => {
       if (res.data.password === password.value) {
         message.value = "";
         isDxWgRegisterAuthority.value = true;
@@ -612,6 +839,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   // 新しいDXをデータベースに格納
   const addDxWg = async () => {
     editDxWg.value.registration_date = date;
+    editDxWg.value.employee_no = employeeNumber.value;
     preDxWgUpdate();
     await axios.post(dxWgBASE_URL, editDxWg.value);
     await getDxWg();
@@ -927,7 +1155,9 @@ export const useDxStore = defineStore("dxManagement", () => {
     let commentArr = comment.split("");
     for (let i = 0; i < commentArr.length; i++) {
       if (commentArr[i] !== " " && commentArr[i] !== "　") {
-        dxWg.value.comment.unshift(comment);
+        dxWg.value.comment.unshift(
+          JSON.stringify({ text: comment, employee_no: employeeNumber.value })
+        );
         if (!dxWg.value.id) {
           return;
         }
@@ -1643,6 +1873,8 @@ export const useDxStore = defineStore("dxManagement", () => {
       update_date: null,
       changer: null,
       department: "--",
+      category: [],
+      category_name: [],
       work: null,
       support_tool: null,
       state: "--",
@@ -1659,6 +1891,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       note: null,
       attached_file: [],
       comment: [],
+      employee_no: null,
     };
   };
 
@@ -1692,6 +1925,7 @@ export const useDxStore = defineStore("dxManagement", () => {
           name: uniqueFileName,
           size: file.size,
           type: file.type,
+          employee_no: employeeNumber.value,
         });
       }
       editDxItem.value.attached_file.push(...attachedFiles);
@@ -1754,12 +1988,21 @@ export const useDxStore = defineStore("dxManagement", () => {
         }
       }
     }
+
+    if (editDxItem.value.category_name && editDxItem.value.category_name.length > 0) {
+      editDxItem.value.category = changeDxCategoryNames(
+        editDxItem.value.category_name
+      );
+    } else {
+      editDxItem.value.category = [];
+    }
   };
 
   // 新しいDXをデータベースに格納
   const addInsideDxList = async () => {
     dxItem.value.registration_date = date;
     dxItem.value.update_date = date;
+    dxItem.value.employee_no = employeeNumber.value;
     editDxItem.value = Object.assign({}, dxItem.value);
     await itemNumberConversion();
     await postFiles();
@@ -1818,7 +2061,9 @@ export const useDxStore = defineStore("dxManagement", () => {
     let commentArr = comment.split("");
     for (let i = 0; i < commentArr.length; i++) {
       if (commentArr[i] !== " " && commentArr[i] !== "　") {
-        dxItem.value.comment.unshift(comment);
+        dxItem.value.comment.unshift(
+          JSON.stringify({ text: comment, employee_no: employeeNumber.value })
+        );
         if (!dxItem.value.id) {
           return;
         }
@@ -1882,7 +2127,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       worksheet.columns = [
         { header: "部門", key: "department" },
         { header: "担当", key: "staff" },
-        { header: "業務", key: "work" },
+        { header: "タイトル・業務", key: "work" },
         { header: "支援ツール", key: "tool" },
         { header: "内容・結果", key: "expected_effect" },
         { header: "効果", key: "effect" },
@@ -1974,7 +2219,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   const insideDxColumnList = {
     部門: "department",
     担当: "staff",
-    業務: "work",
+    タイトル・業務: "work",
     支援ツール: "support_tool",
     内容・結果: "expected_effect",
     効果: "effect",
@@ -2110,7 +2355,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     部門: "department",
     更新者: "changer",
     担当: "staff",
-    業務: "work",
+    タイトル・業務: "work",
     支援ツール: "support_tool",
     内容・結果: "expected_effect",
     効果: "effect",
@@ -2141,6 +2386,11 @@ export const useDxStore = defineStore("dxManagement", () => {
     data.department = changeDepartment(data.department);
     data.effect = changeEffect(data.effect);
     data.state = changeState(data.state);
+    if (data.category && data.category.length > 0) {
+      data.category_name = changeDxCategoryIds(data.category);
+    } else {
+      data.category_name = [];
+    }
     return data;
   }
   const convertOutsideDx = (data) => {
@@ -2639,6 +2889,25 @@ export const useDxStore = defineStore("dxManagement", () => {
     outsideDxState,
     outsideDxTechnology,
     showDxWgRegisterUnlockModal,
+    showDxCategoryUnlockModal,
+    isDxCategoryRegisterAuthority,
+    dxCategoryBASE_URL,
+    isDxCategoryRegistrationDialog,
+    newDxCategory,
+    dxCategories,
+    selectedDxCategoryItem,
+    puttedDxCategoryItem,
+    postDxCategory,
+    getDxCategory,
+    putDxCategory,
+    sortDxCategory,
+    changeDxCategoryNames,
+    changeDxCategoryIds,
+    unlockDxCategoryRegisterAuthority,
+    judgeShowDxCategoryRegistrationDialog,
+    isDeleteDxCategoryDialog,
+    dxCategoryToDelete,
+    deleteDxCategory,
     dxWg,
     editDxWg,
     dxWgs,
@@ -2653,6 +2922,9 @@ export const useDxStore = defineStore("dxManagement", () => {
     dxWgCategories,
     selectedItem,
     puttedItem,
+    isDeleteCategoryDialog,
+    categoryToDelete,
+    deleteCategory,
     dxWgStates,
     dxWgVerticalList,
     dxTitle,
@@ -2682,6 +2954,11 @@ export const useDxStore = defineStore("dxManagement", () => {
     toggleLike,
     employeeNumber,
     setEmployeeNumber,
+    showDeleteAuthorityUnlockModal,
+    isDeleteAuthority,
+    unlockDeleteAuthority,
+    canDelete,
+    parseComment,
     deleteFile,
     search,
     resetSearchValue,

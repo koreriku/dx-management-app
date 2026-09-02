@@ -4,6 +4,7 @@ import dxRoute from "./api-routes/dx.js";
 import departmentsRoute from "./api-routes/departments.js";
 import dxWg from "./api-routes/dxWg.js";
 import dxWgCategory from "./api-routes/dxWgCategory.js";
+import dxCategory from "./api-routes/dxCategory.js";
 const app = express();
 
 // "http://172.16.16.134:5173"
@@ -19,6 +20,7 @@ app.use("/dx", dxRoute);
 app.use("/departments", departmentsRoute);
 app.use("/dxWg", dxWg);
 app.use("/dxWgCategory", dxWgCategory);
+app.use("/dxCategory", dxCategory);
 
 app.listen(8000, "localhost", function () {
   console.log("listen ....");

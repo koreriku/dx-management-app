@@ -64,6 +64,10 @@ onBeforeMount(async () => {
     await store.getOutsideDxTechnology();
   }
 
+  if (store.dxCategories.length === 0) {
+    await store.getDxCategory();
+  }
+
   if (store.insideDxLists.length === 0 || store.outsideDxLists.length === 0) {
     await store.getSortInsideDxLists();
   } else {
@@ -209,7 +213,7 @@ watch(dxTitle, (newTitle, oldTitle) => {
                     <tr v-if="dxTitle == 0">
                       <th>部門</th>
                       <th>担当</th>
-                      <th>業務</th>
+                      <th>タイトル・業務</th>
                       <th>支援ツール</th>
                       <th>効果</th>
                     </tr>
