@@ -54,6 +54,8 @@ const enableSelectYear = () => {
             :items="years"
             variant="outlined"
             v-model="store.editDxWg.year"
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
         <v-col cols="10" xs="10" sm="10" md="5" lg="5" xl="5" xxl="5">
@@ -64,6 +66,8 @@ const enableSelectYear = () => {
             v-model="store.editDxWg.category_name"
             multiple
             chips
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
         <v-col cols="2" xs="2" sm="2" md="1" lg="1" xl="1" xxl="1">
@@ -72,6 +76,7 @@ const enableSelectYear = () => {
             variant="outlined"
             color="grey-darken-1"
             @click="store.isCategoryRegistrationDialog = true"
+            size="small"
           >
             <v-icon>mdi-plus</v-icon>
             <v-tooltip activator="parent" location="bottom"
@@ -88,6 +93,8 @@ const enableSelectYear = () => {
             variant="outlined"
             v-model="store.editDxWg.draft_business_sector"
             :disabled="props.isEdit && !store.isDxWgRegisterAuthority"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -98,6 +105,8 @@ const enableSelectYear = () => {
             v-model="store.editDxWg.draft_department_name"
             multiple
             chips
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
       </v-row>
@@ -122,6 +131,7 @@ const enableSelectYear = () => {
     v-model="store.editDxWg.priority"
     color="red"
     :disabled="props.isEdit && !store.isDxWgRegisterAuthority"
+    hide-details
   ></v-checkbox>
 
   <v-card class="mb-6" border flat>
@@ -136,6 +146,8 @@ const enableSelectYear = () => {
             v-model="store.editDxWg.support_department_name"
             multiple
             chips
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -143,6 +155,8 @@ const enableSelectYear = () => {
             label="担当"
             variant="outlined"
             v-model="store.editDxWg.staff"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
       </v-row>
@@ -228,6 +242,8 @@ const enableSelectYear = () => {
             label="期限"
             variant="outlined"
             v-model="store.editDxWg.deadline"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -236,6 +252,8 @@ const enableSelectYear = () => {
             :items="store.dxWgStates.map((item) => item.state)"
             variant="outlined"
             v-model="store.editDxWg.state_name"
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
       </v-row>
@@ -252,6 +270,8 @@ const enableSelectYear = () => {
             :items="store.dxWgEffects.map((item) => item.effect)"
             variant="outlined"
             v-model="store.editDxWg.effect_name"
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -259,6 +279,8 @@ const enableSelectYear = () => {
             label="効果コメント"
             variant="outlined"
             v-model="store.editDxWg.effect_comment"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
       </v-row>

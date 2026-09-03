@@ -58,11 +58,29 @@ onBeforeMount(async () => {
   }
 });
 
-const sort = () => {
-  if (store.sequence == "昇順") {
-    store.sequence = "降順";
+// クリックのたびに 昇順 → 降順 → 元の並び順 の3段階で切り替える
+const defaultSortValue = "更新日";
+const defaultSequence = "降順";
+let sortingColumn = null;
+let sortPhase = 0; // 1: 昇順, 2: 降順, 0: 元に戻す
+
+const sort = (column) => {
+  if (sortingColumn !== column) {
+    sortingColumn = column;
+    sortPhase = 1;
+  } else if (sortPhase === 1) {
+    sortPhase = 2;
   } else {
-    store.sequence = "昇順";
+    sortPhase = 0;
+  }
+
+  if (sortPhase === 0) {
+    sortingColumn = null;
+    store.sortValue = defaultSortValue;
+    store.sequence = defaultSequence;
+  } else {
+    store.sortValue = column;
+    store.sequence = sortPhase === 1 ? "昇順" : "降順";
   }
   store.getSortInsideDxLists();
 };
@@ -87,50 +105,22 @@ const windowWidth = window.innerWidth;
     <v-table :height="props.tableHeight" class="table" fixed-header="true">
       <thead>
         <tr v-if="store.switchDx">
-          <th
-            class="a"
-            @click="
-              store.sortValue = '部門';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('部門')">
             部門
             <sortToggle column="部門" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortValue = '担当';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('担当')">
             担当<sortToggle column="担当" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortValue = 'タイトル・業務';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('タイトル・業務')">
             タイトル・業務<sortToggle column="タイトル・業務" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortValue = '支援ツール';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('支援ツール')">
             支援ツール<sortToggle column="支援ツール" />
           </th>
           <th class="e">
             <div class="d-flex justify-space-between">
-              <span
-                @click="
-                  store.sortValue = '内容・結果';
-                  sort();
-                "
+              <span @click="sort('内容・結果')"
                 >内容・結果<sortToggle column="内容・結果"
               /></span>
               <v-badge
@@ -142,83 +132,42 @@ const windowWidth = window.innerWidth;
               ></v-badge>
             </div>
           </th>
-          <th
-            class="b"
-            @click="
-              store.sortValue = '効果';
-              sort();
-            "
-          >
+          <th class="b" @click="sort('効果')">
             効果<sortToggle column="効果" />
           </th>
-          <th
-            class="c"
-            @click="
-              store.sortValue = '状況';
-              sort();
-            "
-          >
+          <th class="c" @click="sort('状況')">
             状況<sortToggle column="状況" />
           </th>
-          <th class="b">いいね数</th>
-          <th
-            class="c"
-            @click="
-              store.sortValue = '登録日';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('カテゴリー')">
+            カテゴリー<sortToggle column="カテゴリー" />
+          </th>
+          <th class="b" @click="sort('いいね数')">
+            いいね数<sortToggle column="いいね数" />
+          </th>
+          <th class="c" @click="sort('登録日')">
             登録日
             <sortToggle column="登録日" />
           </th>
         </tr>
 
         <tr v-else>
-          <th
-            class="a"
-            @click="
-              store.sortValue = '部門';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('部門')">
             部門
             <sortToggle column="部門" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortValue = '業界';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('業界')">
             業界<sortToggle column="業界" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortValue = '製品・サービス名';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('製品・サービス名')">
             製品・サービス名<sortToggle column="製品・サービス名" />
           </th>
 
-          <th
-            class="c"
-            @click="
-              store.sortValue = '技術';
-              sort();
-            "
-          >
+          <th class="c" @click="sort('技術')">
             技術<sortToggle column="技術" />
           </th>
           <th class="e">
             <div class="d-flex justify-space-between">
-              <span
-                @click="
-                  store.sortValue = '技術詳細';
-                  sort();
-                "
+              <span @click="sort('技術詳細')"
                 >技術詳細<sortToggle column="技術詳細"
               /></span>
               <v-badge
@@ -230,32 +179,16 @@ const windowWidth = window.innerWidth;
               ></v-badge>
             </div>
           </th>
-          <th
-            class="c"
-            @click="
-              store.sortValue = '状況';
-              sort();
-            "
-          >
+          <th class="c" @click="sort('状況')">
             状況<sortToggle column="状況" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortValue = '顧客';
-              sort();
-            "
-          >
+          <th class="a" @click="sort('顧客')">
             顧客<sortToggle column="顧客" />
           </th>
-          <th class="b">いいね数</th>
-          <th
-            class="c"
-            @click="
-              store.sortValue = '登録日';
-              sort();
-            "
-          >
+          <th class="b" @click="sort('いいね数')">
+            いいね数<sortToggle column="いいね数" />
+          </th>
+          <th class="c" @click="sort('登録日')">
             登録日
             <sortToggle column="登録日" />
           </th>
@@ -298,6 +231,15 @@ const windowWidth = window.innerWidth;
           </td>
           <td class="text-left">
             {{ item.state }}
+          </td>
+          <td class="text-left wrap">
+            <v-chip
+              v-for="cat in item.category_name"
+              :key="cat"
+              size="small"
+              class="mr-1 mb-1"
+              >{{ cat }}</v-chip
+            >
           </td>
           <td class="text-left">
             {{ item.likes ? item.likes.length : 0 }}

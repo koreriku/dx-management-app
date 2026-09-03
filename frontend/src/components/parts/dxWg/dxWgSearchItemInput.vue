@@ -26,6 +26,8 @@ onBeforeMount(() => {
             v-model="store.dxWgFilteringWord.category_name"
             multiple
             chips
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
       </v-row>
@@ -35,6 +37,8 @@ onBeforeMount(() => {
             label="事業部"
             variant="outlined"
             v-model="store.dxWgFilteringWord.draft_business_sector"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -45,6 +49,8 @@ onBeforeMount(() => {
             v-model="store.dxWgFilteringWord.draft_department_name"
             multiple
             chips
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
       </v-row>
@@ -54,6 +60,8 @@ onBeforeMount(() => {
             label="内容"
             variant="outlined"
             v-model="store.dxWgFilteringWord.draft_content"
+            density="compact"
+            hide-details
           ></v-textarea>
         </v-col>
       </v-row>
@@ -64,6 +72,7 @@ onBeforeMount(() => {
     label="優先"
     v-model="store.dxWgFilteringWord.priority"
     color="red"
+    hide-details
   ></v-checkbox>
 
   <v-card class="mb-6" border flat>
@@ -78,6 +87,8 @@ onBeforeMount(() => {
             v-model="store.dxWgFilteringWord.support_department_name"
             multiple
             chips
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -85,6 +96,8 @@ onBeforeMount(() => {
             label="担当"
             variant="outlined"
             v-model="store.dxWgFilteringWord.staff"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
       </v-row>
@@ -95,6 +108,8 @@ onBeforeMount(() => {
               label="内容"
               variant="outlined"
               v-model="store.dxWgFilteringWord.support_content"
+              density="compact"
+              hide-details
             ></v-textarea>
           </v-col>
         </v-row>
@@ -106,6 +121,8 @@ onBeforeMount(() => {
               label="1Q"
               variant="outlined"
               v-model="store.dxWgFilteringWord.one_q_progress"
+              density="compact"
+              hide-details
             ></v-textarea>
           </v-col>
         </v-row>
@@ -115,6 +132,8 @@ onBeforeMount(() => {
               label="2Q"
               variant="outlined"
               v-model="store.dxWgFilteringWord.two_q_progress"
+              density="compact"
+              hide-details
             ></v-textarea>
           </v-col>
         </v-row>
@@ -124,6 +143,8 @@ onBeforeMount(() => {
               label="3Q"
               variant="outlined"
               v-model="store.dxWgFilteringWord.three_q_progress"
+              density="compact"
+              hide-details
             ></v-textarea>
           </v-col>
         </v-row>
@@ -133,6 +154,8 @@ onBeforeMount(() => {
               label="4Q"
               variant="outlined"
               v-model="store.dxWgFilteringWord.four_q_progress"
+              density="compact"
+              hide-details
             ></v-textarea>
           </v-col>
         </v-row>
@@ -142,6 +165,8 @@ onBeforeMount(() => {
               label="結果"
               variant="outlined"
               v-model="store.dxWgFilteringWord.result"
+              density="compact"
+              hide-details
             ></v-textarea>
           </v-col>
         </v-row>
@@ -152,6 +177,8 @@ onBeforeMount(() => {
             label="期限"
             variant="outlined"
             v-model="store.dxWgFilteringWord.deadline"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -162,6 +189,8 @@ onBeforeMount(() => {
             "
             variant="outlined"
             v-model="store.dxWgFilteringWord.state_name"
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
       </v-row>
@@ -180,6 +209,8 @@ onBeforeMount(() => {
             "
             variant="outlined"
             v-model="store.dxWgFilteringWord.effect_name"
+            density="compact"
+            hide-details
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -187,6 +218,8 @@ onBeforeMount(() => {
             label="効果コメント"
             variant="outlined"
             v-model="store.dxWgFilteringWord.effect_comment"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
       </v-row>
@@ -203,6 +236,8 @@ onBeforeMount(() => {
             variant="outlined"
             type="number"
             v-model="store.dxWgFilteringWord.id"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
       </v-row>
@@ -214,6 +249,8 @@ onBeforeMount(() => {
             type="date"
             clearable
             v-model="store.startDate"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="6">
@@ -223,6 +260,8 @@ onBeforeMount(() => {
             type="date"
             clearable
             v-model="store.endDate"
+            density="compact"
+            hide-details
           ></v-text-field>
         </v-col>
       </v-row>

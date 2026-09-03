@@ -1219,6 +1219,7 @@ export const useDxStore = defineStore("dxManagement", () => {
       { header: "効果", key: "effect_name" },
       { header: "効果コメント", key: "effect_comment" },
       { header: "リセット理由", key: "comment" },
+      { header: "いいね数", key: "likes" },
       { header: "更新日", key: "update_date" },
       { header: "更新日（対応）", key: "support_update_date" },
       { header: "更新日（効果）", key: "effect_update_date" },
@@ -1256,6 +1257,7 @@ export const useDxStore = defineStore("dxManagement", () => {
         effect_name: list.effect_name,
         effect_comment: list.effect_comment,
         comment: comment,
+        likes: list.likes ? list.likes.length : 0,
         update_date: list.update_date,
         support_update_date: list.support_update_date,
         effect_update_date: list.effect_update_date,
@@ -2124,15 +2126,22 @@ export const useDxStore = defineStore("dxManagement", () => {
 
     // 列の定義
     if (switchDx.value) {
+      if (dxCategories.value.length === 0) {
+        await getDxCategory();
+      }
       worksheet.columns = [
         { header: "部門", key: "department" },
         { header: "担当", key: "staff" },
+        { header: "更新者", key: "changer" },
         { header: "タイトル・業務", key: "work" },
         { header: "支援ツール", key: "tool" },
         { header: "内容・結果", key: "expected_effect" },
         { header: "効果", key: "effect" },
         { header: "状況", key: "state" },
+        { header: "カテゴリー", key: "category" },
+        { header: "いいね数", key: "likes" },
         { header: "登録日", key: "date" },
+        { header: "更新日", key: "update_date" },
       ];
       // 行の定義
       for (let list of lists) {
@@ -2140,12 +2149,19 @@ export const useDxStore = defineStore("dxManagement", () => {
           worksheet.addRow({
             department: changeDepartment(list.department),
             staff: list.staff,
+            changer: list.changer,
             work: list.work,
             tool: list.support_tool,
             expected_effect: stripHtml(list.expected_effect),
             effect: changeEffect(list.effect),
             state: changeState(list.state),
+            category:
+              list.category && list.category.length > 0
+                ? changeDxCategoryIds(list.category).join("、")
+                : "",
+            likes: list.likes ? list.likes.length : 0,
             date: list.registration_date,
+            update_date: list.update_date,
           });
         }
       }
@@ -2162,7 +2178,9 @@ export const useDxStore = defineStore("dxManagement", () => {
         { header: "販売戦略", key: "sales_strategy" },
         { header: "状況", key: "state" },
         { header: "備考", key: "note" },
+        { header: "いいね数", key: "likes" },
         { header: "登録日", key: "date" },
+        { header: "更新日", key: "update_date" },
       ];
       for (let list of lists) {
         if (!list.division) {
@@ -2181,7 +2199,9 @@ export const useDxStore = defineStore("dxManagement", () => {
             sales_strategy: stripHtml(list.sales_strategy),
             state: changeOutsideDxState(list.state),
             note: stripHtml(list.note),
+            likes: list.likes ? list.likes.length : 0,
             date: list.registration_date,
+            update_date: list.update_date,
           });
         }
       }
@@ -2219,9 +2239,9 @@ export const useDxStore = defineStore("dxManagement", () => {
   const insideDxColumnList = {
     部門: "department",
     担当: "staff",
-    タイトル・業務: "work",
+    "タイトル・業務": "work",
     支援ツール: "support_tool",
-    内容・結果: "expected_effect",
+    "内容・結果": "expected_effect",
     効果: "effect",
     状況: "state",
     登録日: "registration_date",
@@ -2355,9 +2375,9 @@ export const useDxStore = defineStore("dxManagement", () => {
     部門: "department",
     更新者: "changer",
     担当: "staff",
-    タイトル・業務: "work",
+    "タイトル・業務": "work",
     支援ツール: "support_tool",
-    内容・結果: "expected_effect",
+    "内容・結果": "expected_effect",
     効果: "effect",
     状況: "state",
     業界: "industry",
@@ -2365,6 +2385,8 @@ export const useDxStore = defineStore("dxManagement", () => {
     技術: "technology",
     技術詳細: "technical_details",
     顧客: "customer",
+    カテゴリー: "category",
+    いいね数: "COALESCE(array_length(likes, 1), 0)",
   };
   const sequence = ref("降順");
   const sequenceTable = {

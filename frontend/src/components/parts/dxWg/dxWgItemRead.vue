@@ -315,6 +315,13 @@ let fileIndex = ref();
 </template>
 
 <style scoped>
+:deep(.v-list-item-subtitle),
+:deep(.v-list-item__prepend > .v-icon) {
+  opacity: 1;
+}
+:deep(.v-list-item-subtitle) {
+  font-weight: 600;
+}
 tr {
   white-space: pre-line;
 }

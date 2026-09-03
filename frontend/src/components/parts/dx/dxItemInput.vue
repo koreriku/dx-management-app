@@ -26,317 +26,284 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <v-row>
-    <v-col cols="12">
-      <v-card border flat>
-        <v-card-item v-if="store.switchDx">
-          <v-row>
-            <v-col cols="12" sm="6" md="6">
-              <div class="text-caption text-medium-emphasis mb-1">部門</div>
-              <v-select
-                :items="store.departmentsForInput"
-                variant="outlined"
-                density="compact"
-                hide-details
-                v-model="store.dxItem.department"
-              ></v-select>
-            </v-col>
-            <v-col cols="12" sm="6" md="6" class="d-flex align-end">
-              <div style="flex: 1 1 auto">
-                <div class="text-caption text-medium-emphasis mb-1">
-                  カテゴリー
-                </div>
-                <v-select
-                  :items="store.dxCategories.map((item) => item.name)"
-                  variant="outlined"
-                  density="compact"
-                  hide-details
-                  v-model="store.dxItem.category_name"
-                  multiple
-                  chips
-                ></v-select>
-              </div>
-              <Button
-                icon
-                variant="outlined"
-                color="grey-darken-1"
-                class="ml-2"
-                @click="store.judgeShowDxCategoryRegistrationDialog()"
-              >
-                <v-icon>mdi-plus</v-icon>
-                <v-tooltip activator="parent" location="bottom"
-                  >カテゴリー追加</v-tooltip
-                >
-              </Button>
-              <dxCategoryRegistration />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" sm="6" md="6">
-              <div class="text-caption text-medium-emphasis mb-1">担当者</div>
-              <v-text-field
-                variant="outlined"
-                density="compact"
-                hide-details
-                v-model="store.dxItem.staff"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="6" md="6">
-              <div class="text-caption text-medium-emphasis mb-1">更新者</div>
-              <v-text-field
-                variant="outlined"
-                density="compact"
-                hide-details
-                v-model="store.dxItem.changer"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </v-card-item>
-        <v-card-item v-else>
-          <v-row>
-            <v-col cols="12" sm="6" md="4">
-              <div class="text-caption text-medium-emphasis mb-1">部門</div>
-              <v-select
-                :items="store.departmentsForInput"
-                variant="outlined"
-                density="compact"
-                hide-details
-                v-model="store.dxItem.department"
-              ></v-select>
-            </v-col>
-            <v-col cols="12" sm="6" md="4">
-              <div class="text-caption text-medium-emphasis mb-1">更新者</div>
-              <v-text-field
-                variant="outlined"
-                density="compact"
-                hide-details
-                v-model="store.dxItem.changer"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </v-card-item>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-card class="mb-6" border flat>
+    <v-card-title>基本情報</v-card-title>
+    <v-card-text>
+      <template v-if="store.switchDx">
+        <v-row>
+          <v-col cols="12" sm="4">
+            <v-select
+              label="部門"
+              :items="store.departmentsForInput"
+              variant="outlined"
+              v-model="store.dxItem.department"
+              density="compact"
+              hide-details
+            ></v-select>
+          </v-col>
+          <v-col cols="12" sm="4">
+            <v-text-field
+              label="担当者"
+              variant="outlined"
+              v-model="store.dxItem.staff"
+              density="compact"
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4">
+            <v-text-field
+              label="更新者"
+              variant="outlined"
+              v-model="store.dxItem.changer"
+              density="compact"
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </template>
+      <template v-else>
+        <v-row>
+          <v-col cols="12" sm="6">
+            <v-select
+              label="部門"
+              :items="store.departmentsForInput"
+              variant="outlined"
+              v-model="store.dxItem.department"
+              density="compact"
+              hide-details
+            ></v-select>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              label="更新者"
+              variant="outlined"
+              v-model="store.dxItem.changer"
+              density="compact"
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </template>
+    </v-card-text>
+  </v-card>
 
-  <v-row>
-    <v-col cols="12">
-      <v-card border flat>
-        <v-card-item>
-          <v-table>
-            <tbody v-if="store.switchDx">
-              <tr>
-                <th width="20%">タイトル・業務</th>
-                <td class="text-left">
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.work"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>支援ツール</th>
-                <td class="text-left">
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.support_tool"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>内容・結果</th>
-                <td class="text-left rich-text-cell">
-                  <QuillEditor
-                    v-model:content="store.dxItem.expected_effect"
-                    content-type="html"
-                    theme="snow"
-                    :toolbar="richTextToolbar"
-                    class="mb-2"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>効果</th>
-                <td class="text-left">
-                  <v-select
-                    :items="store.insideDxEffect.map((item) => item.effect)"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.effect"
-                  ></v-select>
-                </td>
-              </tr>
-              <tr>
-                <th>状況</th>
-                <td class="text-left">
-                  <v-select
-                    :items="store.insideDxState.map((item) => item.state)"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.state"
-                  ></v-select>
-                </td>
-              </tr>
-              <tr>
-                <th>添付ファイル</th>
-                <td class="text-left">
-                  <v-file-input
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    multiple
-                    v-model="store.newAttachedFiles"
-                    :class="{ 'my-2': props.fileNames }"
-                  ></v-file-input>
-                  <p class="text-medium-emphasis" v-if="props.fileNames">
-                    「{{
-                      props.fileNames
-                    }}」が添付されています。追加でファイルの添付が可能です。
-                  </p>
-                </td>
-              </tr>
-            </tbody>
-            <tbody v-else>
-              <tr>
-                <th width="20%">製品・サービス名</th>
-                <td class="text-left">
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.product"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>技術</th>
-                <td class="text-left">
-                  <v-combobox
-                    v-model="store.dxItem.technology"
-                    :items="
-                      store.outsideDxTechnology.map((item) => item.technology)
-                    "
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    multiple
-                  ></v-combobox>
-                </td>
-              </tr>
-              <tr>
-                <th>技術詳細</th>
-                <td class="text-left rich-text-cell">
-                  <QuillEditor
-                    v-model:content="store.dxItem.technical_details"
-                    content-type="html"
-                    theme="snow"
-                    :toolbar="richTextToolbar"
-                    class="mb-2"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>業界</th>
-                <td class="text-left">
-                  <v-select
-                    :items="
-                      store.outsideDxIndustry.map((item) => item.industry)
-                    "
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.industry"
-                  ></v-select>
-                </td>
-              </tr>
-              <tr>
-                <th>顧客</th>
-                <td class="text-left">
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.customer"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>連携先</th>
-                <td class="text-left">
-                  <v-text-field
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.cooperation_destination"
-                  ></v-text-field>
-                </td>
-              </tr>
-              <tr>
-                <th>販売戦略</th>
-                <td class="text-left rich-text-cell">
-                  <QuillEditor
-                    v-model:content="store.dxItem.sales_strategy"
-                    content-type="html"
-                    theme="snow"
-                    :toolbar="richTextToolbar"
-                    class="mb-2"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>状況</th>
-                <td class="text-left">
-                  <v-select
-                    :items="store.outsideDxState.map((item) => item.state)"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    v-model="store.dxItem.state"
-                  ></v-select>
-                </td>
-              </tr>
-              <tr>
-                <th>備考</th>
-                <td class="text-left rich-text-cell">
-                  <QuillEditor
-                    v-model:content="store.dxItem.note"
-                    content-type="html"
-                    theme="snow"
-                    :toolbar="richTextToolbar"
-                    class="mb-2"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>添付ファイル</th>
-                <td class="text-left">
-                  <v-file-input
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    multiple
-                    v-model="store.newAttachedFiles"
-                    :class="{ 'my-2': props.fileNames }"
-                  ></v-file-input>
-                  <p class="text-medium-emphasis" v-if="props.fileNames">
-                    「{{
-                      props.fileNames
-                    }}」が添付されています。追加でファイルの添付が可能です。
-                  </p>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-card-item>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-card class="mb-6" border flat v-if="store.switchDx">
+    <v-card-title>内容</v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            label="タイトル・業務"
+            variant="outlined"
+            v-model="store.dxItem.work"
+            density="compact"
+            hide-details
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            label="支援ツール"
+            variant="outlined"
+            v-model="store.dxItem.support_tool"
+            density="compact"
+            hide-details
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <div class="text-caption text-medium-emphasis mb-1">内容・結果</div>
+          <QuillEditor
+            v-model:content="store.dxItem.expected_effect"
+            content-type="html"
+            theme="snow"
+            :toolbar="richTextToolbar"
+            class="mb-2"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="4">
+          <v-select
+            label="状況"
+            :items="store.insideDxState.map((item) => item.state)"
+            variant="outlined"
+            v-model="store.dxItem.state"
+            density="compact"
+            hide-details
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-select
+            label="効果"
+            :items="store.insideDxEffect.map((item) => item.effect)"
+            variant="outlined"
+            v-model="store.dxItem.effect"
+            density="compact"
+            hide-details
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <div class="d-flex align-center">
+            <v-select
+              label="カテゴリー"
+              :items="store.dxCategories.map((item) => item.name)"
+              variant="outlined"
+              v-model="store.dxItem.category_name"
+              multiple
+              chips
+              class="flex-grow-1"
+              density="compact"
+            hide-details
+            ></v-select>
+            <Button
+              icon
+              variant="outlined"
+              color="grey-darken-1"
+              class="ml-2"
+              size="small"
+              @click="store.judgeShowDxCategoryRegistrationDialog()"
+            >
+              <v-icon>mdi-plus</v-icon>
+              <v-tooltip activator="parent" location="bottom"
+                >カテゴリー追加</v-tooltip
+              >
+            </Button>
+            <dxCategoryRegistration />
+          </div>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+
+  <v-card class="mb-6" border flat v-else>
+    <v-card-title>内容</v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            label="製品・サービス名"
+            variant="outlined"
+            v-model="store.dxItem.product"
+            density="compact"
+            hide-details
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-combobox
+            label="技術"
+            v-model="store.dxItem.technology"
+            :items="store.outsideDxTechnology.map((item) => item.technology)"
+            variant="outlined"
+            multiple
+            density="compact"
+            hide-details
+          ></v-combobox>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <div class="text-caption text-medium-emphasis mb-1">技術詳細</div>
+          <QuillEditor
+            v-model:content="store.dxItem.technical_details"
+            content-type="html"
+            theme="snow"
+            :toolbar="richTextToolbar"
+            class="mb-2"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-select
+            label="業界"
+            :items="store.outsideDxIndustry.map((item) => item.industry)"
+            variant="outlined"
+            v-model="store.dxItem.industry"
+            density="compact"
+            hide-details
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-text-field
+            label="顧客"
+            variant="outlined"
+            v-model="store.dxItem.customer"
+            density="compact"
+            hide-details
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-text-field
+            label="連携先"
+            variant="outlined"
+            v-model="store.dxItem.cooperation_destination"
+            density="compact"
+            hide-details
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12">
+          <div class="text-caption text-medium-emphasis mb-1">販売戦略</div>
+          <QuillEditor
+            v-model:content="store.dxItem.sales_strategy"
+            content-type="html"
+            theme="snow"
+            :toolbar="richTextToolbar"
+            class="mb-2"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-select
+            label="状況"
+            :items="store.outsideDxState.map((item) => item.state)"
+            variant="outlined"
+            v-model="store.dxItem.state"
+            density="compact"
+            hide-details
+          ></v-select>
+        </v-col>
+        <v-col cols="12">
+          <div class="text-caption text-medium-emphasis mb-1">備考</div>
+          <QuillEditor
+            v-model:content="store.dxItem.note"
+            content-type="html"
+            theme="snow"
+            :toolbar="richTextToolbar"
+            class="mb-2"
+          />
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+
+  <v-card class="mb-6" border flat>
+    <v-card-title>添付ファイル</v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col cols="12">
+          <v-file-input
+            label="添付ファイル"
+            variant="outlined"
+            multiple
+            v-model="store.newAttachedFiles"
+            density="compact"
+            hide-details
+          ></v-file-input>
+          <p class="text-medium-emphasis" v-if="props.fileNames">
+            「{{
+              props.fileNames
+            }}」が添付されています。追加でファイルの添付が可能です。
+          </p>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
 
   <v-dialog
     v-model="store.showDxCategoryUnlockModal"
@@ -392,11 +359,11 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
-:deep(.rich-text-cell) {
-  height: auto !important;
-}
 :deep(.ql-toolbar) {
   margin-top: 8px;
+}
+:deep(.ql-container) {
+  height: auto !important;
 }
 :deep(.ql-editor) {
   min-height: 150px;

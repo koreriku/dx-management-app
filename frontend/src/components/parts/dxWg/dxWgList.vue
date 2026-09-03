@@ -59,6 +59,33 @@ const omittedText = (text, max_length) => {
     return text;
   }
 };
+// クリックのたびに 昇順 → 降順 → 元の並び順 の3段階で切り替える
+const defaultSortDxWgValue = "update_date";
+const defaultDxWgSequence = "降順";
+let sortingDxWgColumn = null;
+let sortDxWgPhase = 0; // 1: 昇順, 2: 降順, 0: 元に戻す
+
+const sortDxWgByColumn = (column) => {
+  if (sortingDxWgColumn !== column) {
+    sortingDxWgColumn = column;
+    sortDxWgPhase = 1;
+  } else if (sortDxWgPhase === 1) {
+    sortDxWgPhase = 2;
+  } else {
+    sortDxWgPhase = 0;
+  }
+
+  if (sortDxWgPhase === 0) {
+    sortingDxWgColumn = null;
+    store.sortDxWgValue = defaultSortDxWgValue;
+    store.dxWgSequence = defaultDxWgSequence;
+  } else {
+    store.sortDxWgValue = column;
+    store.dxWgSequence = sortDxWgPhase === 1 ? "昇順" : "降順";
+  }
+  store.sortDxWg(false);
+};
+
 const displayQuarter = () => {
   if (showQuarter.value) {
     showQuarter.value = false;
@@ -114,203 +141,88 @@ const tableWidth = ref(3000);
           <th colspan="2">更新日</th>
         </tr>
         <tr>
-          <th
-            class="c"
-            @click="
-              store.sortDxWgValue = 'draft_business_sector';
-              store.sortDxWg();
-            "
-          >
+          <th class="c" @click="sortDxWgByColumn('draft_business_sector')">
             事業部<sortDxWgToggle column="draft_business_sector" />
           </th>
-          <th
-            class="c"
-            @click="
-              store.sortDxWgValue = 'draft_department_name';
-              store.sortDxWg();
-            "
-          >
+          <th class="c" @click="sortDxWgByColumn('draft_department_name')">
             部門<sortDxWgToggle column="draft_department_name" />
           </th>
-          <th
-            class="c"
-            @click="
-              store.sortDxWgValue = 'category_name';
-              store.sortDxWg();
-            "
-          >
+          <th class="c" @click="sortDxWgByColumn('category_name')">
             カテゴリ
             <sortDxWgToggle column="category_name" />
           </th>
-          <th
-            class="e"
-            @click="
-              store.sortDxWgValue = 'draft_content';
-              store.sortDxWg();
-            "
-          >
+          <th class="e" @click="sortDxWgByColumn('draft_content')">
             内容<sortDxWgToggle column="draft_content" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortDxWgValue = 'registration_date';
-              store.sortDxWg();
-            "
-          >
+          <th class="a" @click="sortDxWgByColumn('registration_date')">
             登録日<sortDxWgToggle column="registration_date" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortDxWgValue = 'id';
-              store.sortDxWg();
-            "
-          >
+          <th class="a" @click="sortDxWgByColumn('id')">
             NO<sortDxWgToggle column="id" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortDxWgValue = 'priority';
-              store.sortDxWg();
-            "
-          >
+          <th class="a" @click="sortDxWgByColumn('priority')">
             優先<sortDxWgToggle column="priority" />
           </th>
-          <th
-            class="b"
-            @click="
-              store.sortDxWgValue = 'state_name';
-              store.sortDxWg();
-            "
-          >
+          <th class="b" @click="sortDxWgByColumn('state_name')">
             状況<sortDxWgToggle column="state_name" />
           </th>
-          <th
-            class="b"
-            @click="
-              store.sortDxWgValue = 'deadline';
-              store.sortDxWg();
-            "
-          >
+          <th class="b" @click="sortDxWgByColumn('deadline')">
             期限<sortDxWgToggle column="deadline" />
           </th>
-          <th
-            class="c"
-            @click="
-              store.sortDxWgValue = 'support_department_name';
-              store.sortDxWg();
-            "
-          >
+          <th class="c" @click="sortDxWgByColumn('support_department_name')">
             部門<sortDxWgToggle column="support_department_name" />
           </th>
-          <th
-            class="b"
-            @click="
-              store.sortDxWgValue = 'staff';
-              store.sortDxWg();
-            "
-          >
+          <th class="b" @click="sortDxWgByColumn('staff')">
             担当者<sortDxWgToggle column="staff" />
           </th>
-          <th
-            class="e"
-            @click="
-              store.sortDxWgValue = 'support_content';
-              store.sortDxWg();
-            "
-          >
+          <th class="e" @click="sortDxWgByColumn('support_content')">
             内容<sortDxWgToggle column="support_content" />
           </th>
           <th
             v-if="showQuarter"
             class="e"
-            @click="
-              store.sortDxWgValue = 'one_q_progress';
-              store.sortDxWg();
-            "
+            @click="sortDxWgByColumn('one_q_progress')"
           >
             1Q<sortDxWgToggle column="one_q_progress" />
           </th>
           <th
             v-if="showQuarter"
             class="e"
-            @click="
-              store.sortDxWgValue = 'two_q_progress';
-              store.sortDxWg();
-            "
+            @click="sortDxWgByColumn('two_q_progress')"
           >
             2Q<sortDxWgToggle column="two_q_progress" />
           </th>
           <th
             v-if="showQuarter"
             class="e"
-            @click="
-              store.sortDxWgValue = 'three_q_progress';
-              store.sortDxWg();
-            "
+            @click="sortDxWgByColumn('three_q_progress')"
           >
             3Q<sortDxWgToggle column="three_q_progress" />
           </th>
           <th
             v-if="showQuarter"
             class="e"
-            @click="
-              store.sortDxWgValue = 'four_q_progress';
-              store.sortDxWg();
-            "
+            @click="sortDxWgByColumn('four_q_progress')"
           >
             4Q<sortDxWgToggle column="four_q_progress" />
           </th>
-          <th
-            v-if="showQuarter"
-            class="e"
-            @click="
-              store.sortDxWgValue = 'result';
-              store.sortDxWg();
-            "
-          >
+          <th v-if="showQuarter" class="e" @click="sortDxWgByColumn('result')">
             結果<sortDxWgToggle column="result" />
           </th>
-          <th
-            class="b"
-            @click="
-              store.sortDxWgValue = 'effect_name';
-              store.sortDxWg();
-            "
-          >
+          <th class="b" @click="sortDxWgByColumn('effect_name')">
             効果（業務効率化に繋がったか）<sortDxWgToggle
               column="effect_name"
             />
           </th>
-          <th
-            class="b"
-            @click="
-              store.sortDxWgValue = 'effect_comment';
-              store.sortDxWg();
-            "
-          >
+          <th class="b" @click="sortDxWgByColumn('effect_comment')">
             コメント<sortDxWgToggle column="effect_comment" />
           </th>
           <th class="a">いいね数</th>
-          <th
-            class="a"
-            @click="
-              store.sortDxWgValue = 'support_update_date';
-              store.sortDxWg();
-            "
-          >
+          <th class="a" @click="sortDxWgByColumn('support_update_date')">
             対応
             <sortDxWgToggle column="support_update_date" />
           </th>
-          <th
-            class="a"
-            @click="
-              store.sortDxWgValue = 'effect_update_date';
-              store.sortDxWg();
-            "
-          >
+          <th class="a" @click="sortDxWgByColumn('effect_update_date')">
             効果
             <sortDxWgToggle column="effect_update_date" />
           </th>
