@@ -36,7 +36,7 @@ onBeforeMount(() => {
               label="部門"
               :items="store.departmentsForInput"
               variant="outlined"
-              v-model="store.dxItem.department"
+              v-model="store.editDxItem.department"
               density="compact"
               hide-details
             ></v-select>
@@ -45,7 +45,7 @@ onBeforeMount(() => {
             <v-text-field
               label="更新者"
               variant="outlined"
-              v-model="store.dxItem.changer"
+              v-model="store.editDxItem.changer"
               density="compact"
               hide-details
             ></v-text-field>
@@ -59,7 +59,7 @@ onBeforeMount(() => {
               label="部門"
               :items="store.departmentsForInput"
               variant="outlined"
-              v-model="store.dxItem.department"
+              v-model="store.editDxItem.department"
               density="compact"
               hide-details
             ></v-select>
@@ -68,7 +68,7 @@ onBeforeMount(() => {
             <v-text-field
               label="更新者"
               variant="outlined"
-              v-model="store.dxItem.changer"
+              v-model="store.editDxItem.changer"
               density="compact"
               hide-details
             ></v-text-field>
@@ -86,7 +86,7 @@ onBeforeMount(() => {
           <v-text-field
             label="タイトル・業務"
             variant="outlined"
-            v-model="store.dxItem.work"
+            v-model="store.editDxItem.work"
             density="compact"
             hide-details
           ></v-text-field>
@@ -97,7 +97,7 @@ onBeforeMount(() => {
           <v-text-field
             label="支援ツール"
             variant="outlined"
-            v-model="store.dxItem.support_tool"
+            v-model="store.editDxItem.support_tool"
             density="compact"
             hide-details
           ></v-text-field>
@@ -107,7 +107,7 @@ onBeforeMount(() => {
         <v-col cols="12">
           <div class="text-caption text-medium-emphasis mb-1">内容・結果</div>
           <QuillEditor
-            v-model:content="store.dxItem.expected_effect"
+            v-model:content="store.editDxItem.expected_effect"
             content-type="html"
             theme="snow"
             :toolbar="richTextToolbar"
@@ -121,7 +121,7 @@ onBeforeMount(() => {
             label="状況"
             :items="store.insideDxState.map((item) => item.state)"
             variant="outlined"
-            v-model="store.dxItem.state"
+            v-model="store.editDxItem.state"
             density="compact"
             hide-details
           ></v-select>
@@ -131,7 +131,7 @@ onBeforeMount(() => {
             label="効果"
             :items="store.insideDxEffect.map((item) => item.effect)"
             variant="outlined"
-            v-model="store.dxItem.effect"
+            v-model="store.editDxItem.effect"
             density="compact"
             hide-details
           ></v-select>
@@ -142,7 +142,7 @@ onBeforeMount(() => {
               label="カテゴリー"
               :items="store.dxCategories.map((item) => item.name)"
               variant="outlined"
-              v-model="store.dxItem.category_name"
+              v-model="store.editDxItem.category_name"
               multiple
               chips
               class="flex-grow-1"
@@ -177,7 +177,7 @@ onBeforeMount(() => {
           <v-text-field
             label="製品・サービス名"
             variant="outlined"
-            v-model="store.dxItem.product"
+            v-model="store.editDxItem.product"
             density="compact"
             hide-details
           ></v-text-field>
@@ -187,7 +187,7 @@ onBeforeMount(() => {
         <v-col cols="12">
           <v-combobox
             label="技術"
-            v-model="store.dxItem.technology"
+            v-model="store.editDxItem.technology"
             :items="store.outsideDxTechnology.map((item) => item.technology)"
             variant="outlined"
             multiple
@@ -200,7 +200,7 @@ onBeforeMount(() => {
         <v-col cols="12">
           <div class="text-caption text-medium-emphasis mb-1">技術詳細</div>
           <QuillEditor
-            v-model:content="store.dxItem.technical_details"
+            v-model:content="store.editDxItem.technical_details"
             content-type="html"
             theme="snow"
             :toolbar="richTextToolbar"
@@ -214,7 +214,7 @@ onBeforeMount(() => {
             label="業界"
             :items="store.outsideDxIndustry.map((item) => item.industry)"
             variant="outlined"
-            v-model="store.dxItem.industry"
+            v-model="store.editDxItem.industry"
             density="compact"
             hide-details
           ></v-select>
@@ -223,7 +223,7 @@ onBeforeMount(() => {
           <v-text-field
             label="顧客"
             variant="outlined"
-            v-model="store.dxItem.customer"
+            v-model="store.editDxItem.customer"
             density="compact"
             hide-details
           ></v-text-field>
@@ -232,7 +232,7 @@ onBeforeMount(() => {
           <v-text-field
             label="連携先"
             variant="outlined"
-            v-model="store.dxItem.cooperation_destination"
+            v-model="store.editDxItem.cooperation_destination"
             density="compact"
             hide-details
           ></v-text-field>
@@ -240,7 +240,7 @@ onBeforeMount(() => {
         <v-col cols="12">
           <div class="text-caption text-medium-emphasis mb-1">販売戦略</div>
           <QuillEditor
-            v-model:content="store.dxItem.sales_strategy"
+            v-model:content="store.editDxItem.sales_strategy"
             content-type="html"
             theme="snow"
             :toolbar="richTextToolbar"
@@ -254,7 +254,7 @@ onBeforeMount(() => {
             label="状況"
             :items="store.outsideDxState.map((item) => item.state)"
             variant="outlined"
-            v-model="store.dxItem.state"
+            v-model="store.editDxItem.state"
             density="compact"
             hide-details
           ></v-select>
@@ -262,7 +262,7 @@ onBeforeMount(() => {
         <v-col cols="12">
           <div class="text-caption text-medium-emphasis mb-1">備考</div>
           <QuillEditor
-            v-model:content="store.dxItem.note"
+            v-model:content="store.editDxItem.note"
             content-type="html"
             theme="snow"
             :toolbar="richTextToolbar"

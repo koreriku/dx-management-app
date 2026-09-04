@@ -1913,33 +1913,39 @@ export const useDxStore = defineStore("dxManagement", () => {
   const dxChartList = ref(["円グラフ", "棒グラフ"]);
 
   // 単一のDXの初期値を設定
+  // 単一のDXの初期値オブジェクトを生成
+  // （dxItemとeditDxItemがそれぞれ独立した配列を持つよう、呼び出しの都度新しく生成する）
+  const createEmptyDxItem = () => ({
+    id: null,
+    division: null,
+    registration_date: null,
+    update_date: null,
+    changer: null,
+    department: "--",
+    category: [],
+    category_name: [],
+    work: null,
+    support_tool: null,
+    state: "--",
+    expected_effect: null,
+    effect: "--",
+    product: null,
+    industry: "--",
+    technology: [],
+    technical_details: null,
+    customer: null,
+    cooperation_destination: null,
+    sales_strategy: null,
+    note: null,
+    attached_file: [],
+    comment: [],
+    employee_no: null,
+  });
+  // 単一のDXの初期値を設定
+  // （表示用のdxItemと、フォームの編集対象であるeditDxItemの両方をリセットする）
   const resetDxItem = () => {
-    dxItem.value = {
-      id: null,
-      division: null,
-      registration_date: null,
-      update_date: null,
-      changer: null,
-      department: "--",
-      category: [],
-      category_name: [],
-      work: null,
-      support_tool: null,
-      state: "--",
-      expected_effect: null,
-      effect: "--",
-      product: null,
-      industry: "--",
-      technology: [],
-      technical_details: null,
-      customer: null,
-      cooperation_destination: null,
-      sales_strategy: null,
-      note: null,
-      attached_file: [],
-      comment: [],
-      employee_no: null,
-    };
+    dxItem.value = createEmptyDxItem();
+    editDxItem.value = createEmptyDxItem();
   };
 
   // 複製元の課題データから、新規登録用のデータを組み立てる
@@ -1962,8 +1968,10 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
 
   // 課題を複製し、複製した内容を初期値として登録画面を開く
+  // （フォームはeditDxItemを編集するため、複製データはeditDxItemに設定する。
+  //   dxItem（閲覧中の表示データ）には触れないため、登録前にダイアログを閉じても表示は変わらない）
   const duplicateInsideDxList = () => {
-    dxItem.value = buildDuplicatedDxItem(dxItem.value);
+    editDxItem.value = buildDuplicatedDxItem(dxItem.value);
     isDuplicatingDx.value = true;
     showRegisterDialog.value = true;
   };
@@ -2014,19 +2022,21 @@ export const useDxStore = defineStore("dxManagement", () => {
     });
   };
 
-  // 部署名、状況名、効果名をidに変換
+  // 部署名、状況名、効果名をidに変換した送信用のコピーを作成する
+  // （editDxItem自体は名前ベースのまま保持し、フォームの表示に影響を与えない）
   const itemNumberConversion = async () => {
-    editDxItem.value.division = switchDx.value ? true : false;
+    const converted = { ...editDxItem.value };
+    converted.division = switchDx.value ? true : false;
     for (let item of await departments.value) {
-      if (item.name === editDxItem.value.department) {
-        editDxItem.value.department = item.id;
+      if (item.name === converted.department) {
+        converted.department = item.id;
         break;
       }
     }
-    if (editDxItem.value.effect) {
+    if (converted.effect) {
       for (let item of await insideDxEffect.value) {
-        if (item.effect === editDxItem.value.effect) {
-          editDxItem.value.effect = item.id;
+        if (item.effect === converted.effect) {
+          converted.effect = item.id;
           break;
         }
       }
@@ -2035,62 +2045,61 @@ export const useDxStore = defineStore("dxManagement", () => {
       ? insideDxState.value
       : outsideDxState.value;
     for (let item of await selectedStateList) {
-      if (item.state === editDxItem.value.state) {
-        editDxItem.value.state = item.id;
+      if (item.state === converted.state) {
+        converted.state = item.id;
         break;
       }
     }
 
-    if (editDxItem.value.technology.length > 0) {
-      editDxItem.value.technology = editDxItem.value.technology.concat();
-      for (let i = 0; i < editDxItem.value.technology.length; i++) {
+    if (converted.technology.length > 0) {
+      converted.technology = converted.technology.concat();
+      for (let i = 0; i < converted.technology.length; i++) {
         for (let item of await outsideDxTechnology.value) {
-          if (item.technology === editDxItem.value.technology[i]) {
-            editDxItem.value.technology[i] = item.id;
+          if (item.technology === converted.technology[i]) {
+            converted.technology[i] = item.id;
             break;
           }
         }
       }
     }
 
-    if (editDxItem.value.industry) {
+    if (converted.industry) {
       for (let item of await outsideDxIndustry.value) {
-        if (item.industry === editDxItem.value.industry) {
-          editDxItem.value.industry = item.id;
+        if (item.industry === converted.industry) {
+          converted.industry = item.id;
           break;
         }
       }
     }
 
-    if (editDxItem.value.category_name && editDxItem.value.category_name.length > 0) {
-      editDxItem.value.category = changeDxCategoryNames(
-        editDxItem.value.category_name
-      );
+    if (converted.category_name && converted.category_name.length > 0) {
+      converted.category = changeDxCategoryNames(converted.category_name);
     } else {
-      editDxItem.value.category = [];
+      converted.category = [];
     }
+    return converted;
   };
 
   // 新しいDXをデータベースに格納
   const addInsideDxList = async () => {
-    dxItem.value.registration_date = date;
-    dxItem.value.update_date = date;
-    dxItem.value.employee_no = employeeNumber.value;
-    editDxItem.value = Object.assign({}, dxItem.value);
-    await itemNumberConversion();
+    editDxItem.value.registration_date = date;
+    editDxItem.value.update_date = date;
+    editDxItem.value.employee_no = employeeNumber.value;
     await postFiles();
-    await axios.post(dxBASE_URL, editDxItem.value);
+    const submitItem = await itemNumberConversion();
+    await axios.post(dxBASE_URL, submitItem);
   };
   // 変更したDXをデータベースに格納
   const changeInsideDxList = async () => {
     if (!dxItem.value.id) {
       return;
     }
-    dxItem.value.update_date = date;
-    editDxItem.value = Object.assign({}, dxItem.value);
-    await itemNumberConversion();
+    editDxItem.value.update_date = date;
     await postFiles();
-    axios.put(dxBASE_URL, editDxItem.value);
+    const submitItem = await itemNumberConversion();
+    await axios.put(dxBASE_URL, submitItem);
+    // 保存が完了したら、閲覧中の表示（一覧に表示されている同一オブジェクト）に編集内容を反映する
+    Object.assign(dxItem.value, editDxItem.value);
   };
   // 指定したDXを削除
   const deleteInsideDxList = (id) => {
