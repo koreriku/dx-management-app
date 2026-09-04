@@ -60,6 +60,17 @@ const deleteInsideDxList = async () => {
         >
 
         <Button
+          color="yellow"
+          class="mr-3"
+          @click="store.duplicateInsideDxList()"
+          icon
+          ><v-icon>mdi-content-copy</v-icon>
+          <v-tooltip activator="parent" location="bottom"
+            >複製</v-tooltip
+          ></Button
+        >
+
+        <Button
           v-if="store.canDelete(store.dxItem.employee_no)"
           color="red"
           @click="showDelete = true"

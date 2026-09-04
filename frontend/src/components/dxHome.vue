@@ -212,7 +212,6 @@ watch(dxTitle, (newTitle, oldTitle) => {
                   <thead>
                     <tr v-if="dxTitle == 0">
                       <th>部門</th>
-                      <th>担当</th>
                       <th>タイトル・業務</th>
                       <th>支援ツール</th>
                       <th>効果</th>
@@ -245,7 +244,6 @@ watch(dxTitle, (newTitle, oldTitle) => {
                       <td class="py-2">
                         {{ item.department }}
                       </td>
-                      <td class="py-2">{{ item.staff }}</td>
                       <td class="py-2">{{ item.work }}</td>
                       <td class="py-2">{{ item.support_tool }}</td>
                       <td class="py-2">

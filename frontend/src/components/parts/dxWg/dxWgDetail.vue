@@ -66,6 +66,17 @@ const showDetailDialog = () => {
         >
 
         <Button
+          color="yellow"
+          class="mr-3"
+          @click="store.duplicateDxWg()"
+          icon
+          ><v-icon>mdi-content-copy</v-icon>
+          <v-tooltip activator="parent" location="bottom"
+            >複製</v-tooltip
+          ></Button
+        >
+
+        <Button
           v-if="store.canDelete(store.dxWg.employee_no)"
           color="red"
           @click="showDelete = true"

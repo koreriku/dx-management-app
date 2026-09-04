@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, watch } from "vue";
 import Button from "./parts/button.vue";
 import dxTitle from "./parts/dx/dxTitle.vue";
 import { useDxStore } from "../stores/dxManagement.js";
@@ -27,6 +27,14 @@ const createGraph = () => {
 };
 
 const detailedSearchDialog = ref(false);
+// 列名が切り替わったら、キーワード欄をその項目に合った初期値にリセットする
+// （カテゴリーは複数選択のため配列、それ以外は文字列）
+watch(
+  () => store.filteringTargetColumn,
+  (newColumn) => {
+    store.filteringWord = newColumn === "カテゴリー" ? [] : null;
+  }
+);
 store.resetDxItem();
 if (store.switchDx) {
   if (!store.insideDxVerticalList.includes(store.dxVertical)) {
@@ -284,7 +292,12 @@ if (store.switchDx) {
           style="cursor: pointer"
           @click="store.switchSearchMethod = !store.switchSearchMethod"
         >
-          <div v-if="store.filteringTargetColumn !== '登録日'">
+          <div
+            v-if="
+              store.filteringTargetColumn !== '登録日' &&
+              store.filteringTargetColumn !== 'カテゴリー'
+            "
+          >
             <v-badge
               v-if="store.switchSearchMethod"
               content="部分一致"
@@ -315,6 +328,15 @@ if (store.switchDx) {
           class="mt-2"
           v-model="store.filteringTargetColumn"
         ></v-select>
+        <v-select
+          label="カテゴリー"
+          :items="store.dxCategories.map((item) => item.name)"
+          variant="outlined"
+          v-model="store.filteringWord"
+          multiple
+          chips
+          v-if="store.filteringTargetColumn === 'カテゴリー'"
+        ></v-select>
         <v-text-field
           label="キーワード"
           variant="outlined"
@@ -328,7 +350,7 @@ if (store.switchDx) {
             store.search();
             detailedSearchDialog = false;
           "
-          v-if="store.filteringTargetColumn !== '登録日'"
+          v-else-if="store.filteringTargetColumn !== '登録日'"
         >
         </v-text-field>
         <div v-else>

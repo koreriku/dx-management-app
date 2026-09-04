@@ -31,7 +31,7 @@ onBeforeMount(() => {
     <v-card-text>
       <template v-if="store.switchDx">
         <v-row>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="6">
             <v-select
               label="部門"
               :items="store.departmentsForInput"
@@ -41,16 +41,7 @@ onBeforeMount(() => {
               hide-details
             ></v-select>
           </v-col>
-          <v-col cols="12" sm="4">
-            <v-text-field
-              label="担当者"
-              variant="outlined"
-              v-model="store.dxItem.staff"
-              density="compact"
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="6">
             <v-text-field
               label="更新者"
               variant="outlined"
