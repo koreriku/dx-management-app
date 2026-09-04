@@ -31,7 +31,15 @@ onBeforeMount(async () => {
   }
   store.newAttachedFiles = [];
 });
-store.editDxItem = Object.assign({}, store.dxItem);
+// 編集中の変更が閲覧中のdxItemに影響しないよう、配列プロパティも複製してeditDxItemを独立させる
+store.editDxItem = {
+  ...store.dxItem,
+  category: [...(store.dxItem.category || [])],
+  category_name: [...(store.dxItem.category_name || [])],
+  technology: [...(store.dxItem.technology || [])],
+  attached_file: [...(store.dxItem.attached_file || [])],
+  comment: [...(store.dxItem.comment || [])],
+};
 store.editDxItem.update_date = store.date;
 </script>
 <template>
