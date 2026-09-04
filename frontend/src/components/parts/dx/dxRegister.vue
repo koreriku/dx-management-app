@@ -9,7 +9,12 @@ import employeeNumberDialog from "../employeeNumberDialog.vue";
 const store = useDxStore();
 
 onBeforeMount(async () => {
-  await store.resetDxItem();
+  if (store.isDuplicatingDx) {
+    // 複製ボタンから開かれた場合は、複製済みのdxItemをリセットしない
+    store.isDuplicatingDx = false;
+  } else {
+    await store.resetDxItem();
+  }
   store.newAttachedFiles = [];
   store.editDxItem.registration_date = store.date;
   store.editDxItem.update_date = store.date;

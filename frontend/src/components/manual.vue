@@ -28,7 +28,6 @@ const item = {
   work: "名刺作成",
   support_tool: "Excel",
   state: "運用中",
-  staff: "伊藤理事",
   expected_effect:
     "人事奉行からのデータ取り込みにより、所属部署、役職等、データの一括変更が行えるようになった。入力ミスが減り、工数も減る事となった。",
   effect: "中",
@@ -294,7 +293,6 @@ store.changeSwitchDx();
                 <thead>
                   <tr>
                     <th class="a">部門</th>
-                    <th>担当</th>
                     <th>タイトル・業務</th>
                     <th>支援ツール</th>
                     <th class="e">
@@ -330,9 +328,6 @@ store.changeSwitchDx();
                   >
                     <td class="text-left">
                       {{ item.department }}
-                    </td>
-                    <td class="text-left">
-                      {{ item.staff }}
                     </td>
                     <td class="text-left wrap">
                       {{ omittedText(item.work, 10) }}

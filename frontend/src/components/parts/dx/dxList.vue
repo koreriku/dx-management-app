@@ -109,9 +109,6 @@ const windowWidth = window.innerWidth;
             部門
             <sortToggle column="部門" />
           </th>
-          <th class="a" @click="sort('担当')">
-            担当<sortToggle column="担当" />
-          </th>
           <th class="a" @click="sort('タイトル・業務')">
             タイトル・業務<sortToggle column="タイトル・業務" />
           </th>
@@ -208,9 +205,6 @@ const windowWidth = window.innerWidth;
         >
           <td class="text-left">
             {{ item.department }}
-          </td>
-          <td class="text-left">
-            {{ item.staff }}
           </td>
           <td class="text-left wrap">
             {{ omittedText(item.work, 16) }}

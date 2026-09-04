@@ -202,6 +202,8 @@ export const useDxStore = defineStore("dxManagement", () => {
   // Dx系の変数 -----------------------------------------
   // 単一の社内DXを格納
   const dxItem = ref({});
+  // 複製ボタン押下時にtrueにし、登録ダイアログを開く際にdxItemのリセットをスキップするために使用
+  const isDuplicatingDx = ref(false);
   // レコード更新時に部署名と状況と効果は値が数字に切り替わるため、数字の切り替えを画面に描写
   // しないようにレコード更新前に別の変数に格納する
   const editDxItem = ref({});
@@ -434,6 +436,45 @@ export const useDxStore = defineStore("dxManagement", () => {
       comment: [],
     };
   };
+
+  // 複製元のDXWGデータから、新規登録用のデータを組み立てる
+  // （ID・登録日・各種更新日・いいね・コメント・添付ファイルは新規課題として初期化する）
+  const buildDuplicatedDxWg = (source) => {
+    return {
+      ...source,
+      id: null,
+      registration_date: null,
+      update_date: null,
+      support_update_date: null,
+      effect_update_date: null,
+      employee_no: null,
+      likes: [],
+      comment: [],
+      attached_file: [],
+      category: [...(source.category || [])],
+      category_name: [...(source.category_name || [])],
+      draft_department: [...(source.draft_department || [])],
+      draft_department_name: [...(source.draft_department_name || [])],
+      support_department: [...(source.support_department || [])],
+      support_department_name: [...(source.support_department_name || [])],
+    };
+  };
+  // パスワード未認証時に、認証後に開く登録画面へ引き継ぐための複製内容の一時置き場
+  const pendingDuplicateDxWg = ref(null);
+  // DXWGを複製し、複製した内容を初期値として登録画面を開く
+  // （登録・編集フォームはeditDxWgを参照しているため、複製データはeditDxWgに設定する）
+  // （新規登録権限がない場合はパスワード認証後に開く）
+  const duplicateDxWg = () => {
+    const duplicated = buildDuplicatedDxWg(dxWg.value);
+    if (isDxWgRegisterAuthority.value) {
+      editDxWg.value = duplicated;
+      showDxWgRegisterDialog.value = true;
+    } else {
+      pendingDuplicateDxWg.value = duplicated;
+      showDxWgRegisterUnlockModal.value = true;
+    }
+  };
+
   const isCategoryRegistrationDialog = ref(false);
 
   const newCategory = ref({
@@ -712,7 +753,12 @@ export const useDxStore = defineStore("dxManagement", () => {
         isDxWgRegisterAuthority.value = true;
         showDxWgRegisterUnlockModal.value = false;
         if (!showEditDialog.value) {
-          resetDxWgItem();
+          if (pendingDuplicateDxWg.value) {
+            editDxWg.value = pendingDuplicateDxWg.value;
+            pendingDuplicateDxWg.value = null;
+          } else {
+            resetDxWgItem();
+          }
           showDxWgRegisterDialog.value = true;
         }
       } else {
@@ -1880,7 +1926,6 @@ export const useDxStore = defineStore("dxManagement", () => {
       work: null,
       support_tool: null,
       state: "--",
-      staff: null,
       expected_effect: null,
       effect: "--",
       product: null,
@@ -1895,6 +1940,32 @@ export const useDxStore = defineStore("dxManagement", () => {
       comment: [],
       employee_no: null,
     };
+  };
+
+  // 複製元の課題データから、新規登録用のデータを組み立てる
+  // （ID・登録日・更新日・いいね・コメント・添付ファイルは新規課題として初期化する）
+  const buildDuplicatedDxItem = (source) => {
+    return {
+      ...source,
+      id: null,
+      registration_date: null,
+      update_date: null,
+      changer: null,
+      employee_no: null,
+      likes: [],
+      comment: [],
+      attached_file: [],
+      category: [...(source.category || [])],
+      category_name: [...(source.category_name || [])],
+      technology: [...(source.technology || [])],
+    };
+  };
+
+  // 課題を複製し、複製した内容を初期値として登録画面を開く
+  const duplicateInsideDxList = () => {
+    dxItem.value = buildDuplicatedDxItem(dxItem.value);
+    isDuplicatingDx.value = true;
+    showRegisterDialog.value = true;
   };
 
   // 前回の添付ファイルを格納
@@ -2131,7 +2202,6 @@ export const useDxStore = defineStore("dxManagement", () => {
       }
       worksheet.columns = [
         { header: "部門", key: "department" },
-        { header: "担当", key: "staff" },
         { header: "更新者", key: "changer" },
         { header: "タイトル・業務", key: "work" },
         { header: "支援ツール", key: "tool" },
@@ -2148,7 +2218,6 @@ export const useDxStore = defineStore("dxManagement", () => {
         if (list.division) {
           worksheet.addRow({
             department: changeDepartment(list.department),
-            staff: list.staff,
             changer: list.changer,
             work: list.work,
             tool: list.support_tool,
@@ -2238,12 +2307,12 @@ export const useDxStore = defineStore("dxManagement", () => {
   const switchSearchMethod = ref(true);
   const insideDxColumnList = {
     部門: "department",
-    担当: "staff",
     "タイトル・業務": "work",
     支援ツール: "support_tool",
     "内容・結果": "expected_effect",
     効果: "effect",
     状況: "state",
+    カテゴリー: "category_name",
     登録日: "registration_date",
   };
   const outsideDxColumnList = {
@@ -2304,7 +2373,11 @@ export const useDxStore = defineStore("dxManagement", () => {
         }
       } else {
         if (isDetailedFilter.value) {
-          if (!filteringWord.value) {
+          if (
+            !filteringWord.value ||
+            (Array.isArray(filteringWord.value) &&
+              filteringWord.value.length === 0)
+          ) {
             isDetailedFilter.value = false;
             return search();
           }
@@ -2314,8 +2387,21 @@ export const useDxStore = defineStore("dxManagement", () => {
             ) {
               continue;
             }
-            // 部分一致の時
-            if (switchSearchMethod.value) {
+            // カテゴリー（配列項目）は選択されたカテゴリーを全て含むかどうかで判定する
+            if (
+              selectedColumnList[filteringTargetColumn.value] ===
+              "category_name"
+            ) {
+              const itemCategoryNames = list.category_name ?? [];
+              if (
+                filteringWord.value.every((category) =>
+                  itemCategoryNames.includes(category)
+                )
+              ) {
+                showDxLists.value.push(list);
+              }
+              // 部分一致の時
+            } else if (switchSearchMethod.value) {
               if (
                 String(list[selectedColumnList[filteringTargetColumn.value]])
                   .toLowerCase()
@@ -2374,7 +2460,6 @@ export const useDxStore = defineStore("dxManagement", () => {
     更新日: "cast(update_date as date)",
     部門: "department",
     更新者: "changer",
-    担当: "staff",
     "タイトル・業務": "work",
     支援ツール: "support_tool",
     "内容・結果": "expected_effect",
@@ -2968,6 +3053,9 @@ export const useDxStore = defineStore("dxManagement", () => {
     resetDxWgItem,
     unlockDxWgRegisterAuthority,
     resetDxItem,
+    isDuplicatingDx,
+    duplicateInsideDxList,
+    duplicateDxWg,
     addInsideDxList,
     changeInsideDxList,
     deleteInsideDxList,

@@ -68,15 +68,6 @@ let fileIndex = ref();
           >
           <v-divider inset></v-divider>
         </div>
-        <div class="basic-info-item" v-if="store.switchDx">
-          <v-list-item
-            ><v-list-item-subtitle>担当者</v-list-item-subtitle>
-            <v-list-item-title class="pre-wrap">{{
-              store.dxItem.staff
-            }}</v-list-item-title></v-list-item
-          >
-          <v-divider inset></v-divider>
-        </div>
         <div class="basic-info-item">
           <v-list-item
             ><v-list-item-subtitle>更新者</v-list-item-subtitle>
