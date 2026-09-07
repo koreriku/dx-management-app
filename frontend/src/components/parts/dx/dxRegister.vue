@@ -4,7 +4,7 @@ import { useDxStore } from "../../../stores/dxManagement.js";
 import Button from "../button.vue";
 import dxTitle from "./dxTitle.vue";
 import dxItemInput from "./dxItemInput.vue";
-import employeeNumberDialog from "../employeeNumberDialog.vue";
+import employeeInfoDialog from "../employeeInfoDialog.vue";
 
 const store = useDxStore();
 
@@ -18,16 +18,33 @@ onBeforeMount(async () => {
   store.newAttachedFiles = [];
   store.editDxItem.registration_date = store.date;
   store.editDxItem.update_date = store.date;
+  // 社員情報が既に登録済みなら、フォームへの入力が始まる前に更新者欄へ反映しておく
+  store.applyEmployeeNameToChanger();
+  // 社員番号・社員名が未入力の場合、登録ダイアログを開いたタイミングで入力を促す
+  if (!store.employeeNumber || !store.employeeName) {
+    isRegisterPending.value = false;
+    showEmployeeInfoDialog.value = true;
+  }
 });
 
-const showEmployeeNumberDialog = ref(false);
+const showEmployeeInfoDialog = ref(false);
+// true: 社員情報入力後に登録まで実行する / false: 更新者欄への反映のみ行う
+const isRegisterPending = ref(false);
 
 const addInsideDxList = async () => {
-  if (!store.employeeNumber) {
-    showEmployeeNumberDialog.value = true;
+  if (!store.employeeNumber || !store.employeeName) {
+    isRegisterPending.value = true;
+    showEmployeeInfoDialog.value = true;
     return;
   }
   await registerInsideDxList();
+};
+
+const onEmployeeInfoSubmit = async () => {
+  if (isRegisterPending.value) {
+    isRegisterPending.value = false;
+    await registerInsideDxList();
+  }
 };
 
 const registerInsideDxList = async () => {
@@ -63,9 +80,9 @@ const registerInsideDxList = async () => {
       </v-col>
     </v-row>
 
-    <employeeNumberDialog
-      v-model="showEmployeeNumberDialog"
-      @submit="registerInsideDxList"
+    <employeeInfoDialog
+      v-model="showEmployeeInfoDialog"
+      @submit="onEmployeeInfoSubmit"
     />
   </v-container>
 </template>

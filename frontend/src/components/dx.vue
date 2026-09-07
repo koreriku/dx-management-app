@@ -6,12 +6,27 @@ import { useDxStore } from "../stores/dxManagement.js";
 import dxList from "./parts/dx/dxList.vue";
 import DepartmentStateTable from "./totalization/DepartmentStateTable.vue";
 import dxRegister from "./parts/dx/dxRegister.vue";
+import employeeInfoDialog from "./parts/employeeInfoDialog.vue";
 
 const store = useDxStore();
 store.dxTitle = 0;
 
 let showList = ref("true");
 const showGraphDialog = ref(false);
+
+// 社員番号・社員名が未入力なら、登録ダイアログを開く前に入力を促す
+// （キャンセルした場合は登録ダイアログを開かない）
+const showEmployeeInfoDialog = ref(false);
+const openRegisterDialog = () => {
+  if (!store.employeeNumber || !store.employeeName) {
+    showEmployeeInfoDialog.value = true;
+    return;
+  }
+  store.showRegisterDialog = true;
+};
+const onEmployeeInfoSubmit = () => {
+  store.showRegisterDialog = true;
+};
 
 let tableHeight = 0;
 let tableWidth = 0;
@@ -55,7 +70,7 @@ if (store.switchDx) {
       <div class="d-flex">
         <Button
           color="yellow"
-          @click="store.showRegisterDialog = true"
+          @click="openRegisterDialog"
           class="mr-3"
           icon
           ><v-icon>mdi-plus</v-icon>
@@ -133,6 +148,8 @@ if (store.switchDx) {
             store.isDetailedFilter = false;
             store.startDate = null;
             store.endDate = null;
+            store.updateStartDate = null;
+            store.updateEndDate = null;
             store.filteringWord = null;
             store.search();
           "
@@ -262,6 +279,11 @@ if (store.switchDx) {
     </v-card>
   </div>
 
+  <employeeInfoDialog
+    v-model="showEmployeeInfoDialog"
+    @submit="onEmployeeInfoSubmit"
+  />
+
   <v-dialog
     v-model="detailedSearchDialog"
     width="400"
@@ -295,6 +317,7 @@ if (store.switchDx) {
           <div
             v-if="
               store.filteringTargetColumn !== '登録日' &&
+              store.filteringTargetColumn !== '更新日' &&
               store.filteringTargetColumn !== 'カテゴリー'
             "
           >
@@ -347,13 +370,18 @@ if (store.switchDx) {
             store.searchWord = null;
             store.startDate = null;
             store.endDate = null;
+            store.updateStartDate = null;
+            store.updateEndDate = null;
             store.search();
             detailedSearchDialog = false;
           "
-          v-else-if="store.filteringTargetColumn !== '登録日'"
+          v-else-if="
+            store.filteringTargetColumn !== '登録日' &&
+            store.filteringTargetColumn !== '更新日'
+          "
         >
         </v-text-field>
-        <div v-else>
+        <div v-else-if="store.filteringTargetColumn === '登録日'">
           <v-text-field
             type="date"
             variant="outlined"
@@ -370,7 +398,31 @@ if (store.switchDx) {
             v-model="store.endDate"
             @keyup.enter="
               store.isSearched = true;
-              store.isDetailedFilter = true;
+              store.isDetailedFilter = false;
+              store.searchWord = null;
+              store.search();
+              detailedSearchDialog = false;
+            "
+          ></v-text-field>
+        </div>
+        <div v-else>
+          <v-text-field
+            type="date"
+            variant="outlined"
+            label="開始日"
+            class="mt-3 mb-5"
+            v-model="store.updateStartDate"
+          ></v-text-field>
+
+          <v-text-field
+            type="date"
+            variant="outlined"
+            label="終了日"
+            class="mb-5"
+            v-model="store.updateEndDate"
+            @keyup.enter="
+              store.isSearched = true;
+              store.isDetailedFilter = false;
               store.searchWord = null;
               store.search();
               detailedSearchDialog = false;
@@ -388,10 +440,15 @@ if (store.switchDx) {
             store.searchWord = null;
             store.startDate = null;
             store.endDate = null;
+            store.updateStartDate = null;
+            store.updateEndDate = null;
             store.search();
             detailedSearchDialog = false;
           "
-          v-if="store.filteringTargetColumn !== '登録日'"
+          v-if="
+            store.filteringTargetColumn !== '登録日' &&
+            store.filteringTargetColumn !== '更新日'
+          "
           icon
           ><v-icon>mdi-check</v-icon>
           <v-tooltip activator="parent" location="right"

@@ -5,12 +5,14 @@ import { useRouter, useRoute } from "vue-router";
 import { useDxStore } from "./stores/dxManagement.js";
 import snacbar from "./components/snacbar.vue";
 import Button from "./components/parts/button.vue";
+import employeeInfoDialog from "./components/parts/employeeInfoDialog.vue";
 
 const store = useDxStore();
 const theme = useTheme();
 const router = useRouter();
 const route = useRoute();
 const drawer = ref(false);
+const showEmployeeInfoDialog = ref(false);
 
 onBeforeMount(() => {
   if (localStorage.getItem("theme")) {
@@ -161,6 +163,21 @@ const setFontSize = () => {
             >マニュアル</v-tooltip
           ></v-btn
         >
+        <v-btn
+          v-if="store.employeeNumber"
+          height="auto"
+          @click="showEmployeeInfoDialog = true"
+          >
+          <div>
+            <div>{{ store.employeeNumber }}</div>
+            <div v-if="store.employeeName">
+              {{ store.employeeName }}
+            </div>
+          </div>
+          <v-tooltip activator="parent" location="bottom"
+            >社員情報を変更</v-tooltip
+          ></v-btn
+        >
       </v-toolbar-items>
 
       <v-toolbar-items class="nav">
@@ -183,6 +200,22 @@ const setFontSize = () => {
           v-model="store.referenceMonth"
           @input="reloadDxLists"
         ></v-text-field>
+        <v-btn
+          v-if="store.employeeNumber"
+          class="employee-info-btn"
+          height="auto"
+          @click="showEmployeeInfoDialog = true"
+          ><v-icon class="mr-1">mdi-account</v-icon>
+          <div class="employee-info-text">
+            <div>{{ store.employeeNumber }}</div>
+            <div v-if="store.employeeName" class="employee-name">
+              {{ store.employeeName }}
+            </div>
+          </div>
+          <v-tooltip activator="parent" location="bottom"
+            >社員情報を変更</v-tooltip
+          ></v-btn
+        >
       </v-toolbar-items>
     </v-app-bar>
 
@@ -296,7 +329,7 @@ const setFontSize = () => {
       </template>
     </v-navigation-drawer>
 
-    <div class="my-15">
+    <div class="mt-15 mb-5">
       <router-view />
     </div>
 
@@ -306,6 +339,8 @@ const setFontSize = () => {
   </v-app>
 
   <snacbar/>
+
+  <employeeInfoDialog v-model="showEmployeeInfoDialog" />
 
   <v-dialog
     v-model="store.showUnlockModal"
@@ -460,6 +495,7 @@ const setFontSize = () => {
 .name {
   float: left;
 }
+
 .under {
   align-items: end;
 }

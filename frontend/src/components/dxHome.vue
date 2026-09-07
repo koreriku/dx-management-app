@@ -95,7 +95,7 @@ watch(dxTitle, (newTitle, oldTitle) => {
 
 <template>
   <div
-    class="container pb-15 mb-n15"
+    class="container mb-n5"
     :style="{
       backgroundColor: theme.global.name.value === 'light' ? '#fafafa' : '',
     }"

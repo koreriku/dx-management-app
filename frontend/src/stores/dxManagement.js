@@ -137,9 +137,13 @@ export const useDxStore = defineStore("dxManagement", () => {
 
   // いいねを押した社員番号（ログイン機構がないため簡易識別として使用）
   const employeeNumber = ref(localStorage.getItem("employeeNumber") || "");
-  const setEmployeeNumber = (value) => {
-    employeeNumber.value = value.trim();
+  // 社員名（コメント表示や更新者欄への反映に使用）
+  const employeeName = ref(localStorage.getItem("employeeName") || "");
+  const setEmployeeInfo = (number, name) => {
+    employeeNumber.value = number.trim();
+    employeeName.value = name.trim();
     localStorage.setItem("employeeNumber", employeeNumber.value);
+    localStorage.setItem("employeeName", employeeName.value);
   };
 
   // コメント・データ・添付ファイルの削除権限解除パスワード入力モーダルの開閉
@@ -170,17 +174,17 @@ export const useDxStore = defineStore("dxManagement", () => {
     }
     return itemEmployeeNo === employeeNumber.value;
   };
-  // コメント（JSON文字列 or 旧形式のプレーンテキスト）をパースして{ text, employee_no }の形に変換
+  // コメント（JSON文字列 or 旧形式のプレーンテキスト）をパースして{ text, employee_no, employee_name }の形に変換
   const parseComment = (raw) => {
     try {
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === "object" && "text" in parsed) {
-        return parsed;
+        return { employee_name: null, ...parsed };
       }
     } catch (e) {
       // 旧形式（プレーンテキスト）のコメントはそのまま扱う
     }
-    return { text: raw, employee_no: null };
+    return { text: raw, employee_no: null, employee_name: null };
   };
 
   // 社内DXのカテゴリー追加・編集パスワード入力モーダルの開閉
@@ -1202,7 +1206,11 @@ export const useDxStore = defineStore("dxManagement", () => {
     for (let i = 0; i < commentArr.length; i++) {
       if (commentArr[i] !== " " && commentArr[i] !== "　") {
         dxWg.value.comment.unshift(
-          JSON.stringify({ text: comment, employee_no: employeeNumber.value })
+          JSON.stringify({
+            text: comment,
+            employee_no: employeeNumber.value,
+            employee_name: employeeName.value,
+          })
         );
         if (!dxWg.value.id) {
           return;
@@ -2080,11 +2088,27 @@ export const useDxStore = defineStore("dxManagement", () => {
     return converted;
   };
 
+  // 更新者(changer)に社員名が含まれていなければ追加する
+  // 未入力なら社員名をそのまま、既に入力があれば「、社員名」を末尾に追加する
+  const applyEmployeeNameToChanger = () => {
+    const name = employeeName.value;
+    if (!name) {
+      return;
+    }
+    const changer = editDxItem.value.changer;
+    if (!changer || !changer.trim()) {
+      editDxItem.value.changer = name;
+    } else if (!changer.includes(name)) {
+      editDxItem.value.changer = `${changer}、${name}`;
+    }
+  };
+
   // 新しいDXをデータベースに格納
   const addInsideDxList = async () => {
     editDxItem.value.registration_date = date;
     editDxItem.value.update_date = date;
     editDxItem.value.employee_no = employeeNumber.value;
+    applyEmployeeNameToChanger();
     await postFiles();
     const submitItem = await itemNumberConversion();
     await axios.post(dxBASE_URL, submitItem);
@@ -2144,7 +2168,11 @@ export const useDxStore = defineStore("dxManagement", () => {
     for (let i = 0; i < commentArr.length; i++) {
       if (commentArr[i] !== " " && commentArr[i] !== "　") {
         dxItem.value.comment.unshift(
-          JSON.stringify({ text: comment, employee_no: employeeNumber.value })
+          JSON.stringify({
+            text: comment,
+            employee_no: employeeNumber.value,
+            employee_name: employeeName.value,
+          })
         );
         if (!dxItem.value.id) {
           return;
@@ -2298,7 +2326,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   // 画面の高さに応じてテーブルの高さ変更
   const tableHeightAdjustment = () => {
     let windowHeight = window.innerHeight;
-    let tableHeight = Math.round(windowHeight / 1.6);
+    let tableHeight = Math.round(windowHeight / 1.5);
     return tableHeight;
   };
 
@@ -2323,6 +2351,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     状況: "state",
     カテゴリー: "category_name",
     登録日: "registration_date",
+    更新日: "update_date",
   };
   const outsideDxColumnList = {
     部門: "department",
@@ -2333,6 +2362,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     状況: "state",
     顧客: "customer",
     登録日: "registration_date",
+    更新日: "update_date",
   };
   // 詳細検索がされているか有無
   const isDetailedFilter = ref(false);
@@ -2347,6 +2377,8 @@ export const useDxStore = defineStore("dxManagement", () => {
     isSearched.value = false;
     startDate.value = null;
     endDate.value = null;
+    updateStartDate.value = null;
+    updateEndDate.value = null;
     filteringWord.value = null;
     searchWord.value = null;
   };
@@ -2432,7 +2464,34 @@ export const useDxStore = defineStore("dxManagement", () => {
               }
             }
           }
-        } else if (startDate.value && endDate.value) {
+        } else if (
+          filteringTargetColumn.value === "更新日" &&
+          (updateStartDate.value || updateEndDate.value)
+        ) {
+          for (const list of selectedDxLists) {
+            if (
+              new Date(list.registration_date) > new Date(referenceDate.value)
+            ) {
+              continue;
+            }
+            if (!list.update_date) {
+              continue;
+            }
+            if (
+              updateStartDate.value &&
+              new Date(updateStartDate.value) > new Date(list.update_date)
+            ) {
+              continue;
+            }
+            if (
+              updateEndDate.value &&
+              new Date(updateEndDate.value) < new Date(list.update_date)
+            ) {
+              continue;
+            }
+            showDxLists.value.push(list);
+          }
+        } else if (startDate.value || endDate.value) {
           for (const list of selectedDxLists) {
             if (
               new Date(list.registration_date) > new Date(referenceDate.value)
@@ -2440,11 +2499,18 @@ export const useDxStore = defineStore("dxManagement", () => {
               continue;
             }
             if (
-              new Date(startDate.value) <= new Date(list.registration_date) &&
-              new Date(endDate.value) >= new Date(list.registration_date)
+              startDate.value &&
+              new Date(startDate.value) > new Date(list.registration_date)
             ) {
-              showDxLists.value.push(list);
+              continue;
             }
+            if (
+              endDate.value &&
+              new Date(endDate.value) < new Date(list.registration_date)
+            ) {
+              continue;
+            }
+            showDxLists.value.push(list);
           }
         }
       }
@@ -2492,6 +2558,10 @@ export const useDxStore = defineStore("dxManagement", () => {
   const startDate = ref("");
   // 年度絞り込みの終了日
   const endDate = ref("");
+  // 更新日絞り込みの開始日
+  const updateStartDate = ref("");
+  // 更新日絞り込みの終了日
+  const updateEndDate = ref("");
   // 年度絞り込みの実施の有無
   const isSearchDate = ref(false);
 
@@ -2979,6 +3049,8 @@ export const useDxStore = defineStore("dxManagement", () => {
     sequenceTable,
     startDate,
     endDate,
+    updateStartDate,
+    updateEndDate,
     isSearchDate,
     isSearched,
     isDxWgSearched,
@@ -3066,13 +3138,15 @@ export const useDxStore = defineStore("dxManagement", () => {
     duplicateInsideDxList,
     duplicateDxWg,
     addInsideDxList,
+    applyEmployeeNameToChanger,
     changeInsideDxList,
     deleteInsideDxList,
     addComment,
     deleteComment,
     toggleLike,
     employeeNumber,
-    setEmployeeNumber,
+    employeeName,
+    setEmployeeInfo,
     showDeleteAuthorityUnlockModal,
     isDeleteAuthority,
     unlockDeleteAuthority,

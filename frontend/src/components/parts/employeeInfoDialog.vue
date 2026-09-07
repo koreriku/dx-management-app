@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, defineEmits } from "vue";
+import { ref, watch, defineProps, defineEmits } from "vue";
 import Button from "./button.vue";
 import { useDxStore } from "../../stores/dxManagement";
 
@@ -10,13 +10,24 @@ const emit = defineEmits(["update:modelValue", "submit"]);
 
 const store = useDxStore();
 const employeeNumberInput = ref("");
+const employeeNameInput = ref("");
+
+watch(
+  () => props.modelValue,
+  (isOpen) => {
+    if (isOpen) {
+      employeeNumberInput.value = store.employeeNumber;
+      employeeNameInput.value = store.employeeName;
+    }
+  }
+);
 
 const submit = () => {
-  if (!employeeNumberInput.value.trim()) {
+  if (!employeeNumberInput.value.trim() || !employeeNameInput.value.trim()) {
+    store.displaySnackbar("社員番号と社員名は必須です。", "error");
     return;
   }
-  store.setEmployeeNumber(employeeNumberInput.value);
-  employeeNumberInput.value = "";
+  store.setEmployeeInfo(employeeNumberInput.value, employeeNameInput.value);
   emit("update:modelValue", false);
   emit("submit");
 };
@@ -29,13 +40,21 @@ const submit = () => {
     width="360"
   >
     <v-card>
-      <v-card-title>社員番号を入力してください</v-card-title>
+      <v-card-title>社員情報を入力してください</v-card-title>
       <v-card-text>
         <v-text-field
           v-model="employeeNumberInput"
           label="社員番号"
           variant="outlined"
           autofocus
+          :rules="[(v) => !!v.trim() || '社員番号は必須です']"
+          @keyup.enter="submit"
+        ></v-text-field>
+        <v-text-field
+          v-model="employeeNameInput"
+          label="社員名"
+          variant="outlined"
+          :rules="[(v) => !!v.trim() || '社員名は必須です']"
           @keyup.enter="submit"
         ></v-text-field>
       </v-card-text>

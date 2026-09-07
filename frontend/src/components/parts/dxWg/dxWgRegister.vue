@@ -3,7 +3,7 @@ import { onBeforeMount, ref } from "vue";
 import { useDxStore } from "../../../stores/dxManagement.js";
 import Button from "../button.vue";
 import dxWgItemInput from "./dxWgItemInput.vue";
-import employeeNumberDialog from "../employeeNumberDialog.vue";
+import employeeInfoDialog from "../employeeInfoDialog.vue";
 
 const store = useDxStore();
 
@@ -14,11 +14,11 @@ onBeforeMount(async () => {
   store.editDxItem.update_date = store.date;
 });
 
-const showEmployeeNumberDialog = ref(false);
+const showEmployeeInfoDialog = ref(false);
 
 const addDxWg = async () => {
-  if (!store.employeeNumber) {
-    showEmployeeNumberDialog.value = true;
+  if (!store.employeeNumber || !store.employeeName) {
+    showEmployeeInfoDialog.value = true;
     return;
   }
   await registerDxWg();
@@ -57,8 +57,8 @@ const registerDxWg = async () => {
       </v-col>
     </v-row>
 
-    <employeeNumberDialog
-      v-model="showEmployeeNumberDialog"
+    <employeeInfoDialog
+      v-model="showEmployeeInfoDialog"
       @submit="registerDxWg"
     />
   </v-container>

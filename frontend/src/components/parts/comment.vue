@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineProps } from "vue";
 import Button from "./button.vue";
-import employeeNumberDialog from "./employeeNumberDialog.vue";
+import employeeInfoDialog from "./employeeInfoDialog.vue";
 import { useDxStore } from "../../stores/dxManagement";
 
 const props = defineProps({
@@ -9,7 +9,7 @@ const props = defineProps({
 });
 const store = useDxStore();
 const comment = ref("");
-const showEmployeeNumberDialog = ref(false);
+const showEmployeeInfoDialog = ref(false);
 
 const submitComment = () => {
   if (props.type == "dx") {
@@ -21,8 +21,8 @@ const submitComment = () => {
 };
 
 const addComment = () => {
-  if (!store.employeeNumber) {
-    showEmployeeNumberDialog.value = true;
+  if (!store.employeeNumber || !store.employeeName) {
+    showEmployeeInfoDialog.value = true;
     return;
   }
   submitComment();
@@ -65,6 +65,12 @@ const addComment = () => {
               v-if="props.type == 'dx'"
               v-for="(comment, index) in store.dxItem.comment"
             >
+              <div
+                v-if="store.parseComment(comment).employee_name"
+                class="text-caption text-medium-emphasis"
+              >
+                {{ store.parseComment(comment).employee_name }}
+              </div>
               <div class="d-flex justify-space-between">
                 <span class="pre">{{ store.parseComment(comment).text }}</span>
                 <Button
@@ -92,6 +98,12 @@ const addComment = () => {
               v-if="props.type == 'dxWg'"
               v-for="(comment, index) in store.dxWg.comment"
             >
+              <div
+                v-if="store.parseComment(comment).employee_name"
+                class="text-caption text-medium-emphasis"
+              >
+                {{ store.parseComment(comment).employee_name }}
+              </div>
               <div class="d-flex justify-space-between">
                 <span class="pre">{{ store.parseComment(comment).text }}</span>
                 <Button
@@ -121,8 +133,8 @@ const addComment = () => {
     </v-col>
   </v-row>
 
-  <employeeNumberDialog
-    v-model="showEmployeeNumberDialog"
+  <employeeInfoDialog
+    v-model="showEmployeeInfoDialog"
     @submit="submitComment"
   />
 </template>
