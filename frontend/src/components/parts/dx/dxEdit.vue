@@ -6,6 +6,9 @@ import { onBeforeMount } from "vue";
 
 const store = useDxStore();
 const changeInsideDxList = async () => {
+  if (!store.validateDxItem()) {
+    return;
+  }
   store.showEditDialog = false;
   await store.changeInsideDxList();
 };

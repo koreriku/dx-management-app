@@ -109,6 +109,9 @@ const windowWidth = window.innerWidth;
             部門
             <sortToggle column="部門" />
           </th>
+          <th class="a" @click="sort('更新者')">
+            更新者<sortToggle column="更新者" />
+          </th>
           <th class="a" @click="sort('タイトル・業務')">
             タイトル・業務<sortToggle column="タイトル・業務" />
           </th>
@@ -151,6 +154,9 @@ const windowWidth = window.innerWidth;
           <th class="a" @click="sort('部門')">
             部門
             <sortToggle column="部門" />
+          </th>
+          <th class="a" @click="sort('更新者')">
+            更新者<sortToggle column="更新者" />
           </th>
           <th class="a" @click="sort('業界')">
             業界<sortToggle column="業界" />
@@ -207,6 +213,9 @@ const windowWidth = window.innerWidth;
             {{ item.department }}
           </td>
           <td class="text-left wrap">
+            {{ item.changer }}
+          </td>
+          <td class="text-left wrap">
             {{ omittedText(item.work, 16) }}
           </td>
           <td class="text-left wrap">
@@ -255,6 +264,9 @@ const windowWidth = window.innerWidth;
         >
           <td class="text-left">
             {{ item.department }}
+          </td>
+          <td class="text-left wrap">
+            {{ item.changer }}
           </td>
           <td class="text-left wrap">
             {{ item.industry }}

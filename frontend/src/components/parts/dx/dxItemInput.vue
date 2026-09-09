@@ -47,7 +47,7 @@ onBeforeMount(() => {
               variant="outlined"
               v-model="store.editDxItem.changer"
               density="compact"
-              hide-details
+              :rules="[(v) => !!(v && v.trim()) || '更新者は必須です']"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -70,7 +70,7 @@ onBeforeMount(() => {
               variant="outlined"
               v-model="store.editDxItem.changer"
               density="compact"
-              hide-details
+              :rules="[(v) => !!(v && v.trim()) || '更新者は必須です']"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -88,7 +88,7 @@ onBeforeMount(() => {
             variant="outlined"
             v-model="store.editDxItem.work"
             density="compact"
-            hide-details
+            :rules="[(v) => !!(v && v.trim()) || 'タイトル・業務は必須です']"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -179,7 +179,7 @@ onBeforeMount(() => {
             variant="outlined"
             v-model="store.editDxItem.product"
             density="compact"
-            hide-details
+            :rules="[(v) => !!(v && v.trim()) || '製品・サービス名は必須です']"
           ></v-text-field>
         </v-col>
       </v-row>

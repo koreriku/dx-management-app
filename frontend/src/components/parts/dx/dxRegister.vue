@@ -37,12 +37,20 @@ const addInsideDxList = async () => {
     showEmployeeInfoDialog.value = true;
     return;
   }
+  store.applyEmployeeNameToChanger();
+  if (!store.validateDxItem()) {
+    return;
+  }
   await registerInsideDxList();
 };
 
 const onEmployeeInfoSubmit = async () => {
   if (isRegisterPending.value) {
     isRegisterPending.value = false;
+    store.applyEmployeeNameToChanger();
+    if (!store.validateDxItem()) {
+      return;
+    }
     await registerInsideDxList();
   }
 };

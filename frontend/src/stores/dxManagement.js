@@ -2103,6 +2103,28 @@ export const useDxStore = defineStore("dxManagement", () => {
     }
   };
 
+  // 更新者・タイトル（社内DXは業務タイトル、社外DXは製品・サービス名）が入力されているか確認
+  // 未入力の場合はスナックバーでエラーを表示する
+  const validateDxItem = () => {
+    const title = switchDx.value
+      ? editDxItem.value.work
+      : editDxItem.value.product;
+    if (!editDxItem.value.changer || !String(editDxItem.value.changer).trim()) {
+      displaySnackbar("更新者は必須です。", "error");
+      return false;
+    }
+    if (!title || !String(title).trim()) {
+      displaySnackbar(
+        switchDx.value
+          ? "タイトル・業務は必須です。"
+          : "製品・サービス名は必須です。",
+        "error"
+      );
+      return false;
+    }
+    return true;
+  };
+
   // 新しいDXをデータベースに格納
   const addInsideDxList = async () => {
     editDxItem.value.registration_date = date;
@@ -2344,6 +2366,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   const switchSearchMethod = ref(true);
   const insideDxColumnList = {
     部門: "department",
+    更新者: "changer",
     "タイトル・業務": "work",
     支援ツール: "support_tool",
     "内容・結果": "expected_effect",
@@ -2355,6 +2378,7 @@ export const useDxStore = defineStore("dxManagement", () => {
   };
   const outsideDxColumnList = {
     部門: "department",
+    更新者: "changer",
     業界: "industry",
     "製品・サービス名": "product",
     技術: "technology",
@@ -3139,6 +3163,7 @@ export const useDxStore = defineStore("dxManagement", () => {
     duplicateDxWg,
     addInsideDxList,
     applyEmployeeNameToChanger,
+    validateDxItem,
     changeInsideDxList,
     deleteInsideDxList,
     addComment,
