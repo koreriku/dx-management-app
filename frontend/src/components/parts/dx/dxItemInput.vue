@@ -117,26 +117,6 @@ onBeforeMount(() => {
       </v-row>
       <v-row>
         <v-col cols="12" sm="4">
-          <v-select
-            label="状況"
-            :items="store.insideDxState.map((item) => item.state)"
-            variant="outlined"
-            v-model="store.editDxItem.state"
-            density="compact"
-            hide-details
-          ></v-select>
-        </v-col>
-        <v-col cols="12" sm="4">
-          <v-select
-            label="効果"
-            :items="store.insideDxEffect.map((item) => item.effect)"
-            variant="outlined"
-            v-model="store.editDxItem.effect"
-            density="compact"
-            hide-details
-          ></v-select>
-        </v-col>
-        <v-col cols="12" sm="4">
           <div class="d-flex align-center">
             <v-select
               label="カテゴリー"
@@ -164,6 +144,26 @@ onBeforeMount(() => {
             </Button>
             <dxCategoryRegistration />
           </div>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-select
+            label="状況"
+            :items="store.insideDxState.map((item) => item.state)"
+            variant="outlined"
+            v-model="store.editDxItem.state"
+            density="compact"
+            hide-details
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-select
+            label="効果"
+            :items="store.insideDxEffect.map((item) => item.effect)"
+            variant="outlined"
+            v-model="store.editDxItem.effect"
+            density="compact"
+            hide-details
+          ></v-select>
         </v-col>
       </v-row>
     </v-card-text>
