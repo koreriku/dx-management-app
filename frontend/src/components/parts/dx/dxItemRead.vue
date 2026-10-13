@@ -31,6 +31,11 @@ const toObject = (object) => {
   return object;
 };
 
+// ブラウザで表示可能な拡張子（それ以外はタブを開かずダウンロードする）
+const viewableExtensions = ["pdf", "png", "jpg", "jpeg", "gif", "bmp", "svg", "webp", "txt"];
+const isViewable = (name) =>
+  viewableExtensions.includes(name.split(".").pop().toLowerCase());
+
 const baseURL = new URL(window.location.href).origin;
 let fileName = ref("");
 let fileIndex = ref();
@@ -277,7 +282,12 @@ let fileIndex = ref();
           <v-icon start>mdi-paperclip</v-icon>
           <a
             :href="baseURL + '/public/uploads/insideDx/' + toObject(file).name"
-            target="_blank"
+            :target="isViewable(toObject(file).name) ? '_blank' : undefined"
+            :download="
+              isViewable(toObject(file).name)
+                ? undefined
+                : toObject(file).name.replace(/^(\d+)_/, '')
+            "
             class="file-link"
             >{{ toObject(file).name.replace(/^(\d+)_/, "") }}</a
           >
